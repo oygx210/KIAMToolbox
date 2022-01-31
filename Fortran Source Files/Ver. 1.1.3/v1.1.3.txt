@@ -1,0 +1,1 @@
+kscrs2mer and kmer2scrs added.
