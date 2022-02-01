@@ -107,3 +107,58 @@ def astro_const():
 
 def r2bp(t, s):
     return fkt.equationsmodule.kr2bp(t, s)
+
+
+def cr3bp_fb(t, s, mu, stm_req):
+    fkt.equationsmodule.massparameter = mu
+    fkt.equationsmodule.stm_required = stm_req
+    return fkt.equationsmodule.cr3bp_fb(t, s)
+
+
+def cr3bp_sb(t, s, mu, stm_req):
+    fkt.equationsmodule.massparameter = mu
+    fkt.equationsmodule.stm_required = stm_req
+    return fkt.equationsmodule.cr3bp_sb(t, s)
+
+
+def nbp_rv_earth(t, s, stm_req, sources, data, units_data):
+    _set_nbp_parameters(stm_req, sources, data, units_data)
+    return fkt.equationsmodule.knbp_rv_earth(t, s)
+
+
+def nbp_rv_moon(t, s, stm_req, sources, data, units_data):
+    _set_nbp_parameters(stm_req, sources, data, units_data)
+    return fkt.equationsmodule.knbp_rv_moon(t, s)
+
+
+def _set_nbp_parameters(stm_req, sources, data, units_data):
+
+    fkt.equationsmodule.stm_required = stm_req
+
+    fkt.equationsmodule.atm = sources['atm']
+    fkt.equationsmodule.j2 = sources['j2']
+    fkt.equationsmodule.srp = sources['srp']
+    fkt.equationsmodule.sun = sources['sun']
+    fkt.equationsmodule.mercury = sources['mercury']
+    fkt.equationsmodule.venus = sources['venus']
+    fkt.equationsmodule.earth = sources['earth']
+    fkt.equationsmodule.mars = sources['mars']
+    fkt.equationsmodule.jupiter = sources['jupiter']
+    fkt.equationsmodule.saturn = sources['saturn']
+    fkt.equationsmodule.uranus = sources['uranus']
+    fkt.equationsmodule.neptune = sources['neptune']
+    fkt.equationsmodule.moon = sources['moon']
+    fkt.equationsmodule.cmplxmoon = sources['cmplxmoon']
+
+    fkt.equationsmodule.jd_zero = data['jd_zero']
+    fkt.equationsmodule.order = data['order']
+    fkt.equationsmodule.area = data['area']
+    fkt.equationsmodule.mass = data['mass']
+
+    fkt.equationsmodule.distunit = units_data['DistUnit']
+    fkt.equationsmodule.velunit = units_data['VelUnit']
+    fkt.equationsmodule.timeunit = units_data['TimeUnit']
+    fkt.equationsmodule.accunit = units_data['AccUnit']
+    fkt.equationsmodule.rsun = units_data['RSun']
+    fkt.equationsmodule.rearth = units_data['REarth']
+    fkt.equationsmodule.rmoon = units_data['RMoon']
