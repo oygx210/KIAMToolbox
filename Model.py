@@ -73,8 +73,8 @@ class Model:
 
             self.eqs = lambda t, s: kiam.cr3bp_sb(t, s, ku.mu, False)
 
-            self.info.ode_name = 'cr3bp_sb'
-            self.info.arguments = {self.data.mass_parameter, False}
+            self.info['ode_name'] = 'cr3bp_sb'
+            self.info['arguments'] = [self.data.mass_parameter, False]
 
         elif model_type == 'nbp':
 
@@ -104,6 +104,24 @@ class Model:
                 self.eqs = lambda t, s: self.nbp_rv_moon(t, s, True)
                 self.info['ode_name'] = 'nbp_rv_moon'
                 self.info['arguments'] = [self.sources, self.data, self.units, True]
+            elif variables == 'rvm' and primary == 'earth':
+                self.set_units('earth')
+                self.system = 'gcrs'
+                self.eqs = lambda t, s: self.nbp_rvm_earth(t, s, False)
+            elif variables == 'rvm' and primary == 'moon':
+                self.set_units('moon')
+                self.system = 'scrs'
+                self.eqs = lambda t, s: self.nbp_rvm_moon(t, s, False)
+            elif variables == 'ee' and primary == 'earth':
+                self.set_units('earth')
+                self.system = 'gcrs'
+                self.eqs = lambda t, s: self.nbp_ee_earth(t, s, False)
+            elif variables == 'ee' and primary == 'moon':
+                self.set_units('moon')
+                self.system = 'scrs'
+                self.eqs = lambda t, s: self.nbp_ee_moon(t, s, False)
+            else:
+                raise Exception('Unknown model.')
 
     def set_units(self, units_name):
 
@@ -169,3 +187,15 @@ class Model:
 
     def nbp_rv_moon(self, t, s, stm_req):
         return kiam.nbp_rv_moon(t, s, stm_req, self.sources, self.data, self.units)
+
+    def nbp_rvm_earth(self, t, s, stm_req):
+        return kiam.nbp_rvm_earth(t, s, stm_req, self.sources, self.data, self.units)
+
+    def nbp_rvm_moon(self, t, s, stm_req):
+        return kiam.nbp_rvm_moon(t, s, stm_req, self.sources, self.data, self.units)
+
+    def nbp_ee_earth(self, t, s, stm_req):
+        return kiam.nbp_ee_earth(t, s, stm_req, self.sources, self.data, self.units)
+
+    def nbp_ee_moon(self, t, s, stm_req):
+        return kiam.nbp_ee_moon(t, s, stm_req, self.sources, self.data, self.units)

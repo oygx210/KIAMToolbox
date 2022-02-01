@@ -24,7 +24,6 @@ def units(*args):
 
 
 def astro_const():
-
     uni_const = {}
     star = {'Sun': {}}
     planet = {'Mercury': {}, 'Venus': {}, 'Earth': {}, 'Mars': {},
@@ -131,8 +130,29 @@ def nbp_rv_moon(t, s, stm_req, sources, data, units_data):
     return fkt.equationsmodule.knbp_rv_moon(t, s)
 
 
-def _set_nbp_parameters(stm_req, sources, data, units_data):
+def nbp_rvm_earth(t, s, stm_req, sources, data, units_data):
+    pass
+    # _set_nbp_parameters(stm_req, sources, data, units_data)
+    # return fkt.equationsmodule.knbp_rvm_earth(t, s)
 
+
+def nbp_rvm_moon(t, s, stm_req, sources, data, units_data):
+    pass
+    # _set_nbp_parameters(stm_req, sources, data, units_data)
+    # return fkt.equationsmodule.knbp_rvm_moon(t, s)
+
+
+def nbp_ee_earth(t, s, stm_req, sources, data, units_data):
+    _set_nbp_parameters(stm_req, sources, data, units_data)
+    return fkt.equationsmodule.knbp_ee_earth(t, s)
+
+
+def nbp_ee_moon(t, s, stm_req, sources, data, units_data):
+    _set_nbp_parameters(stm_req, sources, data, units_data)
+    return fkt.equationsmodule.knbp_ee_moon(t, s)
+
+
+def _set_nbp_parameters(stm_req, sources, data, units_data):
     fkt.equationsmodule.stm_required = stm_req
 
     fkt.equationsmodule.atm = sources['atm']
