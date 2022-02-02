@@ -3,7 +3,7 @@ import kiam
 
 class Model:
 
-    def __init__(self, variables, model_type, primary, sources_cell, jd_zero):
+    def __init__(self, variables, model_type, primary, sources_cell):
 
         self.data = {}
         self.info = {}
@@ -78,7 +78,6 @@ class Model:
 
         elif model_type == 'nbp':
 
-            self.data['jd_zero'] = jd_zero
             self.set_sources()
             if variables == 'rv' and primary == 'earth':
                 self.set_units('earth')

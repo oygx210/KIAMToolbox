@@ -1,8 +1,12 @@
-import Model as md
+import Trajectory
+import numpy as np
+import kiam
 
-model = md.Model('rv', 'nbp', 'moon', ['Moon', 'Sun', 'SRP'], 2459599.5)
-model.data['mass'] = 100.0
-model.data['order'] = 10
-model.data['area'] = 1
-dfdt = model.eqs(0, [10, 0, 0, 0, 1, 0])
-print(dfdt)
+t0 = 0.0
+x0 = np.array([1, 0, 0, 0, 1, 0])
+jd0 = kiam.juliandate(2022, 2, 2, 0, 0, 0)
+tr = Trajectory.Trajectory(x0, t0, jd0, 'rv', 'gcrs', 'earth')
+tr.set_model('rv', 'nbp', 'earth', ['Sun', 'Moon'])
+tr.vars_transform('rv', 'ee')
+
+print(tr)

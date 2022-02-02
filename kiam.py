@@ -1,6 +1,85 @@
 import FKIAMToolbox as fkt
+import jdcal
+import datetime
+import math
 
+# Translations.
+def jd2time(jd):
+    gcal = jdcal.jd2gcal(2400000.5, jd - 2400000.5)
+    frac_hours = gcal[3]*24
+    hours = math.floor(frac_hours)
+    frac_minutes = (frac_hours - hours)*60
+    minutes = math.floor(frac_minutes)
+    frac_seconds = (frac_minutes - minutes)*60
+    seconds = int(round(frac_seconds, 0))
+    if seconds != 60:
+        return datetime.datetime(gcal[0], gcal[1], gcal[2], hours, minutes, seconds)
+    else:
+        return datetime.datetime(gcal[0], gcal[1], gcal[2], hours, minutes) + datetime.timedelta(minutes=1)
+def time2jd(time):
+    return sum(jdcal.gcal2jd(time.year, time.month, time.day)) + time.hour/24 + \
+                             time.minute/1440 + time.second/86400 + (time.microsecond/1000000)/86400
+def juliandate(year, month, day, hour, minute, second):
+    return fkt.ephemeris.juliandate(year, month, day, hour, minute, second)
+def rv2oe(rv, mu, grad_req=False):
+    out = fkt.translations.krv2oe(rv, mu, grad_req)
+    return _return_if_grad_req(out, grad_req)
+def oe2rv(oe, mu, grad_req=False):
+    out = fkt.translations.koe2rv(oe, mu, grad_req)
+    return _return_if_grad_req(out, grad_req)
+def rv2ee(rv, mu, grad_req=False):
+    out = fkt.translations.krv2ee(rv, mu, grad_req)
+    return _return_if_grad_req(out, grad_req)
+def ee2rv(ee, mu, grad_req=False):
+    out = fkt.translations.kee2rv(ee, mu, grad_req)
+    return _return_if_grad_req(out, grad_req)
+def cart2sphere(cart):
+    return fkt.translations.kcart2sphere(cart)
+def sphere2cart(sphere):
+    return fkt.translations.sphere2cart(sphere)
+def cart2latlon(cart):
+    return fkt.translations.kcart2latlon(cart)
+def latlon2cart(latlon):
+    return fkt.translations.latlon2cart(latlon)
+def itrs2gcrs(xitrs, jd, grad_req=False):
+    out = fkt.translations.kitrs2gcrs(xitrs, jd)
+    return _return_if_grad_req(out, grad_req)
+def gcrs2itrs(xgcrs, jd, grad_req=False):
+    out = fkt.translations.kgcrs2itrs(xgcrs, jd)
+    return _return_if_grad_req(out, grad_req)
+def scrs2pa(xscrs, jd, grad_req=False):
+    out = fkt.translations.kscrs2pa(xscrs, jd)
+    return _return_if_grad_req(out, grad_req)
+def scrs2mer(xscrs, jd, grad_req=False):
+    out = fkt.translations.kscrs2mer(xscrs, jd)
+    return _return_if_grad_req(out, grad_req)
+def mer2scrs(xmer, jd, grad_req=False):
+    out = fkt.translations.kmer2scrs(xmer, jd)
+    return _return_if_grad_req(out, grad_req)
+def scrs2gcrs(xscrs, jd, DistUnit, VelUnit):
+    return fkt.translations.kscrs2gcrs(xscrs, jd, DistUnit, VelUnit)
+def gcrs2scrs(xgcrs, jd, DistUnit, VelUnit):
+    return fkt.translations.kgcrs2scrs(xgcrs, jd, DistUnit, VelUnit)
+def hcrs2gcrs(xhcrs, jd, DistUnit, VelUnit):
+    return fkt.translations.khcrs2gcrs(xhcrs, jd, DistUnit, VelUnit)
+def gcrs2hcrs(xgcrs, jd, DistUnit, VelUnit):
+    return fkt.translations.kgcrs2hcrs(xgcrs, jd, DistUnit, VelUnit)
+def scrs2sors(xscrs, jd, grad_req=False):
+    out = fkt.translations.kscrs2sors(xscrs, jd)
+    return _return_if_grad_req(out, grad_req)
+def sors2scrs(xsors, jd, grad_req=False):
+    out = fkt.translations.ksors2scrs(xsors, jd)
+    return _return_if_grad_req(out, grad_req)
+def ine2rot(xine, t, t0):
+    return fkt.translations.kine2rot(xine, t, t0)
+def rot2ine(xrot, t, t0):
+    return fkt.translations.krot2ine(xrot, t, t0)
+def ine2rotEph(xine, jd, first_body, secondary_body, DistUnit, VelUnit):
+    return fkt.translations.kine2roteph(xine, jd, first_body, secondary_body, DistUnit, VelUnit)
+def rot2ineEph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit):
+    return fkt.translations.krot2ineeph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit)
 
+# Units and constants.
 def units(*args):
     units_info = {}
     if len(args) == 1:
@@ -21,8 +100,6 @@ def units(*args):
     else:
         raise Exception('Wrong number of arguments in units.')
     return units_info
-
-
 def astro_const():
     uni_const = {}
     star = {'Sun': {}}
@@ -103,55 +180,39 @@ def astro_const():
 
     return uni_const, star, planet, moon, small_body
 
-
+# Equations of motion.
 def r2bp(t, s):
     return fkt.equationsmodule.kr2bp(t, s)
-
-
 def cr3bp_fb(t, s, mu, stm_req):
     fkt.equationsmodule.massparameter = mu
     fkt.equationsmodule.stm_required = stm_req
     return fkt.equationsmodule.cr3bp_fb(t, s)
-
-
 def cr3bp_sb(t, s, mu, stm_req):
     fkt.equationsmodule.massparameter = mu
     fkt.equationsmodule.stm_required = stm_req
     return fkt.equationsmodule.cr3bp_sb(t, s)
-
-
 def nbp_rv_earth(t, s, stm_req, sources, data, units_data):
     _set_nbp_parameters(stm_req, sources, data, units_data)
     return fkt.equationsmodule.knbp_rv_earth(t, s)
-
-
 def nbp_rv_moon(t, s, stm_req, sources, data, units_data):
     _set_nbp_parameters(stm_req, sources, data, units_data)
     return fkt.equationsmodule.knbp_rv_moon(t, s)
-
-
 def nbp_rvm_earth(t, s, stm_req, sources, data, units_data):
     pass
     # _set_nbp_parameters(stm_req, sources, data, units_data)
     # return fkt.equationsmodule.knbp_rvm_earth(t, s)
-
-
 def nbp_rvm_moon(t, s, stm_req, sources, data, units_data):
     pass
     # _set_nbp_parameters(stm_req, sources, data, units_data)
     # return fkt.equationsmodule.knbp_rvm_moon(t, s)
-
-
 def nbp_ee_earth(t, s, stm_req, sources, data, units_data):
     _set_nbp_parameters(stm_req, sources, data, units_data)
     return fkt.equationsmodule.knbp_ee_earth(t, s)
-
-
 def nbp_ee_moon(t, s, stm_req, sources, data, units_data):
     _set_nbp_parameters(stm_req, sources, data, units_data)
     return fkt.equationsmodule.knbp_ee_moon(t, s)
 
-
+# Auxilary protected methods.
 def _set_nbp_parameters(stm_req, sources, data, units_data):
     fkt.equationsmodule.stm_required = stm_req
 
@@ -182,3 +243,8 @@ def _set_nbp_parameters(stm_req, sources, data, units_data):
     fkt.equationsmodule.rsun = units_data['RSun']
     fkt.equationsmodule.rearth = units_data['REarth']
     fkt.equationsmodule.rmoon = units_data['RMoon']
+def _return_if_grad_req(out, grad_req):
+    if grad_req:
+        return out
+    else:
+        return out[0]
