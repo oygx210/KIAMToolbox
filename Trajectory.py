@@ -165,7 +165,7 @@ class Trajectory:
             raise Exception('Unknown variable transformaton.')
 
     # System transformations.
-    def itrs2gcrs(self, system1, system2):
+    def system_transform(self, system1, system2):
         if system1 == 'itrs' and system2 == 'gcrs':
             if self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm')
