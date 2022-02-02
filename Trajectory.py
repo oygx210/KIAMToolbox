@@ -63,7 +63,22 @@ class Trajectory:
             for i in range(self.states.shape[1]):
                 self.states[0:6, i] = kiam.ee2rv(self.states[0:6, i], 1.0)
             self.vars = 'rv'
-
+        elif vars1 == 'rv' and vars2 == 'oe':  # mu = 1.0
+            if self.units_name != 'earth' and self.units_name != 'moon':
+                raise Exception('Wrong units: rv2oe suggests earth or moon, mu = 1.0.')
+            elif self.vars != 'rv' and self.vars != 'rvm':
+                raise Exception('Vars should be rv or rvm.')
+            for i in range(self.states.shape[1]):
+                self.states[0:6, i] = kiam.rv2oe(self.states[0:6, i], 1.0)
+            self.vars = 'oe'
+        elif vars1 == 'oe' and vars2 == 'rv':  # mu = 1.0
+            if self.units_name != 'earth' and self.units_name != 'moon':
+                raise Exception('Wrong units: oe2rv suggests earth or moon, mu = 1.0.')
+            elif self.vars != 'oe' and self.vars != 'oem':
+                raise Exception('Vars should be oe or oem.')
+            for i in range(self.states.shape[1]):
+                self.states[0:6, i] = kiam.oe2rv(self.states[0:6, i], 1.0)
+            self.vars = 'rv'
 
     # Units transformations and settings.
     def set_earth_units(self):
