@@ -325,8 +325,101 @@ class Trajectory:
                     self.states[6:42, i] = np.reshape(phi_scrs, (36, 1))
             self.system = 'scrs'
 
-
     # Units transformations and settings.
+    def units_transform(self, units1, units2):
+        if units1 == 'dim' and units2 == 'earth':
+            if self.units_name != 'dim':
+                raise Exception('Units should be dim.')
+            if self.vars in ['rv', 'rvm', 'rv_stm']:
+                self.set_earth_units()
+                self.undim_rv()
+            elif self.vars in ['ee', 'eem', 'ee_stm']:
+                self.set_earth_units()
+                self.undim_ee()
+            elif self.vars in ['oe', 'oem', 'oe_stm']:
+                self.set_earth_units()
+                self.undim_oe()
+            else:
+                raise Exception('Unknown vars.')
+            self.units_name = 'earth'
+        elif units1 == 'dim' and units2 == 'moon':
+            if self.units_name != 'dim':
+                raise Exception('Units should be dim.')
+            if self.vars in ['rv', 'rvm', 'rv_stm']:
+                self.set_moon_units()
+                self.undim_rv()
+            elif self.vars in ['ee', 'eem', 'ee_stm']:
+                self.set_moon_units()
+                self.undim_ee()
+            elif self.vars in ['oe', 'oem', 'oe_stm']:
+                self.set_moon_units()
+                self.undim_oe()
+            else:
+                raise Exception('Unknown vars.')
+            self.units_name = 'moon'
+        elif units1 == 'dim' and units2 == 'earth_moon':
+            if self.units_name != 'dim':
+                raise Exception('Units should be dim.')
+            if self.vars in ['rv', 'rvm', 'rv_stm']:
+                self.set_earth_moon_units()
+                self.undim_rv()
+            elif self.vars in ['ee', 'eem', 'ee_stm']:
+                self.set_earth_moon_units()
+                self.undim_ee()
+            elif self.vars in ['oe', 'oem', 'oe_stm']:
+                self.set_earth_moon_units()
+                self.undim_oe()
+            else:
+                raise Exception('Unknown vars.')
+            self.units_name = 'earth_moon'
+        elif units1 == 'dim' and units2 == 'sun_earth':
+            if self.units_name != 'dim':
+                raise Exception('Units should be dim.')
+            if self.vars in ['rv', 'rvm', 'rv_stm']:
+                self.set_sun_earth_units()
+                self.undim_rv()
+            elif self.vars in ['ee', 'eem', 'ee_stm']:
+                self.set_sun_earth_units()
+                self.undim_ee()
+            elif self.vars in ['oe', 'oem', 'oe_stm']:
+                self.set_sun_earth_units()
+                self.undim_oe()
+            else:
+                raise Exception('Unknown vars.')
+            self.units_name = 'sun_earth'
+        elif units2 == 'dim':
+            if units1 != self.units_name:
+                raise Exception(f'Not {units1} units.')
+            if self.vars in ['rv', 'rvm', 'rv_stm']:
+                self.dim_rv()
+            elif self.vars in ['ee', 'eem', 'ee_stm']:
+                self.dim_ee()
+            elif self.vars in ['oe', 'oem', 'oe_stm']:
+                self.dim_oe()
+            else:
+                raise Exception('Unknown vars.')
+            self.set_dim_units()
+            self.units_name = 'dim'
+    def undim_rv(self):
+        self.times = self.times/self.units['TimeUnit']
+        self.states[0:3, :] = self.states[0:3, :]/self.units['DistUnit']
+        self.states[3:6, :] = self.states[3:6, :]/self.units['VelUnit']
+    def dim_rv(self):
+        self.times = self.times*self.units['TimeUnit']
+        self.states[0:3, :] = self.states[0:3, :]*self.units['DistUnit']
+        self.states[3:6, :] = self.states[3:6, :]*self.units['VelUnit']
+    def undim_ee(self):
+        self.times = self.times/self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :]*self.units['VelUnit']
+    def dim_ee(self):
+        self.times = self.times*self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :]/self.units['VelUnit']
+    def undim_oe(self):
+        self.times = self.times/self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :]/self.units['DistUnit']
+    def dim_oe(self):
+        self.times = self.times*self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :]*self.units['DistUnit']
     def set_earth_units(self):
         ku = kiam.units('Earth')
         self.units['mu'] = 1.0
