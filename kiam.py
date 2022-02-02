@@ -2,6 +2,14 @@ import FKIAMToolbox as fkt
 import jdcal
 import datetime
 import math
+import numpy as np
+
+# General mathematics.
+def dotinvAB(A, B):
+    return np.linalg.solve(A, B)
+def dotAinvB(A, B):
+    C = np.linalg.solve(B.T, A.T)
+    return C.T
 
 # Translations.
 def jd2time(jd):

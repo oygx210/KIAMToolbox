@@ -79,6 +79,88 @@ class Trajectory:
             for i in range(self.states.shape[1]):
                 self.states[0:6, i] = kiam.oe2rv(self.states[0:6, i], 1.0)
             self.vars = 'rv'
+        elif vars1 == 'rvm' and vars2 == 'eem':
+            self.vars_transform('rv', 'ee')
+            self.vars = 'eem'
+        elif vars1 == 'eem' and vars2 == 'rvm':
+            self.vars_transform('ee', 'rv')
+            self.vars = 'rvm'
+        elif vars1 == 'rvm' and vars2 == 'oem':
+            self.vars_transform('rv', 'oe')
+            self.vars = 'oem'
+        elif vars1 == 'oem' and vars2 == 'rvm':
+            self.vars_transform('oe', 'rv')
+            self.vars = 'rvm'
+        elif vars1 == 'rv_stm' and vars2 == 'rv':
+            np.delete(self.states, [i for i in range(6, 42)], 0)
+            self.vars = 'rv'
+        elif vars1 == 'oe_stm' and vars2 == 'oe':
+            np.delete(self.states, [i for i in range(6, 42)], 0)
+            self.vars = 'oe'
+        elif vars1 == 'ee_stm' and vars2 == 'ee':
+            np.delete(self.states, [i for i in range(6, 42)], 0)
+            self.vars = 'ee'
+        elif vars1 == 'rvm' and vars2 == 'rv':
+            np.delete(self.states, 6, 0)
+            self.vars = 'rv'
+        elif vars1 == 'oem' and vars2 == 'oe':
+            np.delete(self.states, 6, 0)
+            self.vars = 'oe'
+        elif vars1 == 'eem' and vars2 == 'ee':
+            np.delete(self.states, 6, 0)
+            self.vars = 'ee'
+        elif vars1 == 'rv_stm' and vars2 == 'oe_stm':
+            if self.units_name != 'earth' and self.units_name != 'moon':
+                raise Exception('Wrong units: rv_stm2oe_stm suggests earth or moon, mu = 1.0.')
+            elif self.vars != 'rv_stm':
+                raise Exception('Vars should be rv_stm.')
+            _, doe0 = kiam.rv2oe(self.states[0:6, 0], 1.0, True)
+            for i in range(self.states.shape[1]):
+                oe, doe = kiam.rv2oe(self.states[0:6, i], 1.0, True)
+                self.states[0:6, i] = oe
+                phi_rv = np.reshape(self.states[6:42, i], (6, 6))
+                phi_oe = kiam.dotAinvB(np.matmul(doe, phi_rv), doe0)
+                self.states[6:42, i] = np.reshape(phi_oe, (36, 1))
+            self.vars = 'oe_stm'
+        elif vars1 == 'oe_stm' and vars2 == 'rv_stm':
+            if self.units_name != 'earth' and self.units_name != 'moon':
+                raise Exception('Wrong units: oe_stm2rv_stm suggests earth or moon, mu = 1.0.')
+            elif self.vars != 'oe_stm':
+                raise Exception('Vars should be oe_stm.')
+            _, drv0 = kiam.oe2rv(self.states[0:6, 0], 1.0, True)
+            for i in range(self.states.shape[1]):
+                rv, drv = kiam.oe2rv(self.states[0:6, i], 1.0, True)
+                self.states[0:6, i] = rv
+                phi_oe = np.reshape(self.states[6:42, i], (6, 6))
+                phi_rv = kiam.dotAinvB(np.matmul(drv, phi_oe), drv0)
+                self.states[6:42, i] = np.reshape(phi_rv, (36, 1))
+            self.vars = 'rv_stm'
+        elif vars1 == 'rv_stm' and vars2 == 'ee_stm':
+            if self.units_name != 'earth' and self.units_name != 'moon':
+                raise Exception('Wrong units: rv_stm2ee_stm suggests earth or moon, mu = 1.0.')
+            elif self.vars != 'rv_stm':
+                raise Exception('Vars should be rv_stm.')
+            _, dee0 = kiam.rv2ee(self.states[0:6, 0], 1.0, True)
+            for i in range(self.states.shape[1]):
+                ee, dee = kiam.rv2ee(self.states[0:6, i], 1.0, True)
+                self.states[0:6, i] = ee
+                phi_rv = np.reshape(self.states[6:42, i], (6, 6))
+                phi_ee = kiam.dotAinvB(np.matmul(dee, phi_rv), dee0)
+                self.states[6:42, i] = np.reshape(phi_ee, (36, 1))
+            self.vars = 'ee_stm'
+        elif vars1 == 'ee_stm' and vars2 == 'rv_stm':
+            if self.units_name != 'earth' and self.units_name != 'moon':
+                raise Exception('Wrong units: ee_stm2rv_stm suggests earth or moon, mu = 1.0.')
+            elif self.vars != 'ee_stm':
+                raise Exception('Vars should be ee_stm.')
+            _, drv0 = kiam.ee2rv(self.states[0:6, 0], 1.0, True)
+            for i in range(self.states.shape[1]):
+                rv, drv = kiam.ee2rv(self.states[0:6, i], 1.0, True)
+                self.states[0:6, i] = rv
+                phi_ee = np.reshape(self.states[6:42, i], (6, 6))
+                phi_rv = kiam.dotAinvB(np.matmul(drv, phi_ee), drv0)
+                self.states[6:42, i] = np.reshape(phi_rv, (36, 1))
+            self.vars = 'rv_stm'
 
     # Units transformations and settings.
     def set_earth_units(self):
