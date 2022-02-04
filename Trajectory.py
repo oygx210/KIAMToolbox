@@ -1,6 +1,7 @@
 import kiam
 import Model
 import numpy as np
+import networkx as nx
 
 class Trajectory:
 
@@ -30,6 +31,9 @@ class Trajectory:
         self.units = {}
         self.parts = []
         self.model = []
+        self.vars_graph = []
+        self.systems_graph = []
+        self.units_graph = []
 
         if units_name == 'earth':
             self.set_earth_units()
@@ -46,6 +50,35 @@ class Trajectory:
         self.model = Model.Model(variables, model_type, primary, sources_cell)
 
     # Variables transformations.
+    def allocate_vars_graph(self):
+
+        self.vars_graph = nx.DiGraph()
+
+        self.vars_graph.add_edge('rv', 'ee')
+        self.vars_graph.add_edge('ee', 'rv')
+
+        self.vars_graph.add_edge('rv', 'oe')
+        self.vars_graph.add_edge('oe', 'rv')
+
+        self.vars_graph.add_edge('rvm', 'eem')
+        self.vars_graph.add_edge('eem', 'rvm')
+
+        self.vars_graph.add_edge('rvm', 'oem')
+        self.vars_graph.add_edge('oem', 'rvm')
+
+        self.vars_graph.add_edge('rv_stm', 'rv')
+        self.vars_graph.add_edge('oe_stm', 'oe')
+        self.vars_graph.add_edge('ee_stm', 'ee')
+
+        self.vars_graph.add_edge('rvm', 'rv')
+        self.vars_graph.add_edge('oem', 'oe')
+        self.vars_graph.add_edge('eem', 'ee')
+
+        self.vars_graph.add_edge('rv_stm', 'oe_stm')
+        self.vars_graph.add_edge('oe_stm', 'rv_stm')
+
+        self.vars_graph.add_edge('rv_stm', 'ee_stm')
+        self.vars_graph.add_edge('ee_stm', 'rv_stm')
     def vars_transform(self, vars1, vars2):
         if vars1 == 'rv' and vars2 == 'ee':  # mu = 1.0
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -165,6 +198,18 @@ class Trajectory:
             raise Exception('Unknown variable transformaton.')
 
     # System transformations.
+    def allocate_systems_graph(self):
+
+        self.systems_graph = nx.Graph()
+        self.systems_graph.add_edge('itrs', 'gcrs')
+        self.systems_graph.add_edge('gcrs', 'gsrf_em')
+        self.systems_graph.add_edge('gcrs', 'gsrf_se')
+        self.systems_graph.add_edge('scrs', 'ssrf_em')
+        self.systems_graph.add_edge('gcrs', 'scrs')
+        self.systems_graph.add_edge('scrs', 'mer')
+        self.systems_graph.add_edge('gcrs', 'hcrs')
+        self.systems_graph.add_edge('hcrs', 'hsrf_se')
+        self.systems_graph.add_edge('scrs', 'sors')
     def system_transform(self, system1, system2):
         if system1 == 'itrs' and system2 == 'gcrs':
             if self.vars != 'rv' and self.vars != 'rvm':
@@ -326,6 +371,13 @@ class Trajectory:
             self.system = 'scrs'
 
     # Units transformations and settings.
+    def allocate_units_graph(self):
+
+        self.units_graph = nx.Graph()
+        self.units_graph.add_edge('dim', 'earth')
+        self.units_graph.add_edge('dim', 'moon')
+        self.units_graph.add_edge('dim', 'earth_moon')
+        self.units_graph.add_edge('dim', 'sun_earth')
     def units_transform(self, units1, units2):
         if units1 == 'dim' and units2 == 'earth':
             if self.units_name != 'dim':
