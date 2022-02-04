@@ -7,8 +7,6 @@ class Trajectory:
 
     def __init__(self, initial_state, initial_time, initial_jd, variables, system, units_name):
 
-        self.vars = variables
-
         if variables not in ['rv', 'rvm', 'rv_stm', 'ee', 'eem', 'oe', 'oem']:
             raise Exception('Unknown variables.')
 
@@ -21,6 +19,11 @@ class Trajectory:
         if units_name not in ['earth', 'moon', 'dim', 'earth_moon', 'sun_earth']:
             raise Exception('Unknown units_name.')
 
+        initial_state = np.array(initial_state, dtype='float64')
+        initial_time = np.array(initial_time, dtype='float64')
+        initial_jd = np.array(initial_jd, dtype='float64')
+
+        self.vars = variables
         self.states = np.reshape(initial_state, (-1, 1))
         self.times = np.reshape(initial_time, (1,))
         self.system = system
@@ -31,9 +34,13 @@ class Trajectory:
         self.units = {}
         self.parts = []
         self.model = []
-        self.vars_graph = []
-        self.systems_graph = []
-        self.units_graph = []
+        self.vars_graph = nx.DiGraph()
+        self.systems_graph = nx.Graph()
+        self.units_graph = nx.Graph()
+
+        self.allocate_vars_graph()
+        self.allocate_systems_graph()
+        self.allocate_units_graph()
 
         if units_name == 'earth':
             self.set_earth_units()
@@ -48,11 +55,33 @@ class Trajectory:
 
     def set_model(self, variables, model_type, primary, sources_cell):
         self.model = Model.Model(variables, model_type, primary, sources_cell)
+    def change_vars(self, new_vars):
+        if self.vars == new_vars:
+            return
+        if new_vars not in self.vars_graph.nodes:
+            raise Exception('Unknown new_vars.')
+        p = nx.shortest_path(self.vars_graph, self.vars, new_vars)
+        for i in range(len(p)-1):
+            self.vars_transform(p[i], p[i+1])
+    def change_system(self, new_system):
+        if self.system == new_system:
+            return
+        if new_system not in self.systems_graph.nodes:
+            raise Exception('Unknown new_system.')
+        p = nx.shortest_path(self.systems_graph, self.system, new_system)
+        for i in range(len(p)-1):
+            self.system_transform(p[i], p[i+1])
+    def change_units(self, new_units):
+        if self.units_name == new_units:
+            return
+        if new_units not in self.units_graph.nodes:
+            raise Exception('Unknown new_units.')
+        p = nx.shortest_path(self.units_graph, self.units_name, new_units)
+        for i in range(len(p)-1):
+            self.units_transform(p[i], p[i+1])
 
     # Variables transformations.
     def allocate_vars_graph(self):
-
-        self.vars_graph = nx.DiGraph()
 
         self.vars_graph.add_edge('rv', 'ee')
         self.vars_graph.add_edge('ee', 'rv')
@@ -199,8 +228,6 @@ class Trajectory:
 
     # System transformations.
     def allocate_systems_graph(self):
-
-        self.systems_graph = nx.Graph()
         self.systems_graph.add_edge('itrs', 'gcrs')
         self.systems_graph.add_edge('gcrs', 'gsrf_em')
         self.systems_graph.add_edge('gcrs', 'gsrf_se')
@@ -372,8 +399,6 @@ class Trajectory:
 
     # Units transformations and settings.
     def allocate_units_graph(self):
-
-        self.units_graph = nx.Graph()
         self.units_graph.add_edge('dim', 'earth')
         self.units_graph.add_edge('dim', 'moon')
         self.units_graph.add_edge('dim', 'earth_moon')
