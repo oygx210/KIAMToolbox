@@ -340,7 +340,7 @@ module OdeToolbox
         end function
         
         ! The Adams variable-step variable-order method, maximum 13 order
-        function ode113(fcn,tspan,y0,options) result(sol)
+        function ode113_old(fcn,tspan,y0,options) result(sol)
         
             implicit none
 
@@ -688,8 +688,413 @@ module OdeToolbox
                 sol%Y(:,2) = yout
             end if
 
-        end function ode113
+        end function ode113_old
+        function ode113(fcn, tspan, y0, options) result(sol)
+        
+            use BaseMeansToolbox
+        
+            implicit none
 
+            interface
+                function fcn(t,y) result(dydt)
+                    use MathAndProgConstants
+                    real(dp),               intent(in)   :: t
+                    real(dp), dimension(:), intent(in)   :: y
+                    real(dp), dimension(size(y))         :: dydt
+                end function fcn
+            end interface
+            
+            ! Input and output variables
+            real(dp)         :: tspan(:)
+            real(dp)         :: y0(:)
+            type(OdeOptions) :: options
+            type(OdeSol)     :: sol
+            
+            ! real(8) variables
+            real(dp) :: t0, tf, hmax, hmin, absh, h, hlast, t, tlast, gstar(13), rh, invwt(size(y0)), temp1, temp2, atol, rtol, threshold, err
+            real(dp) :: phi(size(y0),14), psi(12), alpha(12), beta(12), sig(13), g(13), temp3, erk, erkm1, erkm2, reduce, erkp1, temp4(1)
+            real(dp), dimension(size(y0)) :: f0, y, yp, yout, p, phikp1
+            real(dp), allocatable :: v(:), w(:)
+            real(dp) :: tout
+            
+            ! integer variables
+            integer :: neq, maxk, two(13), k, ns, klast, failed, i, iq, j, knew, kold, chunk, nfailed
+            integer :: next
+            integer, allocatable :: Kb(:)
+            integer :: ntspan, nout
+            
+            ! logical variables
+            logical phase1, done
+            
+            neq = size(y0)
+            ntspan = size(tspan)
+            nout = 1
+            next = 2
+            
+            t0 = tspan(1)
+            tf = tspan(ntspan)
+            
+            allocate(sol.T(ntspan))
+            allocate(sol.Y(neq, ntspan))
+            sol.T = 0.0D0
+            sol.Y = 0.0D0
+            
+            sol.T(1)   = t0
+            sol.Y(:,1) = y0
+            
+            f0 = fcn(t0,y0)
+            
+            atol = options.AbsTol
+            rtol = options.RelTol
+            threshold = atol / rtol
+            
+            hmax = 0.1D0*(tf-t0)
+            
+            t = t0
+            y = y0
+            yp = f0
+            yout = y
+            
+            ! Initialize method parameters
+            maxk = 12
+            two = [ 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192 ]
+            gstar = [ 0.500000D0,  0.083300D0, 0.041700D0, 0.026400D0, &
+                      0.018800D0,  0.014300D0, 0.011400D0, 0.009360D0, &
+                      0.007890D0,  0.006790D0, 0.005920D0, 0.005240D0, 0.004680D0 ]
+        
+            hmin = 16.0D0*epsilon(t)
+            absh = min(hmax, tf-t0)
+            rh = norminf(yp / max(abs(y),threshold)) / (0.250D0 * sqrt(rtol))
+            if (absh * rh > 1.0D0) then
+	            absh = 1.0D0 / rh
+            end if
+            absh = max(absh, hmin)
+            
+            ! Initialize
+            k = 1
+            allocate(Kb(1))
+            Kb(1) = 1
+            phi = zeros(neq,14)
+            phi(:,1) = yp
+            psi = 0.0D0
+            alpha = 0.0D0
+            beta = 0.0D0
+            sig = 0.0D0
+            sig(1) = 1.0D0
+            allocate(w(1))
+            allocate(v(1))
+            g = 0.0D0
+            g(1) = 1.0D0
+            g(2) = 0.5D0
+            
+            ns    = 0
+            nfailed = 0
+            hlast = 0.0D0
+            klast = 0
+            phase1 = .true.
+            
+            ! The main loop
+            done = .false.
+            do while (.not. done)
+                
+                hmin = 16.0D0*epsilon(t)
+                absh = min(hmax, max(hmin, absh))
+                h = absh
+                
+                ! Stretch the step if within 10% of tf-t
+                if (1.1D0*absh >= abs(tf - t)) then
+                    h = tf - t
+                    absh = abs(h)
+                    done = .true.
+                end if
+                
+                ! Loop for advancing one step
+                failed = 0
+                invwt = 1.0D0 / max(abs(y),threshold)
+                
+                do while (.TRUE.)
+
+                    if (h .ne. hlast) then
+                        ns = 0
+                    end if
+                    
+                    if (ns .le. klast) then
+                        ns = ns + 1
+                    end if
+                
+                    if (k .ge. ns) then
+                        beta(ns) = 1.0D0
+                        alpha(ns) = 1.0D0 / ns
+                        temp1 = h * ns
+                        sig(ns+1) = 1.0D0
+                        do i = ns+1,k
+                            temp2 = psi(i-1)
+                            psi(i-1) = temp1
+                            temp1 = temp2 + h
+                            beta(i) = beta(i-1) * psi(i-1) / temp2
+                            alpha(i) = h / temp1
+                            sig(i+1) = i * alpha(i) * sig(i)
+                        end do
+                        psi(k) = temp1
+
+                        ! Compute coefficients g
+                        if (ns .eq. 1) then
+                            v = 1.0D0 / (Kb * (Kb + 1.0D0))
+                            w = v
+                        else
+                            ! If order was raised, update diagonal part of v
+                            if (k > klast) then
+                                temp4(1) = 1.0D0 / (k * (k+1.0D0))
+                                v = [v, temp4]
+                                do j = 1,ns-2
+                                    v(k-j) = v(k-j) - alpha(j+1) * v(k-j+1);
+                                end do
+                            end if
+                            ! Update v and set w
+                            do iq = 1,k+1-ns
+                                v(iq) = v(iq) - alpha(ns) * v(iq+1)
+                                w(iq) = v(iq)
+                            end do
+                            g(ns+1) = w(1)
+                        end if
+
+                        ! Compute g in the work vector w
+                        do i = ns+2,k+1
+                            do iq = 1,k+2-i
+                                w(iq) = w(iq) - alpha(i-1) * w(iq+1)
+                            end do
+                            g(i) = w(1)
+                        end do
+                    end if 
+
+                    ! Change phi to phi star
+                    do i = ns+1,k
+                        do j = 1,neq
+                            phi(j,i) = phi(j,i) * beta(i)
+                        end do
+                    end do
+
+                    ! Predict solution and differences.
+                    phi(:,k+2) = phi(:,k+1)
+                    phi(:,k+1) = 0.0D0
+                    p = 0.0D0
+                    do i = k,1,-1
+                        p = p + g(i) * phi(:,i)
+                        phi(:,i) = phi(:,i) + phi(:,i+1)
+                    end do
+    
+                    p = y + h * p
+                    tlast = t
+                    t = tlast + h
+                    if (done) then
+                        t = tf
+                    end if
+
+                    yp = fcn(t,p)
+
+                    ! Estimate errors at orders k, k-1, k-2.
+                    phikp1 = yp - phi(:,1)
+    
+                    temp3 = norminf(phikp1 * invwt)
+                    err = absh * (g(k) - g(k+1)) * temp3;
+                    erk = absh * sig(k+1) * gstar(k) * temp3;
+                    if (k .ge. 2) then
+                        erkm1 = absh * sig(k) * gstar(k-1) * norminf((phi(:,k)+phikp1) * invwt)
+                    else
+                        erkm1 = 0.0D0
+                    end if
+                    if (k .ge. 3) then
+                        erkm2 = absh * sig(k-1) * gstar(k-2) * norminf((phi(:,k-1)+phikp1) * invwt)
+                    else
+                        erkm2 = 0.0D0
+                    end if
+    
+                    ! Test if order should be lowered
+                    knew = k;
+                    if ((k .eq. 2) .and. (erkm1 .le. 0.50D0*erk)) then
+                        knew = k - 1
+                    end if
+                    if ((k > 2) .and. (max(erkm1,erkm2) .le. erk)) then
+                        knew = k - 1
+                    end if
+   
+                    ! Test if step successful
+                    if (err > rtol) then     
+                        
+                        nfailed = nfailed + 1
+                        
+                        if (absh .le. hmin) then
+                            write(*,*) "ODE113: Unable to meet tolerance"
+                            return
+                        end if
+      
+                        ! Restore t, phi, and psi
+                        phase1 = .false.
+                        t = tlast
+                        do i = 1,k
+                            phi(:,i) = (phi(:,i) - phi(:,i+1)) / beta(i)
+                        end do
+                        do i = 2,k
+                            psi(i-1) = psi(i) - h
+                        end do
+
+                        failed = failed + 1
+                        reduce = 0.50D0
+                        if (failed .eq. 3) then
+                            knew = 1
+                        elseif (failed > 3) then
+                            reduce = min(0.5D0, sqrt(0.5D0*rtol/erk))
+                        end if
+                        absh = max(reduce * absh, hmin)
+                        h = absh
+                        k = knew
+                        Kb = ColonOperator(1,k,1)
+                        done = .false.
+                    else ! Successful step
+                        exit
+                    end if
+                end do
+                
+                klast = k
+                hlast = h
+
+                ! Correct and evaluate
+                y = p + h * g(k+1) * phikp1
+                yp = fcn(t,y)
+  
+                ! Update differences for next step
+                phi(:,k+1) = yp - phi(:,1)
+                phi(:,k+2) = phi(:,k+1) - phi(:,k+2)
+                do i = 1,k
+                    phi(:,i) = phi(:,i) + phi(:,k+1)
+                end do
+
+                if ((knew .eq. k-1) .OR. (k .eq. maxk)) then
+                    phase1 = .false.
+                end if
+
+                ! Select a new order.
+                kold = k
+                if (phase1) then             ! Always raise the order in phase1
+                    k = k + 1
+                elseif (knew .eq. k-1) then  ! Already decided to lower the order
+                    k = k - 1
+                    erk = erkm1
+                elseif (k+1 <= ns) then          ! Estimate error at higher order
+                    erkp1 = absh * gstar(k+1) * norminf(phi(:,k+2) * invwt)
+                    if (k .eq. 1) then
+                        if (erkp1 < 0.50D0*erk) then
+                            k = k + 1
+                            erk = erkp1
+                        end if
+                    else
+                        if (erkm1 .le. min(erk,erkp1)) then
+                            k = k - 1
+                            erk = erkm1
+                        elseif ((k < maxk) .and. (erkp1 < erk)) then
+                            k = k + 1
+                            erk = erkp1
+                        end if
+                    end if
+                end if
+                if (k .ne. kold) then
+                    Kb = ColonOperator(1,k,1)
+                end if
+    
+                yout = y
+                
+                if (ntspan > 2) then
+                    do while (next <= ntspan)
+                        if (t - tspan(next) < 0) then
+                            exit
+                        end if
+                        nout = nout + 1
+                        tout = tspan(next)
+                        if (tout == t) then
+                            yout = y
+                        else
+                            call ntrp113([tspan(next)], t, y, klast, phi, psi, yout)
+                        end if
+                        sol.T(nout) = tout
+                        sol.Y(:, nout) = yout
+                        next = next + 1
+                    end do
+                end if
+  
+                if (done) then
+                    exit
+                end if
+  
+                ! Select a new step size.
+                if (phase1) then
+                    absh = 2.00D0 * absh
+                elseif (0.50D0*rtol .GE. erk*two(k+1)) then
+                    absh = 2.00D0 * absh    
+                elseif (0.50D0*rtol < erk) then
+                    reduce = (0.50D0 * rtol / erk)**(1.00D0 / (k+1.00D0))
+                    absh = absh * max(0.50D0, min(0.90D0, reduce))
+                end if
+                
+            end do ! while ~done
+            
+            deallocate(Kb)
+            deallocate(v)
+            deallocate(w)
+            
+            if (ntspan == 2) then
+                sol.T(2) = t
+                sol.Y(:,2) = yout
+            end if
+
+        end function ode113
+        
+        subroutine ntrp113(tinterp, tnew, ynew, klast, phi, psi, yinterp)
+        
+            use LinearAlgebraInterfaces
+        
+            implicit none
+        
+            real(dp), intent(in) :: tinterp(:)
+            real(dp), intent(in) :: tnew, ynew(:)
+            integer, intent(in) :: klast
+            real(dp), intent(in) :: phi(:,:)
+            real(dp), intent(in) :: psi(:)
+            real(dp), intent(out) :: yinterp(size(ynew,1), size(tinterp))
+            integer :: ki, i, j, k
+            real(dp) :: hinterp(size(tinterp)), hi
+            real(dp) :: w(13), g(13), rho(13), term
+            real(dp) :: gamma, eta, one_del_one_thirteen_vec(13)
+            
+            ki = klast + 1
+            do i = 1, 13
+                one_del_one_thirteen_vec(i) = 1 / i
+            end do
+            hinterp = tinterp - tnew            
+
+            do k = 1, size(tinterp)
+                hi = hinterp(k)
+                w = one_del_one_thirteen_vec
+                g = 0.0D0
+                rho = 0.0D0
+                g(1) = 1.0D0
+                rho(1) = 1.0D0
+                term = 0.0D0
+                do j = 2, ki
+                    gamma = (hi + term) / psi(j-1)
+                    eta = hi / psi(j-1)
+                    do i = 1, ki+1-j
+                        w(i) = gamma * w(i) - eta * w(i+1)
+                    end do
+                    g(j) = w(1)
+                    rho(j) = gamma * rho(j-1)
+                    term = psi(j-1)
+                end do
+                yinterp(:, k) = ynew + hi * dotmv(phi(:, 1:ki), g(1:ki))
+            end do
+            
+        end subroutine ntrp113
+        
+        
         ! The Dormand-Prince 8(7) method, 8th order
         function ode87(fcn,tspan,y0,options) result(sol)
         

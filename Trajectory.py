@@ -55,6 +55,32 @@ class Trajectory:
 
     def set_model(self, variables, model_type, primary, sources_cell):
         self.model = Model.Model(variables, model_type, primary, sources_cell)
+
+    def propagate(self, tof):
+
+        self.change_units(self.model.units['name'])
+        self.change_vars(self.model.vars)
+        self.change_system(self.model.system)
+
+        if self.vars in ['rv_stm', 'ee_stm', 'oe_stm']:
+            stm = True
+        else:
+            stm = False
+
+        T, X = kiam.propagate(self.model.primary, self.times[-1], self.times[-1] + tof,
+                               self.states[0:, -1], self.model.sources, self.model.data, stm, self.vars)
+
+        if len(self.parts) == 0:
+            self.parts = [0, len(T)]
+        else:
+            self.parts.append(self.parts[-1] + len(T))
+
+        self.jds = np.append(self.jds[0:-1], self.jds[-1] + (T - self.times[-1]) * self.units['TimeUnit'])
+        self.times = np.append(self.times[0:-1], T)
+        self.states = np.append(self.states[:, 0:-1], X, axis=1)
+        self.finalDate = kiam.jd2time(self.jds[-1])
+
+
     def change_vars(self, new_vars):
         if self.vars == new_vars:
             return

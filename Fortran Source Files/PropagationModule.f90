@@ -9,19 +9,19 @@ module PropagationModule
     contains
     
         ! Opened for F2PY wrapping.
-        subroutine PropagateTrajectory(central_body, t0, tf, x0, sources, dat, stm, vars, neq, T, Y)
+        subroutine propagate_nbp(central_body, tspan, x0, sources, dat, stm, vars, neq, T, Y)
     
             implicit none
             
             character(*), intent(in) :: central_body, vars
-            real(dp), intent(in) :: t0, tf, x0(6)
+            real(dp), intent(in) :: tspan(:), x0(6)
             integer(2), intent(in) :: sources(14), stm
             real(dp), intent(in) :: dat(4)
             real(dp), allocatable :: s0(:)
             integer(2) :: neq
             type(OdeOptions) :: options
             type(OdeSol)     :: sol
-            real(dp), intent(out) :: T(2), Y(neq,2)
+            real(dp), intent(out) :: T(size(tspan)), Y(neq, size(tspan))
     
             if (central_body .eq. 'Moon') then
                 DistUnit = MoonDistUnit
@@ -64,30 +64,29 @@ module PropagationModule
             stm_required = stm
     
             ! State the propagation problem.
-    
             if (stm_required) then
-                s0 = (/ x0, reshape(eye(6),(/36,1/)) /)
+                s0 = [ x0, reshape(eye(6), [36,1]) ]
             else
                 s0 = x0
             end if
     
             if (central_body .eq. 'Moon') then
                 if (vars .eq. 'rv') then
-                    sol = ode113(knbp_rv_Moon,(/t0,tf/),s0,options)
+                    sol = ode113(knbp_rv_Moon, tspan, s0, options)
                 else
-                    sol = ode113(knbp_ee_Moon,(/t0,tf/),s0,options)
+                    sol = ode113(knbp_ee_Moon, tspan, s0, options)
                 end if
             else
                 if (vars .eq. 'rv') then
-                    sol = ode113(knbp_rv_Earth,(/t0,tf/),s0,options)
+                    sol = ode113(knbp_rv_Earth, tspan, s0, options)
                 else
-                    sol = ode113(knbp_ee_Earth,(/t0,tf/),s0,options)
+                    sol = ode113(knbp_ee_Earth, tspan, s0, options)
                 end if
             end if
     
             T = sol.T
             Y = sol.Y
     
-    end subroutine PropagateTrajectory
+    end subroutine propagate_nbp
     
 end module PropagationModule

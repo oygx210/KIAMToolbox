@@ -56,10 +56,10 @@ def hard_parameters():
     fkt.equationsmodule.mass = 100
 
 
-def propagate(central_body, t0, tf, x0, sources, dat, stm, variables):
+def propagate(central_body, tspan, x0, sources, dat, stm, variables):
     neq = 42 if stm else 6
-    t, y = fkt.propagationmodule.propagatetrajectory(central_body, t0, tf, x0, sources, dat,
-                                                     stm, variables, neq)
+    t, y = fkt.propagationmodule.propagate_nbp(central_body, tspan, x0, sources, dat,
+                                               stm, variables, neq)
     return t, y
 
 
@@ -358,6 +358,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2*np.pi
+        tspan = np.linspace(t0, tf, 100)
         x0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0, 0.0])
         sources = np.zeros((14,))
         dat = np.array([2459599.5, 1, 100, 1])
@@ -365,20 +366,20 @@ class Test(unittest.TestCase):
         variables = 'rv'
 
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([0.9999999999385388, 8.914497825258285e-10, 0.0,
                             -1.126415049339647e-09, 0.9999999998739921, 0.0])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print(finish - start)
 
         central_body = 'Moon'
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print('Done test_r2bp_rv_propagation.')
 
@@ -389,6 +390,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2 * np.pi
+        tspan = np.linspace(t0, tf, 100)
         sources = np.zeros((14,))
         dat = np.array([2459599.5, 1, 100, 1])
         stm = False
@@ -401,7 +403,7 @@ class Test(unittest.TestCase):
             for _ in range(100):
                 x0 = np.array([1.0 + np.random.random(), np.random.random(), np.random.random() / 2, np.random.random(),
                                np.random.random(), np.random.random()])
-                exec_list.append(executor.submit(propagate, central_body, t0, tf, x0, sources, dat, stm, variables))
+                exec_list.append(executor.submit(propagate, central_body, tspan, x0, sources, dat, stm, variables))
             for f in concurrent.futures.as_completed(exec_list):
                 results.append(f.result())
         finish = time.perf_counter()
@@ -418,6 +420,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2 * np.pi
+        tspan = np.linspace(t0, tf, 100)
         x0 = np.array([1.1, 0.0, 0.0, 0.0, 1/np.sqrt(1.1), 0.0])
         sources = np.ones((14,))
         dat = np.array([2459599.5, 1, 100, 50])
@@ -425,7 +428,7 @@ class Test(unittest.TestCase):
         variables = 'rv'
 
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([0.749822681194083, -0.8041840415461319, 1.2566453609966705e-05,
@@ -442,14 +445,14 @@ class Test(unittest.TestCase):
                             12.443190031932799, -12.83078722666189, 0.00031651446442243134,
                             -3.448747881772827e-06, -1.5622223294322682e-05, -0.8365123950984958,
                             5.76618456705178e-06, 7.414934437045781e-06, 0.6868897073412237])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print(finish - start)
 
         central_body = 'Moon'
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([0.738862083492851, -0.8145675540123463, -0.0002750051477969533,
@@ -466,8 +469,8 @@ class Test(unittest.TestCase):
                             12.238530353856325, -12.98751893822642, 0.0011581457241120689,
                             0.0022522122050754666, 0.001519094838514473, -0.8541531640723331,
                             -0.0015322671548077158, 0.0015012186974713165, 0.6726106337158614])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print('Done test_nbp_rv_propagation.')
 
@@ -478,6 +481,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2 * np.pi
+        tspan = np.linspace(t0, tf, 100)
         sources = np.ones((14,))
         dat = np.array([2459565.5, 2, 100, 50])
         stm = True
@@ -490,7 +494,7 @@ class Test(unittest.TestCase):
             for _ in range(5):
                 x0 = np.array([1.0 + np.random.random(), np.random.random(), np.random.random() / 2, np.random.random(),
                                np.random.random(), np.random.random()])
-                exec_list.append(executor.submit(propagate, central_body, t0, tf, x0, sources, dat, stm, variables))
+                exec_list.append(executor.submit(propagate, central_body, tspan, x0, sources, dat, stm, variables))
             for f in concurrent.futures.as_completed(exec_list):
                 results.append(f.result())
         finish = time.perf_counter()
@@ -503,11 +507,12 @@ class Test(unittest.TestCase):
         results = []
         exec_list = []
         tf = 2 * np.pi * 5
+        tspan = np.linspace(t0, tf, 100)
         start = time.perf_counter()
         with concurrent.futures.ProcessPoolExecutor() as executor:
             for _ in range(4):
                 x0 = np.array([1.5, 0.0, 0.0, 0.0, 1/np.sqrt(1.5), 0.0])
-                exec_list.append(executor.submit(propagate, central_body, t0, tf, x0, sources, dat, stm, variables))
+                exec_list.append(executor.submit(propagate, central_body, tspan, x0, sources, dat, stm, variables))
             for f in concurrent.futures.as_completed(exec_list):
                 results.append(f.result())
         finish = time.perf_counter()
@@ -524,6 +529,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2 * np.pi
+        tspan = np.linspace(t0, tf, 100)
         x0 = np.array([1.1, 0.0, 0.0, 0.0, 0.0, 0.0])
         sources = np.zeros((14,))
         dat = np.array([2459599.5, 1, 100, 1])
@@ -531,23 +537,23 @@ class Test(unittest.TestCase):
         variables = 'ee'
 
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([1.1, 0.0, 0.0, 0.0, 0.0, 4.720650118091347])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print(finish - start)
 
         central_body = 'Moon'
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([1.1, 0.0, 0.0, 0.0, 0.0, 4.720650118091347])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print('Done test_nbp_rv_propagation.')
 
@@ -558,6 +564,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2 * np.pi
+        tspan = np.linspace(t0, tf, 100)
         x0 = np.array([1.1, 0.0, 0.0, 0.0, 0.0, 0.0])
         sources = np.ones((14,))
         dat = np.array([2459599.5, 1, 100, 50])
@@ -565,25 +572,25 @@ class Test(unittest.TestCase):
         variables = 'ee'
 
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([1.0999999853526852, -0.0010879729465415912, -0.0011181220282100541,
                             -5.636709668616053e-06, -1.1281531034928926e-06, 4.733379050591152])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print(finish - start)
 
         central_body = 'Moon'
         start = time.perf_counter()
-        t, y = propagate(central_body, t0, tf, x0, sources, dat, stm, variables)
+        t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
         finish = time.perf_counter()
         t_true = 6.283185307179586
         yf_true = np.array([1.0999254910284573, -0.00022278776815805909, -0.00022095866374405247,
                             -3.913900279475531e-05, 0.00019286581630369965, 4.722842072934673])
-        self.assertEqual(t[1], t_true)
-        np.testing.assert_array_equal(y[:, 1], yf_true)
+        self.assertEqual(t[-1], t_true)
+        np.testing.assert_array_equal(y[:, -1], yf_true)
 
         print('Done test_nbp_rv_propagation.')
 
@@ -594,6 +601,7 @@ class Test(unittest.TestCase):
         central_body = 'Earth'
         t0 = 0.0
         tf = 2 * np.pi
+        tspan = np.linspace(t0, tf, 100)
         sources = np.ones((14,))
         dat = np.array([2459565.5, 2, 100, 50])
         stm = False
@@ -606,7 +614,7 @@ class Test(unittest.TestCase):
             for _ in range(5):
                 x0 = np.array([1.0 + np.random.random(), np.random.random()/2, np.random.random()/2, np.random.random()/2,
                                np.random.random()/2, np.random.random()])
-                exec_list.append(executor.submit(propagate, central_body, t0, tf, x0, sources, dat, stm, variables))
+                exec_list.append(executor.submit(propagate, central_body, tspan, x0, sources, dat, stm, variables))
             for f in concurrent.futures.as_completed(exec_list):
                 results.append(f.result())
         finish = time.perf_counter()
@@ -619,11 +627,12 @@ class Test(unittest.TestCase):
         results = []
         exec_list = []
         tf = 2 * np.pi * 5
+        tspan = np.linspace(t0, tf, 100)
         start = time.perf_counter()
         with concurrent.futures.ProcessPoolExecutor() as executor:
             for _ in range(4):
                 x0 = np.array([1.5, 0.0, 0.0, 0.0, 1/np.sqrt(1.5), 0.0])
-                exec_list.append(executor.submit(propagate, central_body, t0, tf, x0, sources, dat, stm, variables))
+                exec_list.append(executor.submit(propagate, central_body, tspan, x0, sources, dat, stm, variables))
             for f in concurrent.futures.as_completed(exec_list):
                 results.append(f.result())
         finish = time.perf_counter()
