@@ -56,7 +56,7 @@ class Trajectory:
     def set_model(self, variables, model_type, primary, sources_cell):
         self.model = Model.Model(variables, model_type, primary, sources_cell)
 
-    def propagate(self, tof):
+    def propagate(self, tof, npoints=2):
 
         self.change_units(self.model.units['name'])
         self.change_vars(self.model.vars)
@@ -67,8 +67,11 @@ class Trajectory:
         else:
             stm = False
 
-        T, X = kiam.propagate(self.model.primary, self.times[-1], self.times[-1] + tof,
-                               self.states[0:, -1], self.model.sources, self.model.data, stm, self.vars)
+        tspan = np.linspace(self.times[-1], self.times[-1] + tof, npoints)
+
+        if self.model.type == 'nbp':
+            T, X = kiam.propagate_nbp(self.model.primary, tspan, self.states[0:, -1],
+                                      self.model.sources, self.model.data, stm, self.vars)
 
         if len(self.parts) == 0:
             self.parts = [0, len(T)]

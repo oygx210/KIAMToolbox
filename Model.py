@@ -163,20 +163,21 @@ class Model:
 
     def set_sources(self):
 
-        self.sources['atm'] = False
-        self.sources['j2'] = False
-        self.sources['srp'] = False
+        # The order should correspond to that in the propogation module.
         self.sources['sun'] = False
         self.sources['mercury'] = False
         self.sources['venus'] = False
         self.sources['earth'] = False
+        self.sources['moon'] = False
         self.sources['mars'] = False
         self.sources['jupiter'] = False
         self.sources['saturn'] = False
         self.sources['uranus'] = False
         self.sources['neptune'] = False
-        self.sources['moon'] = False
+        self.sources['srp'] = False
         self.sources['cmplxmoon'] = False
+        self.sources['atm'] = False
+        self.sources['j2'] = False
 
         for source in self.data['sources_cell']:
             self.sources[source.lower()] = True

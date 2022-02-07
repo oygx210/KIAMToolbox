@@ -363,7 +363,6 @@ def _dat_dict_to_vec(dat_dict):
     i = 0
     for source in dat_dict:
         if source == 'sources_cell':
-            i = i + 1
             continue
         dat_vec[i] = dat_dict[source]
         i = i + 1
