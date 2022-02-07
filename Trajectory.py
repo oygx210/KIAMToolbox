@@ -2,6 +2,7 @@ import kiam
 import Model
 import numpy as np
 import networkx as nx
+import math
 
 class Trajectory:
 
@@ -52,10 +53,8 @@ class Trajectory:
             self.set_sun_earth_units()
         elif units_name == 'moon':
             self.set_moon_units()
-
     def set_model(self, variables, model_type, primary, sources_cell):
         self.model = Model.Model(variables, model_type, primary, sources_cell)
-
     def propagate(self, tof, npoints=2):
 
         self.change_units(self.model.units['name'])
@@ -82,7 +81,85 @@ class Trajectory:
         self.times = np.append(self.times[0:-1], T)
         self.states = np.append(self.states[:, 0:-1], X, axis=1)
         self.finalDate = kiam.jd2time(self.jds[-1])
-
+    def show(self, variables):
+        if self.units_name == 'dim':
+            tlabel = 'Time of flight, days'
+        else:
+            tlabel = 'Time of flight, nondimensional'
+        if self.vars in ['rv', 'rvm', 'rv_stm']:
+            if variables == 'xy':
+                if self.units_name == 'earth':
+                    xlabel = 'x, Earth radii'
+                    ylabel = 'y, Earth radii'
+                elif self.units_name == 'moon':
+                    xlabel = 'x, Moon radii'
+                    ylabel = 'y, Moon radii'
+                elif self.units_name == 'dim':
+                    xlabel = 'x, km'
+                    ylabel = 'y, km'
+                else:
+                    raise Exception('Unknown units.')
+                kiam.plotcol(self.states[0:2, :], LineWidth=2.0, xlabel=xlabel, ylabel=ylabel)
+            elif variables == '3d':
+                if self.units_name == 'earth':
+                    xlabel = 'x, Earth radii'
+                    ylabel = 'y, Earth radii'
+                    zlabel = 'z, Earth radii'
+                elif self.units_name == 'moon':
+                    xlabel = 'x, Moon radii'
+                    ylabel = 'y, Moon radii'
+                    zlabel = 'z, Moon radii'
+                elif self.units_name == 'dim':
+                    xlabel = 'x, km'
+                    ylabel = 'y, km'
+                    zlabel = 'y, km'
+                else:
+                    raise Exception('Unknown units.')
+                kiam.plotcol(self.states[0:3, :], LineWidth=2.0, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
+        elif self.vars in ['oe', 'oem', 'oe_stm']:
+            if variables == 'a':
+                if self.units_name == 'dim':
+                    ylabel = 'Semi-major axis, km'
+                elif self.units_name == 'earth':
+                    ylabel = 'Semi-major axis, Earth''s radii'
+                kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'e':
+                ylabel = 'Eccentricity'
+                kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'inc':
+                ylabel = 'Inclination, degrees'
+                kiam.plot(self.times, self.states[2, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'Om':
+                ylabel = 'Longitude of the ascending node, degrees'
+                kiam.plot(self.times, self.states[3, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'w':
+                ylabel = 'Argument of pericenter, degrees'
+                kiam.plot(self.times, self.states[4, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'th':
+                ylabel = 'True anomaly, degrees'
+                kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+        elif self.vars in ['ee', 'eem', 'ee_stm']:
+            if variables == 'h':
+                if self.units_name == 'dim':
+                    ylabel = 'h, (km/s)^{-1}'
+                elif self.units_name == 'earth':
+                    ylabel = 'h, nondimensional'
+                kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'ex':
+                ylabel = 'e_x'
+                kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'ey':
+                ylabel = 'e_y'
+                kiam.plot(self.times, self.states[2, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'ix':
+                ylabel = 'i_y'
+                kiam.plot(self.times, self.states[3, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'iy':
+                ylabel = 'i_y'
+                kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel)
+            elif variables == 'L':
+                ylabel = 'True longitude, degrees'
+                kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
 
     def change_vars(self, new_vars):
         if self.vars == new_vars:
