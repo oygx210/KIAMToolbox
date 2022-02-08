@@ -689,7 +689,7 @@ module OdeToolbox
             end if
 
         end function ode113_old
-        function ode113(fcn, tspan, y0, options) result(sol)
+        subroutine ode113(fcn, tspan, y0, options, solT, solY)
         
             use BaseMeansToolbox
         
@@ -708,7 +708,7 @@ module OdeToolbox
             real(dp)         :: tspan(:)
             real(dp)         :: y0(:)
             type(OdeOptions) :: options
-            type(OdeSol)     :: sol
+            real(dp)         :: solT(size(tspan)), solY(size(y0), size(tspan))
             
             ! real(8) variables
             real(dp) :: t0, tf, hmax, hmin, absh, h, hlast, t, tlast, gstar(13), rh, invwt(size(y0)), temp1, temp2, atol, rtol, threshold, err
@@ -734,13 +734,11 @@ module OdeToolbox
             t0 = tspan(1)
             tf = tspan(ntspan)
             
-            allocate(sol.T(ntspan))
-            allocate(sol.Y(neq, ntspan))
-            sol.T = 0.0D0
-            sol.Y = 0.0D0
+            solT = 0.0D0
+            solY = 0.0D0
             
-            sol.T(1)   = t0
-            sol.Y(:,1) = y0
+            solT(1)   = t0
+            solY(:,1) = y0
             
             f0 = fcn(t0,y0)
             
@@ -1015,8 +1013,8 @@ module OdeToolbox
                         else
                             call ntrp113([tspan(next)], t, y, klast, phi, psi, yout)
                         end if
-                        sol.T(nout) = tout
-                        sol.Y(:, nout) = yout
+                        solT(nout) = tout
+                        solY(:, nout) = yout
                         next = next + 1
                     end do
                 end if
@@ -1042,11 +1040,11 @@ module OdeToolbox
             deallocate(w)
             
             if (ntspan == 2) then
-                sol.T(2) = t
-                sol.Y(:,2) = yout
+                solT(2) = t
+                solY(:,2) = yout
             end if
 
-        end function ode113
+        end subroutine ode113
         
         subroutine ntrp113(tinterp, tnew, ynew, klast, phi, psi, yinterp)
         

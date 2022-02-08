@@ -72,21 +72,99 @@ module PropagationModule
     
             if (central_body .eq. 'Moon') then
                 if (vars .eq. 'rv') then
-                    sol = ode113(knbp_rv_Moon, tspan, s0, options)
+                    call ode113(knbp_rv_Moon, tspan, s0, options, T, Y)
                 else
-                    sol = ode113(knbp_ee_Moon, tspan, s0, options)
+                    call ode113(knbp_ee_Moon, tspan, s0, options, T, Y)
                 end if
             else
                 if (vars .eq. 'rv') then
-                    sol = ode113(knbp_rv_Earth, tspan, s0, options)
+                    call ode113(knbp_rv_Earth, tspan, s0, options, T, Y)
                 else
-                    sol = ode113(knbp_ee_Earth, tspan, s0, options)
+                    call ode113(knbp_ee_Earth, tspan, s0, options, T, Y)
                 end if
             end if
     
-            T = sol.T
-            Y = sol.Y
-    
-    end subroutine propagate_nbp
-    
+        end subroutine propagate_nbp
+        subroutine propagate_r2bp(tspan, x0, T, Y)
+        
+            implicit none
+            
+            real(dp), intent(in) :: tspan(:), x0(6)
+            real(dp), intent(out) :: T(size(tspan)), Y(6, size(tspan))
+            type(OdeOptions) :: options
+            
+            call ode113(kr2bp, tspan, x0, options, T, Y)
+
+        end subroutine propagate_r2bp
+        subroutine propagate_cr3bp(central_body, tspan, x0, mu, stm_required, neq, T, Y)
+        
+            implicit none
+            
+            character(*), intent(in) :: central_body
+            real(dp), intent(in) :: tspan(:), x0(6), mu
+            logical, intent(in) :: stm_required
+            integer, intent(in) :: neq
+            real(dp), intent(out) :: T(size(tspan)), Y(neq, size(tspan))
+            real(dp), allocatable :: s0(:)
+            type(OdeOptions) :: options
+            
+            MassParameter = mu
+            
+            ! State the propagation problem.
+            if (stm_required) then
+                s0 = [ x0, reshape(eye(6), [36,1]) ]
+            else
+                s0 = x0
+            end if
+            
+            if (central_body == 'First') then
+                call ode113(kcr3bp_fb, tspan, s0, options, T, Y)
+            else if (central_body == 'Secondary') then
+                call ode113(kcr3bp_sb, tspan, s0, options, T, Y)
+            else if (central_body == 'Center') then
+                call ode113(kcr3bp, tspan, s0, options, T, Y)
+            else
+                write(*,*) 'Unknown body.'
+                return
+            end if
+        
+        end subroutine propagate_cr3bp
+        subroutine propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm_required, neq, T, Y)
+        
+            implicit none
+            
+            character(*), intent(in) :: central_body
+            real(dp), intent(in) :: tspan(:), x0(6), mu, GM4b, a4b, theta0
+            logical, intent(in) :: stm_required
+            integer, intent(in) :: neq
+            real(dp), intent(out) :: T(size(tspan)), Y(neq, size(tspan))
+            real(dp), allocatable :: s0(:)
+            type(OdeOptions) :: options
+            
+            MassParameter = mu
+	        GravParameterFoursBody = GM4b
+	        DistanceToFoursBody = a4b
+	        InitialSynodicPhase = theta0
+            
+            ! State the propagation problem.
+            if (stm_required) then
+                s0 = [ x0, reshape(eye(6), [36,1]) ]
+            else
+                s0 = x0
+            end if
+            
+            if (central_body == 'First') then
+                call ode113(kbr4bp_fb, tspan, s0, options, T, Y)
+            else if (central_body == 'Secondary') then
+                call ode113(kbr4bp_sb, tspan, s0, options, T, Y)
+            else if (central_body == 'Center') then
+                call ode113(kbr4bp, tspan, s0, options, T, Y)
+            else
+                write(*,*) 'Unknown body.'
+                return
+            end if
+        
+        end subroutine propagate_br4bp
+        
+        
 end module PropagationModule

@@ -257,6 +257,17 @@ def propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variable
     t, y = fkt.propagationmodule.propagate_nbp(central_body, tspan, x0, sources_vec, dat_vec,
                                                stm, variables, neq)
     return t, y
+def propagate_r2bp(tspan, x0):
+    t, y = fkt.propagationmodule.propagate_r2bp(tspan, x0)
+    return t, y
+def propagate_cr3bp(central_body, tspan, x0, mu, stm):
+    neq = 42 if stm else 6
+    t, y = fkt.propagationmodule.propagate_cr3bp(central_body, tspan, x0, mu, stm, neq)
+    return t, y
+def propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm):
+    neq = 42 if stm else 6
+    t, y = fkt.propagationmodule.propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm, neq)
+    return t, y
 
 # Auxilary protected methods.
 def _set_nbp_parameters(stm_req, sources, data, units_data):

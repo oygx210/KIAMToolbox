@@ -590,7 +590,9 @@ module EquationsModule
 		
 			implicit none
 			
-			real(dp) :: t, x(6), dxdt(6)
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: x
+            real(dp), dimension(size(x))     :: dxdt
 			
 			dxdt(1:3) = x(4:6)
 			dxdt(4:6) = -x(1:3)/sqrt(sum(x(1:3)*x(1:3)))**3
@@ -601,8 +603,11 @@ module EquationsModule
 			use LinearAlgebraInterfaces
 		
 			implicit none
+            
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: s
+            real(dp), dimension(size(s))         :: dsdt
 			
-			real(dp) :: t, s(:), dsdt(size(s,1))
 			real(dp) :: mu1, mu2, r12, r22, r13, r23
 			real(dp) :: Ux, Uy, Uz, PHI(6,6), r15, r25
 			real(dp) :: Uxx, Uyy, Uzz, Uxy, Uxz, Uyz, dfdx(6,6)
@@ -662,8 +667,11 @@ module EquationsModule
 			use LinearAlgebraInterfaces
 		
 			implicit none
-			
-			real(dp) :: t, s(:), dsdt(size(s,1))
+            
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: s
+            real(dp), dimension(size(s))         :: dsdt
+
 			real(dp) :: mu1, mu2, r12, r22, r13, r23
 			real(dp) :: Ux, Uy, Uz, PHI(6,6), r15, r25
 			real(dp) :: Uxx, Uyy, Uzz, Uxy, Uxz, Uyz, dfdx(6,6)
@@ -723,8 +731,11 @@ module EquationsModule
 			use LinearAlgebraInterfaces
 		
 			implicit none
-			
-			real(dp) :: t, s(:), dsdt(size(s,1))
+            
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: s
+            real(dp), dimension(size(s))         :: dsdt
+
 			real(dp) :: mu1, mu2, r12, r22, r13, r23
 			real(dp) :: Ux, Uy, Uz, PHI(6,6), r15, r25
 			real(dp) :: Uxx, Uyy, Uzz, Uxy, Uxz, Uyz, dfdx(6,6)
@@ -833,12 +844,16 @@ module EquationsModule
 			use LinearAlgebraInterfaces
 			
 			implicit none
+            
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: PS
+            real(dp), dimension(size(PS))        :: dPSdt
 			
-			real(dp) :: t, PS(:), d1, d2, r1pow2, r2pow2, r1pow3, r2pow3
+			real(dp) :: d1, d2, r1pow2, r2pow2, r1pow3, r2pow3
 			real(dp) :: omega4b, theta, s, c, r4bpow2, r4bpow3, a4bpow2
 			real(dp) :: Ux, Uy, Uz, PHI(6,6), r1pow5, r2pow5, r4bpow5
 			real(dp) :: Uxx, Uyy, Uzz, Uxy, Uyz, Uxz, dfdx(6,6)
-			real(dp) :: dPSdt(size(PS,1)), dPHIdt(6,6)
+			real(dp) :: dPHIdt(6,6)
 
 			d1 = MassParameter
 			d2 = 1.0D0 - MassParameter
@@ -933,12 +948,16 @@ module EquationsModule
 			use LinearAlgebraInterfaces
 			
 			implicit none
+            
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: PS
+            real(dp), dimension(size(PS))        :: dPSdt
 			
-			real(dp) :: t, PS(:), d1, d2, r1pow2, r2pow2, r1pow3, r2pow3
+			real(dp) :: d1, d2, r1pow2, r2pow2, r1pow3, r2pow3
 			real(dp) :: omega4b, theta, s, c, r4bpow2, r4bpow3, a4bpow2
 			real(dp) :: Ux, Uy, Uz, PHI(6,6), r1pow5, r2pow5, r4bpow5
 			real(dp) :: Uxx, Uyy, Uzz, Uxy, Uyz, Uxz, dfdx(6,6)
-			real(dp) :: dPSdt(size(PS,1)), dPHIdt(6,6)
+			real(dp) :: dPHIdt(6,6)
 
 			d1 = MassParameter
 			d2 = 1.0D0 - MassParameter
@@ -1033,12 +1052,16 @@ module EquationsModule
 			use LinearAlgebraInterfaces
 			
 			implicit none
+            
+            real(dp),               intent(in)   :: t
+            real(dp), dimension(:), intent(in)   :: PS
+            real(dp), dimension(size(PS))        :: dPSdt
 			
-			real(dp) :: t, PS(:), d1, d2, r1pow2, r2pow2, r1pow3, r2pow3
+			real(dp) :: d1, d2, r1pow2, r2pow2, r1pow3, r2pow3
 			real(dp) :: omega4b, theta, s, c, r4bpow2, r4bpow3, a4bpow2
 			real(dp) :: Ux, Uy, Uz, PHI(6,6), r1pow5, r2pow5, r4bpow5
 			real(dp) :: Uxx, Uyy, Uzz, Uxy, Uyz, Uxz, dfdx(6,6)
-			real(dp) :: dPSdt(size(PS,1)), dPHIdt(6,6)
+			real(dp) :: dPHIdt(6,6)
 
 			d1 = MassParameter
 			d2 = 1.0D0 - MassParameter
