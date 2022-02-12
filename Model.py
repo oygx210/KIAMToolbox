@@ -41,12 +41,12 @@ class Model:
 
             if primary == 'earthmoon':
                 ku = kiam.units('Earth', 'Moon')
-                self.data['mass_parameter'] = ku.mu
+                self.data['mass_parameter'] = ku['mu']
                 self.set_units('earth_moon')
                 self.system = 'gsrf_em'
             elif primary == 'sunearth':
                 ku = kiam.units('Sun', 'Earth')
-                self.data.mass_parameter = ku.mu
+                self.data['mass_parameter'] = ku['mu']
                 self.set_units('sun_earth')
                 self.system = 'hsrf_se'
             else:
@@ -60,12 +60,12 @@ class Model:
 
             if primary == 'earthmoon':
                 ku = kiam.units('Earth', 'Moon')
-                self.data.mass_parameter = ku.mu
+                self.data['mass_parameter'] = ku['mu']
                 self.set_units('earth_moon')
                 self.system = 'ssrf_em'
             elif primary == 'sunearth':
                 ku = kiam.units('Sun', 'Earth')
-                self.data.mass_parameter = ku.mu  # Sun - (Earth + Moon)
+                self.data['mass_parameter'] = ku['mu']  # Sun - (Earth + Moon)
                 self.set_units('sun_earth')
                 self.system = 'gsrf_se'
             else:
@@ -74,7 +74,7 @@ class Model:
             self.eqs = lambda t, s: kiam.cr3bp_sb(t, s, ku.mu, False)
 
             self.info['ode_name'] = 'cr3bp_sb'
-            self.info['arguments'] = [self.data.mass_parameter, False]
+            self.info['arguments'] = [self.data['mass_parameter'], False]
 
         elif model_type == 'nbp':
 

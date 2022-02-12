@@ -1065,7 +1065,7 @@ module OdeToolbox
             
             ki = klast + 1
             do i = 1, 13
-                one_del_one_thirteen_vec(i) = 1 / i
+                one_del_one_thirteen_vec(i) = 1.0 / i
             end do
             hinterp = tinterp - tnew            
 

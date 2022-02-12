@@ -3,8 +3,12 @@ import jdcal
 import datetime
 import math
 import numpy as np
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+
+mpl.rcParams['figure.dpi'] = 150
+mpl.use('Qt5Agg')
 
 # General mathematics.
 def dotinvAB(A, B):
@@ -14,27 +18,41 @@ def dotAinvB(A, B):
     return C.T
 
 # Plotting functions
-def plot(x, y, LineWidth=2.0, xlabel='', ylabel=''):
+def plot(x, y, LineWidth=1.5, xlabel='', ylabel=''):
+    plt.figure(layout='tight')
     plt.plot(x, y, lw=LineWidth)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.grid(True)
+    grid2d()
+    plt.axis('equal')
     plt.show()
-def plotcol(x, LineWidth=2.0, xlabel='', ylabel='', zlabel=''):
+def plotcol(x, LineWidth=1.5, xlabel='', ylabel='', zlabel=''):
     if x.shape[0] == 2:
+        plt.figure(layout='tight')
         plt.plot(x[0, :], x[1, :], lw=LineWidth)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
-        plt.grid(True)
+        grid2d()
+        plt.axis('equal')
         plt.show()
     elif x.shape[0] == 3:
-        plt.figure()
-        ax = plt.axes(projection='3d')
-        ax.plot3D(x[0, :], x[1, :], x[2, :], lw=LineWidth)
+        fig = plt.figure(layout='tight')
+        ax = fig.add_subplot(projection='3d')
+        grid3d(ax)
+        ax.plot(x[0, :], x[1, :], x[2, :], lw=LineWidth)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_zlabel(zlabel)
         plt.show()
+def grid2d():
+    plt.grid(True, linestyle=":", alpha=0.5)
+def grid3d(ax):
+    ax.xaxis._axinfo["grid"]['linestyle'] = ":"
+    ax.yaxis._axinfo["grid"]['linestyle'] = ":"
+    ax.zaxis._axinfo["grid"]['linestyle'] = ":"
+    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+    ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
 
 # Translations.
 def jd2time(jd):
@@ -268,6 +286,11 @@ def propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm):
     neq = 42 if stm else 6
     t, y = fkt.propagationmodule.propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm, neq)
     return t, y
+
+# Visibility routines.
+def is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg):
+    vis_status, elev_deg, azim_deg = fkt.visibilitymodule.kisvisible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
+    return vis_status, elev_deg, azim_deg
 
 # Auxilary protected methods.
 def _set_nbp_parameters(stm_req, sources, data, units_data):

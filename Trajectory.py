@@ -3,10 +3,15 @@ import Model
 import numpy as np
 import networkx as nx
 import math
+import copy
 
 class Trajectory:
 
     def __init__(self, initial_state, initial_time, initial_jd, variables, system, units_name):
+
+        variables = variables.lower()
+        system = system.lower()
+        units_name = units_name.lower()
 
         if variables not in ['rv', 'rvm', 'rv_stm', 'ee', 'eem', 'oe', 'oem']:
             raise Exception('Unknown variables.')
@@ -71,6 +76,17 @@ class Trajectory:
         if self.model.type == 'nbp':
             T, X = kiam.propagate_nbp(self.model.primary, tspan, self.states[0:, -1],
                                       self.model.sources, self.model.data, stm, self.vars)
+        elif self.model.type == 'r2bp':
+            T, X = kiam.propagate_r2bp(tspan, self.states[0:, -1])
+        elif self.model.type == 'cr3bp_fb':
+            T, X = kiam.propagate_cr3bp(central_body='First', tspan=tspan, x0=self.states[0:, -1],
+                                        mu=self.model.data['mass_parameter'], stm=stm)
+        elif self.model.type == 'cr3bp_sb':
+            T, X = kiam.propagate_cr3bp(central_body='Secondary', tspan=tspan, x0=self.states[0:, -1],
+                                        mu=self.model.data['mass_parameter'], stm=stm)
+        else:
+            raise Exception('Unknown model_type.')
+
 
         if len(self.parts) == 0:
             self.parts = [0, len(T)]
@@ -89,33 +105,40 @@ class Trajectory:
         if self.vars in ['rv', 'rvm', 'rv_stm']:
             if variables == 'xy':
                 if self.units_name == 'earth':
-                    xlabel = 'x, Earth radii'
-                    ylabel = 'y, Earth radii'
+                    xlabel = '$x$, Earth radii'
+                    ylabel = '$y$, Earth radii'
                 elif self.units_name == 'moon':
-                    xlabel = 'x, Moon radii'
-                    ylabel = 'y, Moon radii'
+                    xlabel = '$x$, Moon radii'
+                    ylabel = '$y$, Moon radii'
                 elif self.units_name == 'dim':
-                    xlabel = 'x, km'
-                    ylabel = 'y, km'
+                    xlabel = '$x$, km'
+                    ylabel = '$y$, km'
+                elif self.units_name in ['earth_moon', 'sun_earth']:
+                    xlabel = '$x$, nondimensional'
+                    ylabel = '$y$, nondimensional'
                 else:
                     raise Exception('Unknown units.')
-                kiam.plotcol(self.states[0:2, :], LineWidth=2.0, xlabel=xlabel, ylabel=ylabel)
+                kiam.plotcol(self.states[0:2, :], xlabel=xlabel, ylabel=ylabel)
             elif variables == '3d':
                 if self.units_name == 'earth':
-                    xlabel = 'x, Earth radii'
-                    ylabel = 'y, Earth radii'
-                    zlabel = 'z, Earth radii'
+                    xlabel = '$x$, Earth radii'
+                    ylabel = '$y$, Earth radii'
+                    zlabel = '$z$, Earth radii'
                 elif self.units_name == 'moon':
-                    xlabel = 'x, Moon radii'
-                    ylabel = 'y, Moon radii'
-                    zlabel = 'z, Moon radii'
+                    xlabel = '$x$, Moon radii'
+                    ylabel = '$y$, Moon radii'
+                    zlabel = '$z$, Moon radii'
                 elif self.units_name == 'dim':
-                    xlabel = 'x, km'
-                    ylabel = 'y, km'
-                    zlabel = 'y, km'
+                    xlabel = '$x$, km'
+                    ylabel = '$y$, km'
+                    zlabel = '$y$, km'
+                elif self.units_name in ['earth_moon', 'sun_earth']:
+                    xlabel = '$x$, nondimensional'
+                    ylabel = '$y$, nondimensional'
+                    zlabel = '$z$, nondimensional'
                 else:
                     raise Exception('Unknown units.')
-                kiam.plotcol(self.states[0:3, :], LineWidth=2.0, xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
+                kiam.plotcol(self.states[0:3, :], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
         elif self.vars in ['oe', 'oem', 'oe_stm']:
             if variables == 'a':
                 if self.units_name == 'dim':
@@ -141,25 +164,27 @@ class Trajectory:
         elif self.vars in ['ee', 'eem', 'ee_stm']:
             if variables == 'h':
                 if self.units_name == 'dim':
-                    ylabel = 'h, (km/s)^{-1}'
+                    ylabel = r'$h$, (km/s)^{-1}'
                 elif self.units_name == 'earth':
-                    ylabel = 'h, nondimensional'
+                    ylabel = r'$h$, nondimensional'
                 kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ex':
-                ylabel = 'e_x'
+                ylabel = '$e_x$'
                 kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ey':
-                ylabel = 'e_y'
+                ylabel = '$e_y$'
                 kiam.plot(self.times, self.states[2, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ix':
-                ylabel = 'i_y'
+                ylabel = '$i_x$'
                 kiam.plot(self.times, self.states[3, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'iy':
-                ylabel = 'i_y'
+                ylabel = '$i_y$'
                 kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'L':
                 ylabel = 'True longitude, degrees'
                 kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+    def copy(self):
+        return copy.deepcopy(self)
 
     def change_vars(self, new_vars):
         if self.vars == new_vars:

@@ -17,6 +17,7 @@ file_8 = '".\\Fortran Source Files\\GravityMoonCoefficients50.f90" '
 file_9 = '".\\Fortran Source Files\\EquationsModule.f90" '
 file_10 = '".\\Fortran Source Files\\PropagationModule.f90" '
 file_11 = '".\\Fortran Source Files\\ConstantsAndUnits.f90" '
+file_12 = '".\\Fortran Source Files\\VisibilityModule.f90" '
 
 skip_1 = '"norm" "norminf" "zeros" "ones" "eye" "cross" "diff" "concol" "conrow" "colonoperator" "linspace" "double2logical" '
 skip_2 = '"dgemm" "xerbla" "lsame" "dgetrf" "dtrsm" "dgetf2" "dlaswp" "dger" "dgetrs" '
@@ -29,5 +30,5 @@ skip_8 = '"cmplx_moon" "kgravforce" "ksrpforce" "kintensity" "kgravitymoongradie
 
 os.system(f2py_exec_command +
           '-c ' + module_name + '--f90exec=' + f90compiler + compiler_libs + working_folder +
-          file_1 + file_2 + file_3 + file_4 + file_5 + file_6 + file_7 + file_8 + file_9 + file_10 + file_11 +
+          file_1 + file_2 + file_3 + file_4 + file_5 + file_6 + file_7 + file_8 + file_9 + file_10 + file_11 + file_12 +
           'skip: ' + skip_1 + skip_2 + skip_3 + skip_4 + skip_5 + skip_6 + skip_7 + skip_8 + ':')
