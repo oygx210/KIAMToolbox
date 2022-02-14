@@ -5,7 +5,7 @@ import math
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+import pickle
 
 mpl.rcParams['figure.dpi'] = 150
 mpl.use('Qt5Agg')
@@ -291,6 +291,23 @@ def propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm):
 def is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg):
     vis_status, elev_deg, azim_deg = fkt.visibilitymodule.kisvisible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
     return vis_status, elev_deg, azim_deg
+
+# Save and load routines.
+def save(variable, filename):
+    with open(filename, 'wb') as f:
+        pickle.dump(variable, f)
+def load(filename):
+    with open(filename, 'rb') as f:
+        return pickle.load(f)
+
+# Trofimov-Shirobokov model.
+def get_order(altitude_thousands_km, approx_level='soft'):
+    if approx_level == 'soft':
+        return (25.0 / altitude_thousands_km)**0.8
+    elif approx_level == 'hard':
+        return (40.0 / altitude_thousands_km)**0.8
+    else:
+        raise Exception('Unknown approx_level.')
 
 # Auxilary protected methods.
 def _set_nbp_parameters(stm_req, sources, data, units_data):
