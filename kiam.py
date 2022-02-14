@@ -303,9 +303,9 @@ def load(filename):
 # Trofimov-Shirobokov model.
 def get_order(altitude_thousands_km, approx_level='soft'):
     if approx_level == 'soft':
-        return (25.0 / altitude_thousands_km)**0.8
+        return np.floor((25.0 / altitude_thousands_km)**0.8)+1
     elif approx_level == 'hard':
-        return (40.0 / altitude_thousands_km)**0.8
+        return np.floor((40.0 / altitude_thousands_km)**0.8)+1
     else:
         raise Exception('Unknown approx_level.')
 
