@@ -337,10 +337,8 @@ def _sources_dict_to_vec(sources_dict):
     return sources_vec
 def _dat_dict_to_vec(dat_dict):
     dat_vec = np.zeros((4,))
-    i = 0
-    for source in dat_dict:
-        if source == 'sources_cell':
-            continue
-        dat_vec[i] = dat_dict[source]
-        i = i + 1
+    dat_vec[0] = dat_dict['jd_zero']
+    dat_vec[1] = dat_dict['area']
+    dat_vec[2] = dat_dict['mass']
+    dat_vec[3] = dat_dict['order']
     return dat_vec
