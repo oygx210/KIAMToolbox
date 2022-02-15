@@ -13,13 +13,16 @@ class Trajectory:
         system = system.lower()
         units_name = units_name.lower()
 
-        if variables not in ['rv', 'rvm', 'rv_stm', 'ee', 'eem', 'oe', 'oem']:
+        if variables not in ['rv', 'rvm', 'rv_stm', 'ee', 'eem', 'ee_stm', 'oe', 'oem', 'oe_stm']:
             raise Exception('Unknown variables.')
 
-        if variables in ['rv', 'rv_stm', 'ee', 'oe'] and len(initial_state) != 6:
+        if variables in ['rv', 'ee', 'oe'] and len(initial_state) != 6:
             raise Exception('Wrong number of variables.')
 
         if variables in ['rvm', 'eem', 'oem'] and len(initial_state) != 7:
+            raise Exception('Wrong number of variables.')
+
+        if variables in ['rv_stm', 'ee_stm', 'oe_stm'] and len(initial_state) != 42:
             raise Exception('Wrong number of variables.')
 
         if units_name not in ['earth', 'moon', 'dim', 'earth_moon', 'sun_earth']:
