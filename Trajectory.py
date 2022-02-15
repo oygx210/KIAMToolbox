@@ -513,7 +513,7 @@ class Trajectory:
                 for i in range(dxsors.shape[2]):
                     phi_scrs = np.reshape(self.states[6:42, i], (6, 6))
                     phi_sors = kiam.dotAinvB(np.matmul(dxsors[:, :, i], phi_scrs), dxsors[:, :, 0])
-                    self.states[6:42, i] = np.reshape(phi_sors, (36, 1))
+                    self.states[6:42, i] = np.reshape(phi_sors, (36,))
             self.system = 'sors'
         elif system1 == 'sors' and system2 == 'scrs':
             if self.vars != 'rv' and self.vars != 'rvm' and self.vars != 'rv_stm':
@@ -528,7 +528,7 @@ class Trajectory:
                 for i in range(dxscrs.shape[2]):
                     phi_sors = np.reshape(self.states[6:42, i], (6, 6))
                     phi_scrs = kiam.dotAinvB(np.matmul(dxscrs[:, :, i], phi_sors), dxscrs[:, :, 0])
-                    self.states[6:42, i] = np.reshape(phi_scrs, (36, 1))
+                    self.states[6:42, i] = np.reshape(phi_scrs, (36,))
             self.system = 'scrs'
 
     # Units transformations and settings.
