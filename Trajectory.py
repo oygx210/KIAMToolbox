@@ -316,7 +316,7 @@ class Trajectory:
                 self.states[0:6, i] = oe
                 phi_rv = np.reshape(self.states[6:42, i], (6, 6))
                 phi_oe = kiam.dotAinvB(np.matmul(doe, phi_rv), doe0)
-                self.states[6:42, i] = np.reshape(phi_oe, (36, 1))
+                self.states[6:42, i] = np.reshape(phi_oe, (36,))
             self.vars = 'oe_stm'
         elif vars1 == 'oe_stm' and vars2 == 'rv_stm':
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -329,7 +329,7 @@ class Trajectory:
                 self.states[0:6, i] = rv
                 phi_oe = np.reshape(self.states[6:42, i], (6, 6))
                 phi_rv = kiam.dotAinvB(np.matmul(drv, phi_oe), drv0)
-                self.states[6:42, i] = np.reshape(phi_rv, (36, 1))
+                self.states[6:42, i] = np.reshape(phi_rv, (36,))
             self.vars = 'rv_stm'
         elif vars1 == 'rv_stm' and vars2 == 'ee_stm':
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -342,7 +342,7 @@ class Trajectory:
                 self.states[0:6, i] = ee
                 phi_rv = np.reshape(self.states[6:42, i], (6, 6))
                 phi_ee = kiam.dotAinvB(np.matmul(dee, phi_rv), dee0)
-                self.states[6:42, i] = np.reshape(phi_ee, (36, 1))
+                self.states[6:42, i] = np.reshape(phi_ee, (36,))
             self.vars = 'ee_stm'
         elif vars1 == 'ee_stm' and vars2 == 'rv_stm':
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -355,7 +355,7 @@ class Trajectory:
                 self.states[0:6, i] = rv
                 phi_ee = np.reshape(self.states[6:42, i], (6, 6))
                 phi_rv = kiam.dotAinvB(np.matmul(drv, phi_ee), drv0)
-                self.states[6:42, i] = np.reshape(phi_rv, (36, 1))
+                self.states[6:42, i] = np.reshape(phi_rv, (36,))
             self.vars = 'rv_stm'
         else:
             raise Exception('Unknown variable transformaton.')
