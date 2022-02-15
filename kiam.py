@@ -268,10 +268,10 @@ def propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variable
     neq = 42 if stm else 6
     if variables == 'rv_stm':
         variables = 'rv'
-        x0 = x0[0:6, 0]
+        x0 = x0[0:6]
     elif variables == 'ee_stm':
         variables = 'ee'
-        x0 = x0[0:6, 0]
+        x0 = x0[0:6]
     else:
         raise Exception('Unknown variable.')
     sources_vec = _sources_dict_to_vec(sources_dict)
