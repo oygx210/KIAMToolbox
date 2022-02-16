@@ -314,7 +314,7 @@ class Trajectory:
             for i in range(self.states.shape[1]):
                 oe, doe = kiam.rv2oe(self.states[0:6, i], 1.0, True)
                 self.states[0:6, i] = oe
-                phi_rv = np.reshape(self.states[6:42, i], (6, 6))
+                phi_rv = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_oe = kiam.dotAinvB(np.matmul(doe, phi_rv), doe0)
                 self.states[6:42, i] = np.reshape(phi_oe, (36,))
             self.vars = 'oe_stm'
@@ -327,7 +327,7 @@ class Trajectory:
             for i in range(self.states.shape[1]):
                 rv, drv = kiam.oe2rv(self.states[0:6, i], 1.0, True)
                 self.states[0:6, i] = rv
-                phi_oe = np.reshape(self.states[6:42, i], (6, 6))
+                phi_oe = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_rv = kiam.dotAinvB(np.matmul(drv, phi_oe), drv0)
                 self.states[6:42, i] = np.reshape(phi_rv, (36,))
             self.vars = 'rv_stm'
@@ -340,7 +340,7 @@ class Trajectory:
             for i in range(self.states.shape[1]):
                 ee, dee = kiam.rv2ee(self.states[0:6, i], 1.0, True)
                 self.states[0:6, i] = ee
-                phi_rv = np.reshape(self.states[6:42, i], (6, 6))
+                phi_rv = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_ee = kiam.dotAinvB(np.matmul(dee, phi_rv), dee0)
                 self.states[6:42, i] = np.reshape(phi_ee, (36,))
             self.vars = 'ee_stm'
@@ -353,7 +353,7 @@ class Trajectory:
             for i in range(self.states.shape[1]):
                 rv, drv = kiam.ee2rv(self.states[0:6, i], 1.0, True)
                 self.states[0:6, i] = rv
-                phi_ee = np.reshape(self.states[6:42, i], (6, 6))
+                phi_ee = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_rv = kiam.dotAinvB(np.matmul(drv, phi_ee), drv0)
                 self.states[6:42, i] = np.reshape(phi_rv, (36,))
             self.vars = 'rv_stm'
@@ -511,7 +511,7 @@ class Trajectory:
                 xsors, dxsors = kiam.scrs2sors(self.states[0:6, :], self.jds, True)
                 self.states[0:6, :] = xsors
                 for i in range(dxsors.shape[2]):
-                    phi_scrs = np.reshape(self.states[6:42, i], (6, 6))
+                    phi_scrs = np.reshape(self.states[6:42, i], (6, 6)).T
                     phi_sors = kiam.dotAinvB(np.matmul(dxsors[:, :, i], phi_scrs), dxsors[:, :, 0])
                     self.states[6:42, i] = np.reshape(phi_sors, (36,))
             self.system = 'sors'
@@ -526,7 +526,7 @@ class Trajectory:
                 xscrs, dxscrs = kiam.sors2scrs(self.states[0:6, :], self.jds, True)
                 self.states[0:6, :] = xscrs
                 for i in range(dxscrs.shape[2]):
-                    phi_sors = np.reshape(self.states[6:42, i], (6, 6))
+                    phi_sors = np.reshape(self.states[6:42, i], (6, 6)).T
                     phi_scrs = kiam.dotAinvB(np.matmul(dxscrs[:, :, i], phi_sors), dxscrs[:, :, 0])
                     self.states[6:42, i] = np.reshape(phi_scrs, (36,))
             self.system = 'scrs'

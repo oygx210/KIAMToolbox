@@ -4,6 +4,10 @@ import numpy as np
 import concurrent.futures
 import time
 from scipy import misc
+from numpy import pi
+
+import Trajectory
+import kiam
 
 
 def default_parameters():
@@ -29,8 +33,6 @@ def default_parameters():
     fkt.equationsmodule.order = 50
     fkt.equationsmodule.area = 1
     fkt.equationsmodule.mass = 100
-
-
 def hard_parameters():
 
     fkt.equationsmodule.stm_required = 1
@@ -54,39 +56,33 @@ def hard_parameters():
     fkt.equationsmodule.order = 50
     fkt.equationsmodule.area = 1
     fkt.equationsmodule.mass = 100
-
-
 def propagate(central_body, tspan, x0, sources, dat, stm, variables):
     neq = 42 if stm else 6
     t, y = fkt.propagationmodule.propagate_nbp(central_body, tspan, x0, sources, dat,
                                                stm, variables, neq)
     return t, y
-
-
+def ylast(central_body, tspan, x0, sources, dat, stm, variables):
+    t, y = propagate(central_body, tspan, x0, sources, dat, stm, variables)
+    return y[0:6, -1]
 def rv2ee(rv, mu, grad_req):
     ee, _ = fkt.translations.krv2ee(rv, mu, grad_req)
     return ee
-
-
 def ee2rv(ee, mu, grad_req):
     rv, _ = fkt.translations.kee2rv(ee, mu, grad_req)
     return rv
-
-
 def rv2oe(rv, mu, grad_req):
-    oe, _ = fkt.translations.krv2oe(rv, mu, grad_req)
-    return oe
-
-
+    oe, doe = fkt.translations.krv2oe(rv, mu, grad_req)
+    if grad_req:
+        return oe, doe
+    else:
+        return oe
 def oe2rv(oe, mu, grad_req):
     rv, _ = fkt.translations.koe2rv(oe, mu, grad_req)
     return rv
-
-
 def derivative(func, x0, order):
     f0 = func(x0)
-    eps = 1.0e-5
-    dfdx = np.zeros((len(f0), len(x0)))
+    eps = 1.0e-6
+    dfdx = np.zeros((f0.size, len(x0)))
     for i in range(len(x0)):
         xp = x0.copy()
         xm = x0.copy()
@@ -114,6 +110,24 @@ def derivative(func, x0, order):
             fp2 = func(xp2)
             dfdx[:, i] = ((1/12)*fm2 - (2/3)*fm + (2/3)*fp - (1/12)*fp2)/h
     return dfdx
+def complex_function(x, grad_req):
+    t0 = 0.0
+    x0 = [1.0, 0.1, 1.0, 2.0, 1.0, -0.3]
+    jd0 = kiam.juliandate(2022, 2, 16, 0, 0, 0)
+    tr = Trajectory.Trajectory(np.append(x0, np.reshape(np.eye(6), (36,))), t0, jd0, 'oe_stm', 'gcrs', 'earth')
+    tr.set_model('rv_stm', 'nbp', 'earth', [])
+    tr.model.data['jd_zero'] = jd0
+    tr.model.data['area'] = 2.0
+    tr.model.data['mass'] = 100.0
+    tr.model.data['order'] = 50
+    tr.states[0, 0] = x[0]
+    tr.change_vars('rv_stm')
+    tr.propagate(2*pi, 2)
+    tr.change_vars('oe_stm')
+    if grad_req:
+        return tr.states[0, 1], tr.states[6, 1]
+    else:
+        return tr.states[0, 1]
 
 
 class Test(unittest.TestCase):
@@ -852,6 +866,60 @@ class Test(unittest.TestCase):
             xrot1 = fkt.translations.kine2rot(xine1, t, t0)
             np.testing.assert_allclose(xrot1, xrot0, rtol=rtol, atol=atol)
 
+    def test_stm(self):
+        central_body = 'earth'
+        tspan = [0.0, 5*2*pi]
+        tspan0 = [0.0, 2*pi]
+        x0 = [1.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+        sources = np.zeros((14,))
+        dat = np.array([2459599.5, 1, 100, 1])
+        stm = True
+        variables = 'rv'
+
+        func = lambda x: ylast(central_body, tspan, x, sources, dat, stm, variables)
+        _, y_true = propagate(central_body, tspan, x0, sources, dat, stm, variables)
+        STM_num = derivative(func, x0, 2)
+        STM_true = np.reshape(y_true[6:, -1], (6, 6)).T
+        ds = STM_num - STM_true
+        absds = np.abs(ds)
+        relds = absds / np.abs(STM_true)
+        maxabsds = np.max(absds)
+
+        func0 = lambda x: ylast(central_body, tspan0, x, sources, dat, stm, variables)
+        _, y_true0 = propagate(central_body, tspan0, x0, sources, dat, stm, variables)
+        STM_num0 = derivative(func0, x0, 2)
+        STM_true0 = np.reshape(y_true0[6:, -1], (6, 6)).T
+        ds0 = STM_num0 - STM_true0
+        absds0 = np.abs(ds0)
+        relds0 = absds0 / np.abs(STM_true0)
+        maxabsds0 = np.max(absds0)
+
+        dsm_num = np.max(np.abs(STM_num - STM_num0@STM_num0@STM_num0@STM_num0@STM_num0))
+        dsm_true = np.max(np.abs(STM_true - STM_true0@STM_true0@STM_true0@STM_true0@STM_true0))
+
+        pass
+
+    def test_grad_rv_oe(self):
+        rtol = 1e-8
+        atol = 1e-8
+        for _ in range(1000):
+            rv0 = np.random.randn(6)
+            h = np.linalg.norm(rv0[3:])**2 - 2/np.linalg.norm(rv0[0:3])
+            if h > 0:
+                continue
+            func = lambda x: rv2oe(x, 1.0, False)
+            doe_num = derivative(func, rv0, 2)
+            oe, doe_true = rv2oe(rv0, 1.0, True)
+            maxabs = np.max(np.abs(doe_num - doe_true))
+            np.testing.assert_allclose(doe_num, doe_true, rtol=rtol, atol=atol)
+
+    def test_complex_derivatives(self):
+        x0 = [2.0]
+        func = lambda x: complex_function(x, False)
+        dfdx_num = derivative(func, x0, 2)
+        _, dfdx_true = complex_function(x0, True)
+        da = np.max(np.abs(dfdx_num - dfdx_true))
+        print(da)
 
 if __name__ == '__main__':
     unittest.main()
