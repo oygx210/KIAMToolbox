@@ -272,8 +272,6 @@ def propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variable
     elif variables == 'ee_stm':
         variables = 'ee'
         x0 = x0[0:6]
-    else:
-        raise Exception('Unknown variable.')
     sources_vec = _sources_dict_to_vec(sources_dict)
     dat_vec = _dat_dict_to_vec(dat_dict)
     t, y = fkt.propagationmodule.propagate_nbp(central_body, tspan, x0, sources_vec, dat_vec,
