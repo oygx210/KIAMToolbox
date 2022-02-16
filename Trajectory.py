@@ -316,7 +316,7 @@ class Trajectory:
                 self.states[0:6, i] = oe
                 phi_rv = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_oe = kiam.dotAinvB(np.matmul(doe, phi_rv), doe0)
-                self.states[6:42, i] = np.reshape(phi_oe, (36,))
+                self.states[6:42, i] = np.reshape(phi_oe.T, (36,))
             self.vars = 'oe_stm'
         elif vars1 == 'oe_stm' and vars2 == 'rv_stm':
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -329,7 +329,7 @@ class Trajectory:
                 self.states[0:6, i] = rv
                 phi_oe = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_rv = kiam.dotAinvB(np.matmul(drv, phi_oe), drv0)
-                self.states[6:42, i] = np.reshape(phi_rv, (36,))
+                self.states[6:42, i] = np.reshape(phi_rv.T, (36,))
             self.vars = 'rv_stm'
         elif vars1 == 'rv_stm' and vars2 == 'ee_stm':
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -342,7 +342,7 @@ class Trajectory:
                 self.states[0:6, i] = ee
                 phi_rv = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_ee = kiam.dotAinvB(np.matmul(dee, phi_rv), dee0)
-                self.states[6:42, i] = np.reshape(phi_ee, (36,))
+                self.states[6:42, i] = np.reshape(phi_ee.T, (36,))
             self.vars = 'ee_stm'
         elif vars1 == 'ee_stm' and vars2 == 'rv_stm':
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -355,7 +355,7 @@ class Trajectory:
                 self.states[0:6, i] = rv
                 phi_ee = np.reshape(self.states[6:42, i], (6, 6)).T
                 phi_rv = kiam.dotAinvB(np.matmul(drv, phi_ee), drv0)
-                self.states[6:42, i] = np.reshape(phi_rv, (36,))
+                self.states[6:42, i] = np.reshape(phi_rv.T, (36,))
             self.vars = 'rv_stm'
         else:
             raise Exception('Unknown variable transformaton.')
@@ -513,7 +513,7 @@ class Trajectory:
                 for i in range(dxsors.shape[2]):
                     phi_scrs = np.reshape(self.states[6:42, i], (6, 6)).T
                     phi_sors = kiam.dotAinvB(np.matmul(dxsors[:, :, i], phi_scrs), dxsors[:, :, 0])
-                    self.states[6:42, i] = np.reshape(phi_sors, (36,))
+                    self.states[6:42, i] = np.reshape(phi_sors.T, (36,))
             self.system = 'sors'
         elif system1 == 'sors' and system2 == 'scrs':
             if self.vars != 'rv' and self.vars != 'rvm' and self.vars != 'rv_stm':
@@ -528,7 +528,7 @@ class Trajectory:
                 for i in range(dxscrs.shape[2]):
                     phi_sors = np.reshape(self.states[6:42, i], (6, 6)).T
                     phi_scrs = kiam.dotAinvB(np.matmul(dxscrs[:, :, i], phi_sors), dxscrs[:, :, 0])
-                    self.states[6:42, i] = np.reshape(phi_scrs, (36,))
+                    self.states[6:42, i] = np.reshape(phi_scrs.T, (36,))
             self.system = 'scrs'
 
     # Units transformations and settings.

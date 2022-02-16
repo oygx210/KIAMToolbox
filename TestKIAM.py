@@ -114,15 +114,17 @@ def complex_function(x, grad_req):
     t0 = 0.0
     x0 = [1.0, 0.1, 1.0, 2.0, 1.0, -0.3]
     jd0 = kiam.juliandate(2022, 2, 16, 0, 0, 0)
-    tr = Trajectory.Trajectory(np.append(x0, np.reshape(np.eye(6), (36,))), t0, jd0, 'oe_stm', 'gcrs', 'earth')
-    tr.set_model('rv_stm', 'nbp', 'earth', [])
+    tr = Trajectory.Trajectory(np.append(x0, np.reshape(np.eye(6), (36,))), t0, jd0, 'oe_stm', 'sors', 'moon')
+    tr.set_model('rv_stm', 'nbp', 'moon', [])
     tr.model.data['jd_zero'] = jd0
     tr.model.data['area'] = 2.0
     tr.model.data['mass'] = 100.0
     tr.model.data['order'] = 50
     tr.states[0, 0] = x[0]
     tr.change_vars('rv_stm')
+    tr.change_system('scrs')
     tr.propagate(2*pi, 2)
+    tr.change_system('sors')
     tr.change_vars('oe_stm')
     if grad_req:
         return tr.states[0, 1], tr.states[6, 1]
