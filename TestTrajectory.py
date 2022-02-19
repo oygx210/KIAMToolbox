@@ -1,6 +1,5 @@
 import kiam
 import Trajectory
-import Model
 import unittest
 import numpy as np
 from numpy import pi
@@ -37,12 +36,29 @@ class TestTrajectory(unittest.TestCase):
 
     def test_nbp(self):
 
-        t0 = 0.0
-        x0 = np.array([1.0, 0.0, 0.0, 0.0, 1.0 / np.sqrt(1.0), 0.0])
+        t0 = 0
+        x0 = np.array([1, 0, 0, 0, 1, 0])
         jd0 = kiam.juliandate(2022, 2, 2, 0, 0, 0)
         tr = Trajectory.Trajectory(x0, t0, jd0, 'rv', 'gcrs', 'earth')
-        tr.set_model('rv', 'nbp', 'earth', [])
+        tr.set_model('rv', 'nbp', 'earth', ['Sun', 'Moon'])
         tr.model.data['jd_zero'] = jd0
+        tr.model.data['area'] = 2.0
+        tr.model.data['mass'] = 100.0
+        tr.model.data['order'] = 50
+        tr.propagate(2 * pi, 1000)
+        tr.show('xy')
+
+    def test_nbp_stm(self):
+
+        t0 = 0.0
+        x0 = np.append(np.array([1, 0, 0, 0, 1, 0]), kiam.eyevec(6))
+        jd0 = kiam.juliandate(2022, 2, 2, 0, 0, 0)
+        tr = Trajectory.Trajectory(x0, t0, jd0, 'rv_stm', 'gcrs', 'earth')
+        tr.set_model('rv_stm', 'nbp', 'earth', ['Sun', 'Moon'])
+        tr.model.data['jd_zero'] = jd0
+        tr.model.data['area'] = 2.0
+        tr.model.data['mass'] = 100.0
+        tr.model.data['order'] = 50
         tr.propagate(2 * pi, 1000)
         tr.show('xy')
 

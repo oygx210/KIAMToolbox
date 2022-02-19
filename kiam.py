@@ -10,12 +10,17 @@ import pickle
 mpl.rcParams['figure.dpi'] = 150
 mpl.use('Qt5Agg')
 
-# General mathematics.
+# General mathematics and tools.
 def dotinvAB(A, B):
     return np.linalg.solve(A, B)
 def dotAinvB(A, B):
     C = np.linalg.solve(B.T, A.T)
     return C.T
+def eyevec(n):
+    return np.reshape(np.eye(n), (n**2,))
+def to_float(*args):
+    args_float = tuple(np.array(arg, dtype='float64') for arg in args)
+    return args_float
 
 # Plotting functions
 def plot(x, y, LineWidth=1.5, xlabel='', ylabel=''):
@@ -134,14 +139,14 @@ def rot2ineEph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit):
 def units(*args):
     units_info = {}
     if len(args) == 1:
-        output = fkt.constantsandunits.kunits_onebody(args[0])
+        output = fkt.constantsandunits.kunits_onebody(args[0].lower())
         units_info['GM'] = output[0]
         units_info['DistUnit'] = output[1]
         units_info['VelUnit'] = output[2]
         units_info['TimeUnit'] = output[3]
         units_info['AccUnit'] = output[4]
     elif len(args) == 2:
-        output = fkt.constantsandunits.kunits_twobody(args[0], args[1])
+        output = fkt.constantsandunits.kunits_twobody(args[0].lower(), args[1].lower())
         units_info['GM'] = output[0]
         units_info['mu'] = output[1]
         units_info['DistUnit'] = output[2]
@@ -265,29 +270,48 @@ def nbp_ee_moon(t, s, stm_req, sources, data, units_data):
 
 # Propagation routines.
 def propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variables):
+    tspan, x0 = to_float(tspan, x0)
     neq = 42 if stm else 6
     if variables == 'rv_stm':
         variables = 'rv'
-        x0 = x0[0:6]
     elif variables == 'ee_stm':
         variables = 'ee'
-        x0 = x0[0:6]
     sources_vec = _sources_dict_to_vec(sources_dict)
     dat_vec = _dat_dict_to_vec(dat_dict)
-    t, y = fkt.propagationmodule.propagate_nbp(central_body, tspan, x0, sources_vec, dat_vec,
+    t, y = fkt.propagationmodule.propagate_nbp(central_body.lower(), tspan, x0, sources_vec, dat_vec,
                                                stm, variables, neq)
     return t, y
 def propagate_r2bp(tspan, x0):
+    tspan, x0 = to_float(tspan, x0)
     t, y = fkt.propagationmodule.propagate_r2bp(tspan, x0)
     return t, y
 def propagate_cr3bp(central_body, tspan, x0, mu, stm):
+    tspan, x0, mu = to_float(tspan, x0, mu)
     neq = 42 if stm else 6
-    t, y = fkt.propagationmodule.propagate_cr3bp(central_body, tspan, x0, mu, stm, neq)
+    t, y = fkt.propagationmodule.propagate_cr3bp(central_body.lower(), tspan, x0, mu, stm, neq)
     return t, y
 def propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm):
+    tspan, x0, mu, GM4b, a4b, theta0 = to_float(tspan, x0, mu, GM4b, a4b, theta0)
     neq = 42 if stm else 6
-    t, y = fkt.propagationmodule.propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm, neq)
+    t, y = fkt.propagationmodule.propagate_br4bp(central_body.lower(), tspan, x0, mu, GM4b, a4b, theta0, stm, neq)
     return t, y
+def prepare_sources_dict():
+    sources = {}
+    sources['sun'] = False
+    sources['mercury'] = False
+    sources['venus'] = False
+    sources['earth'] = False
+    sources['moon'] = False
+    sources['mars'] = False
+    sources['jupiter'] = False
+    sources['saturn'] = False
+    sources['uranus'] = False
+    sources['neptune'] = False
+    sources['srp'] = False
+    sources['cmplxmoon'] = False
+    sources['atm'] = False
+    sources['j2'] = False
+    return sources
 
 # Visibility routines.
 def is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg):
@@ -349,10 +373,20 @@ def _return_if_grad_req(out, grad_req):
         return out[0]
 def _sources_dict_to_vec(sources_dict):
     sources_vec = np.zeros((len(sources_dict),))
-    i = 0
-    for source in sources_dict:
-        sources_vec[i] = int(sources_dict[source])
-        i = i + 1
+    sources_vec[0] = int(sources_dict['sun'])
+    sources_vec[1] = int(sources_dict['mercury'])
+    sources_vec[2] = int(sources_dict['venus'])
+    sources_vec[3] = int(sources_dict['earth'])
+    sources_vec[4] = int(sources_dict['moon'])
+    sources_vec[5] = int(sources_dict['mars'])
+    sources_vec[6] = int(sources_dict['jupiter'])
+    sources_vec[7] = int(sources_dict['saturn'])
+    sources_vec[8] = int(sources_dict['uranus'])
+    sources_vec[9] = int(sources_dict['neptune'])
+    sources_vec[10] = int(sources_dict['srp'])
+    sources_vec[11] = int(sources_dict['cmplxmoon'])
+    sources_vec[12] = int(sources_dict['atm'])
+    sources_vec[13] = int(sources_dict['j2'])
     return sources_vec
 def _dat_dict_to_vec(dat_dict):
     dat_vec = np.zeros((4,))

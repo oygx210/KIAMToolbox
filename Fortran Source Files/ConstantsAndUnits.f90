@@ -110,37 +110,37 @@ real(dp), parameter :: Pluto_SemimajorAxis = 39.48211675D0                    ! 
 			character(*), intent(in) :: PrimaryBody
 			real(dp), intent(out) :: GM, DistUnit, VelUnit, TimeUnit, AccUnit
 			
-			if (PrimaryBody .eq. 'Moon') then
+			if (PrimaryBody .eq. 'moon') then
 				GM = Moon_GM 
 				DistUnit = Moon_MeanRadius
-			else if (PrimaryBody .eq. 'Earth') then
+			else if (PrimaryBody .eq. 'earth') then
 				GM = Earth_GM 
 				DistUnit = Earth_MeanRadius
-			else if (PrimaryBody .eq. 'Sun') then
+			else if (PrimaryBody .eq. 'sun') then
 				GM = Sun_GM
 				DistUnit = Sun_MeanRadius
-			else if (PrimaryBody .eq. 'Mercury') then
+			else if (PrimaryBody .eq. 'mercury') then
 				GM = Mercury_GM
 				DistUnit = Mercury_MeanRadius
-			else if (PrimaryBody .eq. 'Venus') then
+			else if (PrimaryBody .eq. 'venus') then
 				GM = Venus_GM
 				DistUnit = Venus_MeanRadius
-			else if (PrimaryBody .eq. 'Mars') then
+			else if (PrimaryBody .eq. 'mars') then
 				GM = Mars_GM
 				DistUnit = Mars_MeanRadius
-			else if (PrimaryBody .eq. 'Jupiter') then
+			else if (PrimaryBody .eq. 'jupiter') then
 				GM = Jupiter_GM
 				DistUnit = Jupiter_MeanRadius
-			else if (PrimaryBody .eq. 'Saturn') then
+			else if (PrimaryBody .eq. 'saturn') then
 				GM = Saturn_GM
 				DistUnit = Saturn_MeanRadius
-			else if (PrimaryBody .eq. 'Uranus') then
+			else if (PrimaryBody .eq. 'uranus') then
 				GM = Uranus_GM
 				DistUnit = Uranus_MeanRadius
-			else if (PrimaryBody .eq. 'Neptune') then
+			else if (PrimaryBody .eq. 'neptune') then
 				GM = Neptune_GM
 				DistUnit = Neptune_MeanRadius
-			else if (PrimaryBody .eq. 'Pluto') then
+			else if (PrimaryBody .eq. 'pluto') then
 				GM = Pluto_GM
 				DistUnit = Pluto_MeanRadius
 			end if
@@ -159,27 +159,27 @@ real(dp), parameter :: Pluto_SemimajorAxis = 39.48211675D0                    ! 
 			real(dp), intent(out) :: GM, mu, DistUnit, VelUnit, TimeUnit, AccUnit
 			real(dp) :: GMPB, GMSB, SMASB
 			
-			if ((PrimaryBody .eq. 'Earth') .and. (SecondaryBody .eq. 'Moon')) then
+			if ((PrimaryBody .eq. 'earth') .and. (SecondaryBody .eq. 'moon')) then
 				GMPB = Earth_GM
 				GMSB = Moon_GM
 				SMASB = Moon_SemimajorAxis
-			else if ((PrimaryBody .eq. 'Sun') .and. (SecondaryBody .eq. 'Earth')) then
+			else if ((PrimaryBody .eq. 'sun') .and. (SecondaryBody .eq. 'earth')) then
 				GMPB = Sun_GM
 				GMSB = Earth_GM + Moon_GM
 				SMASB = Earth_SemimajorAxis
-			else if ((PrimaryBody .eq. 'Sun') .and. (SecondaryBody .eq. 'Venus')) then
+			else if ((PrimaryBody .eq. 'sun') .and. (SecondaryBody .eq. 'venus')) then
 				GMPB = Sun_GM
 				GMSB = Venus_GM
 				SMASB = Venus_SemimajorAxis
-			else if ((PrimaryBody .eq. 'Sun') .and. (SecondaryBody .eq. 'Mars')) then
+			else if ((PrimaryBody .eq. 'sun') .and. (SecondaryBody .eq. 'mars')) then
 				GMPB = Sun_GM
 				GMSB = Mars_GM
 				SMASB = Mars_SemimajorAxis
-			else if ((PrimaryBody .eq. 'Sun') .and. (SecondaryBody .eq. 'Jupiter')) then
+			else if ((PrimaryBody .eq. 'sun') .and. (SecondaryBody .eq. 'jupiter')) then
 				GMPB = Sun_GM
 				GMSB = Jupiter_GM
 				SMASB = Jupiter_SemimajorAxis
-			else if ((PrimaryBody .eq. 'Sun') .and. (SecondaryBody .eq. 'Saturn')) then
+			else if ((PrimaryBody .eq. 'sun') .and. (SecondaryBody .eq. 'saturn')) then
 				GMPB = Sun_GM
 				GMSB = Saturn_GM
 				SMASB = Saturn_SemimajorAxis

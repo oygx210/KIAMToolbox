@@ -28,9 +28,7 @@ class Trajectory:
         if units_name not in ['earth', 'moon', 'dim', 'earth_moon', 'sun_earth']:
             raise Exception('Unknown units_name.')
 
-        initial_state = np.array(initial_state, dtype='float64')
-        initial_time = np.array(initial_time, dtype='float64')
-        initial_jd = np.array(initial_jd, dtype='float64')
+        initial_state, initial_time, initial_jd = kiam.to_float(initial_state, initial_time, initial_jd)
 
         self.vars = variables
         self.states = np.reshape(initial_state, (-1, 1))

@@ -14,16 +14,15 @@ module PropagationModule
             implicit none
             
             character(*), intent(in) :: central_body, vars
-            real(dp), intent(in) :: tspan(:), x0(6)
+            real(dp), intent(in) :: tspan(:), x0(:)
             integer(2), intent(in) :: sources(14), stm
             real(dp), intent(in) :: dat(4)
-            real(dp), allocatable :: s0(:)
             integer(2) :: neq
             type(OdeOptions) :: options
             type(OdeSol)     :: sol
             real(dp), intent(out) :: T(size(tspan)), Y(neq, size(tspan))
-    
-            if (central_body .eq. 'Moon') then
+
+            if (central_body .eq. 'moon') then
                 DistUnit = MoonDistUnit
                 VelUnit = MoonVelUnit
                 TimeUnit = MoonTimeUnit
@@ -63,24 +62,17 @@ module PropagationModule
     
             stm_required = stm
     
-            ! State the propagation problem.
-            if (stm_required) then
-                s0 = [ x0, reshape(eye(6), [36,1]) ]
-            else
-                s0 = x0
-            end if
-    
-            if (central_body .eq. 'Moon') then
+            if (central_body .eq. 'moon') then
                 if (vars .eq. 'rv') then
-                    call ode113(knbp_rv_Moon, tspan, s0, options, T, Y)
+                    call ode113(knbp_rv_Moon, tspan, x0, options, T, Y)
                 else
-                    call ode113(knbp_ee_Moon, tspan, s0, options, T, Y)
+                    call ode113(knbp_ee_Moon, tspan, x0, options, T, Y)
                 end if
             else
                 if (vars .eq. 'rv') then
-                    call ode113(knbp_rv_Earth, tspan, s0, options, T, Y)
+                    call ode113(knbp_rv_Earth, tspan, x0, options, T, Y)
                 else
-                    call ode113(knbp_ee_Earth, tspan, s0, options, T, Y)
+                    call ode113(knbp_ee_Earth, tspan, x0, options, T, Y)
                 end if
             end if
     
@@ -96,69 +88,56 @@ module PropagationModule
             call ode113(kr2bp, tspan, x0, options, T, Y)
 
         end subroutine propagate_r2bp
-        subroutine propagate_cr3bp(central_body, tspan, x0, mu, stm_required, neq, T, Y)
+        subroutine propagate_cr3bp(central_body, tspan, x0, mu, stm, neq, T, Y)
         
             implicit none
             
             character(*), intent(in) :: central_body
-            real(dp), intent(in) :: tspan(:), x0(6), mu
-            logical, intent(in) :: stm_required
+            real(dp), intent(in) :: tspan(:), x0(:), mu
+            logical, intent(in) :: stm
             integer, intent(in) :: neq
             real(dp), intent(out) :: T(size(tspan)), Y(neq, size(tspan))
-            real(dp), allocatable :: s0(:)
             type(OdeOptions) :: options
             
             MassParameter = mu
+			stm_required = stm
             
-            ! State the propagation problem.
-            if (stm_required) then
-                s0 = [ x0, reshape(eye(6), [36,1]) ]
-            else
-                s0 = x0
-            end if
-            
-            if (central_body == 'First') then
-                call ode113(kcr3bp_fb, tspan, s0, options, T, Y)
-            else if (central_body == 'Secondary') then
-                call ode113(kcr3bp_sb, tspan, s0, options, T, Y)
-            else if (central_body == 'Center') then
-                call ode113(kcr3bp, tspan, s0, options, T, Y)
+            if (central_body == 'first') then
+                call ode113(kcr3bp_fb, tspan, x0, options, T, Y)
+            else if (central_body == 'secondary') then
+                call ode113(kcr3bp_sb, tspan, x0, options, T, Y)
+            else if (central_body == 'center') then
+                call ode113(kcr3bp, tspan, x0, options, T, Y)
             else
                 write(*,*) 'Unknown body.'
                 return
             end if
         
         end subroutine propagate_cr3bp
-        subroutine propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm_required, neq, T, Y)
+        subroutine propagate_br4bp(central_body, tspan, x0, mu, GM4b, a4b, theta0, stm, neq, T, Y)
         
             implicit none
             
             character(*), intent(in) :: central_body
-            real(dp), intent(in) :: tspan(:), x0(6), mu, GM4b, a4b, theta0
-            logical, intent(in) :: stm_required
+            real(dp), intent(in) :: tspan(:), x0(:), mu, GM4b, a4b, theta0
+            logical, intent(in) :: stm
             integer, intent(in) :: neq
             real(dp), intent(out) :: T(size(tspan)), Y(neq, size(tspan))
-            real(dp), allocatable :: s0(:)
             type(OdeOptions) :: options
             
             MassParameter = mu
 	        GravParameterFoursBody = GM4b
 	        DistanceToFoursBody = a4b
 	        InitialSynodicPhase = theta0
+			
+			stm_required = stm
             
-            ! State the propagation problem.
-            if (stm_required) then
-                s0 = [ x0, reshape(eye(6), [36,1]) ]
-            else
-                s0 = x0
-            end if
-            
-            if (central_body == 'First') then
-                call ode113(kbr4bp_fb, tspan, s0, options, T, Y)
-            else if (central_body == 'Secondary') then
-                call ode113(kbr4bp_sb, tspan, s0, options, T, Y)
-            else if (central_body == 'Center') then
-                call ode113(kbr4bp, tspan, s0, options, T, Y)
+            if (central_body == 'first') then
+                call ode113(kbr4bp_fb, tspan, x0, options, T, Y)
+            else if (central_body == 'secondary') then
+                call ode113(kbr4bp_sb, tspan, x0, options, T, Y)
+            else if (central_body == 'center') then
+                call ode113(kbr4bp, tspan, x0, options, T, Y)
             else
                 write(*,*) 'Unknown body.'
                 return
