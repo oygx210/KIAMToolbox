@@ -453,14 +453,14 @@ class Trajectory:
                                                  self.units['DistUnit'], self.units['VelUnit'])
             self.system = 'gcrs'
         elif system1 == 'scrs' and system2 == 'mer':
-            if self.vars != 'rv' and self.vars != 'rvm':
+            if self.vars not in ['rv', 'rvm', 'rv_stm']:
                 raise Exception('Vars should be rv or rvm')
             elif self.system != 'scrs':
                 raise Exception('System should be scrs.')
             self.states[0:6, :] = kiam.scrs2mer(self.states[0:6, :], self.jds)
             self.system = 'mer'
         elif system1 == 'mer' and system2 == 'scrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
+            if self.vars not in ['rv', 'rvm', 'rv_stm']:
                 raise Exception('Vars should be rv or rvm')
             elif self.system != 'mer':
                 raise Exception('System should be mer.')
@@ -499,7 +499,7 @@ class Trajectory:
                                                   self.units['DistUnit'], self.units['VelUnit'])
             self.system = 'hcrs'
         elif system1 == 'scrs' and system2 == 'sors':
-            if self.vars != 'rv' and self.vars != 'rvm' and self.vars != 'rv_stm':
+            if self.vars not in ['rv', 'rvm', 'rv_stm']:
                 raise Exception('Vars should be rv, rvm or rv_stm.')
             elif self.system != 'scrs':
                 raise Exception('System should be scrs.')
@@ -514,7 +514,7 @@ class Trajectory:
                     self.states[6:42, i] = np.reshape(phi_sors.T, (36,))
             self.system = 'sors'
         elif system1 == 'sors' and system2 == 'scrs':
-            if self.vars != 'rv' and self.vars != 'rvm' and self.vars != 'rv_stm':
+            if self.vars not in ['rv', 'rvm', 'rv_stm']:
                 raise Exception('Vars should be rv, rvm or rv_stm.')
             elif self.system != 'sors':
                 raise Exception('System should be sors.')
