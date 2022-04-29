@@ -21,20 +21,35 @@ def eyevec(n):
 def to_float(*args):
     args_float = tuple(np.array(arg, dtype='float64') for arg in args)
     return args_float
+def sind(x):
+    return np.sin(x/180*np.pi)
+def cosd(x):
+    return np.cos(x/180*np.pi)
+def tand(x):
+    return np.tan(x/180*np.pi)
+def cotand(x):
+    return 1/np.tan(x/180*np.pi)
 
 # Plotting functions
-def plot(x, y, LineWidth=1.5, xlabel='', ylabel=''):
+def plot(x, y, style='-', LineWidth=1.5, xlabel='', ylabel=''):
     plt.figure(layout='tight')
-    plt.plot(x, y, lw=LineWidth)
+    plt.plot(x, y, style, lw=LineWidth)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     grid2d()
     plt.axis('equal')
     plt.show()
-def plotcol(x, LineWidth=1.5, xlabel='', ylabel='', zlabel=''):
+def polarplot(r, phi, style='-', rmax=None):
+    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    ax.plot(phi, r, style)
+    if rmax is not None:
+        ax.set_rmax(rmax)
+    ax.grid(True, linestyle=":", alpha=0.5)
+    plt.show()
+def plotcol(x, style='-', LineWidth=1.5, xlabel='', ylabel='', zlabel=''):
     if x.shape[0] == 2:
         plt.figure(layout='tight')
-        plt.plot(x[0, :], x[1, :], lw=LineWidth)
+        plt.plot(x[0, :], x[1, :], style, lw=LineWidth)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         grid2d()
@@ -44,7 +59,7 @@ def plotcol(x, LineWidth=1.5, xlabel='', ylabel='', zlabel=''):
         fig = plt.figure(layout='tight')
         ax = fig.add_subplot(projection='3d')
         grid3d(ax)
-        ax.plot(x[0, :], x[1, :], x[2, :], lw=LineWidth)
+        ax.plot(x[0, :], x[1, :], x[2, :], style, lw=LineWidth)
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_zlabel(zlabel)
@@ -60,6 +75,10 @@ def grid3d(ax):
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
 
 # Translations.
+def deg2rad(deg):
+    return deg/180*np.pi
+def rad2deg(rad):
+    return rad/np.pi*180
 def jd2time(jd):
     gcal = jdcal.jd2gcal(2400000.5, jd - 2400000.5)
     frac_hours = gcal[3] * 24
