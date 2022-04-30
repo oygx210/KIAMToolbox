@@ -1,5 +1,4 @@
 import kiam
-import Model
 import numpy as np
 import networkx as nx
 import math
@@ -18,17 +17,7 @@ def traj2dict(tr):
     d['finalDate'] = tr.finalDate
     d['units'] = tr.units
     d['parts'] = tr.parts
-
-    d['model'] = {}
-    d['model']['data'] = tr.model.data
-    d['model']['info'] = tr.model.info
-    d['model']['units'] = tr.model.units
-    d['model']['sources'] = tr.model.sources
-    d['model']['vars'] = tr.model.vars
-    d['model']['type'] = tr.model.type
-    d['model']['primary'] = tr.model.primary
-    d['model']['system'] = tr.model.system
-
+    d['model'] = tr.model
     return d
 def dict2traj(d):
 
@@ -38,14 +27,10 @@ def dict2traj(d):
     variables = d['vars']
     system = d['system']
     units_name = d['units_name']
+
     tr = Trajectory(initial_state, initial_time, initial_jd, variables, system, units_name)
 
-    model_vars = d['model']['vars']
-    model_type = d['model']['type']
-    model_primary = d['model']['primary']
-    model_sources = d['model']['sources']
-    tr.set_model(model_vars, model_type, model_primary, model_sources)
-
+    tr.model = d['model']
     tr.states = d['states']
     tr.times = d['times']
     tr.jds = d['jds']
@@ -54,10 +39,7 @@ def dict2traj(d):
     tr.units = d['units']
     tr.parts = d['parts']
 
-    tr.model.data = d['model']['data']
-    tr.model.info = d['model']['info']
-
-    pass
+    return tr
 
 class Trajectory:
 
@@ -94,7 +76,7 @@ class Trajectory:
         self.finalDate = kiam.jd2time(initial_jd)
         self.units = {}
         self.parts = []
-        self.model = []
+        self.model = {}
         self.vars_graph = nx.DiGraph()
         self.systems_graph = nx.Graph()
         self.units_graph = nx.Graph()
@@ -113,13 +95,96 @@ class Trajectory:
             self.set_sun_earth_units()
         elif units_name == 'moon':
             self.set_moon_units()
-    def set_model(self, variables, model_type, primary, sources_cell):
-        self.model = Model.Model(variables, model_type, primary, sources_cell)
+    def set_model(self, variables, model_type, primary, sources_list):
+
+        self.model = {}
+
+        self.model['vars'] = variables.lower()
+        self.model['type'] = model_type.lower()
+        self.model['primary'] = primary.lower()
+        self.model['sources_list'] = [source.lower() for source in sources_list]
+        self.model['data'] = {}
+        self.model['units'] = {}
+
+        if model_type == 'r2bp':
+
+            if (primary != 'earth') and (primary != 'moon'):
+                raise Exception('Earth or Moon as primary are required for r2bp type of model.')
+
+            self.model['data']['grav_parameter'] = 1.0
+            self.set_model_units(primary)
+            if primary == 'earth':
+                self.model['system'] = 'gcrs'
+            elif primary == 'moon':
+                self.model['system'] = 'scrs'
+            else:
+                raise Exception('Unknown primary')
+
+        elif model_type == 'cr3bp_fb':
+
+            if primary == 'earthmoon':
+                ku = kiam.units('Earth', 'Moon')
+                self.model['data']['mass_parameter'] = ku['mu']
+                self.set_model_units('earth_moon')
+                self.model['system'] = 'gsrf_em'
+            elif primary == 'sunearth':
+                ku = kiam.units('Sun', 'Earth')
+                self.model['data']['mass_parameter'] = ku['mu']
+                self.set_model_units('sun_earth')
+                self.model['system'] = 'hsrf_se'
+            else:
+                raise Exception('Unknown primary.')
+
+        elif model_type == 'cr3bp_sb':
+
+            if primary == 'earthmoon':
+                ku = kiam.units('Earth', 'Moon')
+                self.model['data']['mass_parameter'] = ku['mu']
+                self.set_model_units('earth_moon')
+                self.model['system'] = 'ssrf_em'
+            elif primary == 'sunearth':
+                ku = kiam.units('Sun', 'Earth')
+                self.model['data']['mass_parameter'] = ku['mu']  # Sun - (Earth + Moon)
+                self.set_model_units('sun_earth')
+                self.model['system'] = 'gsrf_se'
+            else:
+                raise Exception('Unknown primary.')
+
+        elif model_type == 'nbp':
+
+            self.set_model_sources()
+            if variables == 'rv' and primary == 'earth':
+                self.set_model_units('earth')
+                self.model['system'] = 'gcrs'
+            elif variables == 'rv_stm' and primary == 'earth':
+                self.set_model_units('earth')
+                self.model['system'] = 'gcrs'
+            elif variables == 'rv' and primary == 'moon':
+                self.set_model_units('moon')
+                self.model['system'] = 'scrs'
+            elif variables == 'rv_stm' and primary == 'moon':
+                self.set_model_units('moon')
+                self.model['system'] = 'scrs'
+            elif variables == 'rvm' and primary == 'earth':
+                self.set_model_units('earth')
+                self.model['system'] = 'gcrs'
+            elif variables == 'rvm' and primary == 'moon':
+                self.set_model_units('moon')
+                self.model['system'] = 'scrs'
+            elif variables == 'ee' and primary == 'earth':
+                self.set_model_units('earth')
+                self.model['system'] = 'gcrs'
+            elif variables == 'ee' and primary == 'moon':
+                self.set_model_units('moon')
+                self.model['system'] = 'scrs'
+            else:
+                raise Exception('Unknown model.')
+
     def propagate(self, tof, npoints=2):
 
-        self.change_units(self.model.units['name'])
-        self.change_vars(self.model.vars)
-        self.change_system(self.model.system)
+        self.change_units(self.model['units']['name'])
+        self.change_vars(self.model['vars'])
+        self.change_system(self.model['system'])
 
         if self.vars in ['rv_stm', 'ee_stm', 'oe_stm']:
             stm = True
@@ -128,17 +193,17 @@ class Trajectory:
 
         tspan = np.linspace(self.times[-1], self.times[-1] + tof, npoints)
 
-        if self.model.type == 'nbp':
-            T, X = kiam.propagate_nbp(self.model.primary, tspan, self.states[0:, -1],
-                                      self.model.sources, self.model.data, stm, self.vars)
-        elif self.model.type == 'r2bp':
+        if self.model['type'] == 'nbp':
+            T, X = kiam.propagate_nbp(self.model['primary'], tspan, self.states[0:, -1],
+                                      self.model['sources'], self.model['data'], stm, self.vars)
+        elif self.model['type'] == 'r2bp':
             T, X = kiam.propagate_r2bp(tspan, self.states[0:, -1])
-        elif self.model.type == 'cr3bp_fb':
+        elif self.model['type'] == 'cr3bp_fb':
             T, X = kiam.propagate_cr3bp(central_body='First', tspan=tspan, x0=self.states[0:, -1],
-                                        mu=self.model.data['mass_parameter'], stm=stm)
-        elif self.model.type == 'cr3bp_sb':
+                                        mu=self.model['data']['mass_parameter'], stm=stm)
+        elif self.model['type'] == 'cr3bp_sb':
             T, X = kiam.propagate_cr3bp(central_body='Secondary', tspan=tspan, x0=self.states[0:, -1],
-                                        mu=self.model.data['mass_parameter'], stm=stm)
+                                        mu=self.model['data']['mass_parameter'], stm=stm)
         else:
             raise Exception('Unknown model_type.')
 
@@ -200,6 +265,8 @@ class Trajectory:
                     ylabel = 'Semi-major axis, km'
                 elif self.units_name == 'earth':
                     ylabel = 'Semi-major axis, Earth''s radii'
+                else:
+                    ylabel = ''
                 kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'e':
                 ylabel = 'Eccentricity'
@@ -222,6 +289,8 @@ class Trajectory:
                     ylabel = r'$h$, (km/s)^{-1}'
                 elif self.units_name == 'earth':
                     ylabel = r'$h$, nondimensional'
+                else:
+                    ylabel = ''
                 kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ex':
                 ylabel = '$e_x$'
@@ -716,3 +785,49 @@ class Trajectory:
         self.units['VelUnit'] = 1.0    # km/s
         self.units['TimeUnit'] = 1.0   # days
         self.units['AccUnit'] = 1.0    # m/s^2
+
+    # Auxilary model routines.
+    def set_model_units(self, units_name):
+
+        if units_name == 'earth':
+
+            self.model['units']['name'] = 'earth'
+            units = kiam.units('Earth')
+            self.model['units']['mu'] = units['GM']
+
+        elif units_name == 'moon':
+
+            self.model['units']['name'] = 'moon'
+            units = kiam.units('Moon')
+            self.model['units']['mu'] = units['GM']
+
+        elif units_name == 'earth_moon':
+
+            self.model['units']['name'] = 'earth_moon'
+            units = kiam.units('Earth', 'Moon')
+
+        elif units_name == 'sun_earth':
+
+            self.model['units']['name'] = 'sun_earth'
+            units = kiam.units('Sun', 'Earth')
+
+        else:
+
+            raise Exception('Unknown units_name.')
+
+        self.model['units']['DistUnit'] = units['DistUnit']  # km
+        self.model['units']['VelUnit'] = units['VelUnit']  # km/s
+        self.model['units']['TimeUnit'] = units['TimeUnit']  # days
+        self.model['units']['AccUnit'] = units['AccUnit']  # m/s^2
+
+        _, star, planet, moon, _ = kiam.astro_const()
+
+        self.model['units']['RSun'] = star['Sun']['MeanRadius'] / units['DistUnit']  # 695700 km
+        self.model['units']['REarth'] = planet['Earth']['EquatorRadius'] / units['DistUnit']  # 6378.1366 km
+        self.model['units']['RMoon'] = moon['Moon']['MeanRadius'] / units['DistUnit']  # 1737.4 km
+    def set_model_sources(self):
+
+        self.model['sources'] = kiam.prepare_sources_dict()
+
+        for source in self.model['sources_list']:
+            self.model['sources'][source.lower()] = True
