@@ -99,10 +99,15 @@ class Trajectory:
 
         self.model = {}
 
-        self.model['vars'] = variables.lower()
-        self.model['type'] = model_type.lower()
-        self.model['primary'] = primary.lower()
-        self.model['sources_list'] = [source.lower() for source in sources_list]
+        variables = variables.lower()
+        model_type = model_type.lower()
+        primary = primary.lower()
+        sources_list = [source.lower() for source in sources_list]
+
+        self.model['vars'] = variables
+        self.model['type'] = model_type
+        self.model['primary'] = primary
+        self.model['sources_list'] = sources_list
         self.model['data'] = {}
         self.model['units'] = {}
 
