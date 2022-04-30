@@ -5,6 +5,60 @@ import networkx as nx
 import math
 import copy
 
+def traj2dict(tr):
+
+    d = {}
+    d['vars'] = tr.vars
+    d['states'] = tr.states
+    d['times'] = tr.times
+    d['system'] = tr.system
+    d['units_name'] = tr.units_name
+    d['jds'] = tr.jds
+    d['initialDate'] = tr.initialDate
+    d['finalDate'] = tr.finalDate
+    d['units'] = tr.units
+    d['parts'] = tr.parts
+
+    d['model'] = {}
+    d['model']['data'] = tr.model.data
+    d['model']['info'] = tr.model.info
+    d['model']['units'] = tr.model.units
+    d['model']['sources'] = tr.model.sources
+    d['model']['vars'] = tr.model.vars
+    d['model']['type'] = tr.model.type
+    d['model']['primary'] = tr.model.primary
+    d['model']['system'] = tr.model.system
+
+    return d
+def dict2traj(d):
+
+    initial_state = d['states'][:, 0]
+    initial_time = d['times'][0]
+    initial_jd = d['jds'][0]
+    variables = d['vars']
+    system = d['system']
+    units_name = d['units_name']
+    tr = Trajectory(initial_state, initial_time, initial_jd, variables, system, units_name)
+
+    model_vars = d['model']['vars']
+    model_type = d['model']['type']
+    model_primary = d['model']['primary']
+    model_sources = d['model']['sources']
+    tr.set_model(model_vars, model_type, model_primary, model_sources)
+
+    tr.states = d['states']
+    tr.times = d['times']
+    tr.jds = d['jds']
+    tr.initialDate = d['initialDate']
+    tr.finalDate = d['finalDate']
+    tr.units = d['units']
+    tr.parts = d['parts']
+
+    tr.model.data = d['model']['data']
+    tr.model.info = d['model']['info']
+
+    pass
+
 class Trajectory:
 
     def __init__(self, initial_state, initial_time, initial_jd, variables, system, units_name):
