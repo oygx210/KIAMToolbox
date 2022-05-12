@@ -314,6 +314,12 @@ class Trajectory:
                 kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
     def copy(self):
         return copy.deepcopy(self)
+    def clear(self):
+        self.states = np.reshape(self.states[:, 0], (6, 1))
+        self.times = np.reshape(self.times[0], (1,))
+        self.jds = np.reshape(self.jds[0], (1,))
+        self.parts = []
+        self.finalDate = self.initialDate
 
     def change_vars(self, new_vars):
         if self.vars == new_vars:
