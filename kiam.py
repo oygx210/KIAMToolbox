@@ -126,11 +126,31 @@ def scrs2pa(xscrs, jd, grad_req=False):
     out = fkt.translations.kscrs2pa(xscrs, jd)
     return _return_if_grad_req(out, grad_req)
 def scrs2mer(xscrs, jd, grad_req=False):
-    out = fkt.translations.kscrs2mer(xscrs, jd)
-    return _return_if_grad_req(out, grad_req)
+    chunk = 10000
+    dim = xscrs.shape[0]
+    ncols = xscrs.shape[1]
+    xmer = np.empty((dim, ncols))
+    dxmer = np.empty((dim, dim, ncols))
+    for i in range(int(np.ceil(ncols/chunk))):
+        cols = np.arange(i*chunk, min((i+1)*chunk, ncols))
+        xmer[:, cols], dxmer[:, :, cols] = fkt.translations.kscrs2mer(xscrs[:, cols], jd[cols])
+    if grad_req:
+        return xmer, dxmer
+    else:
+        return xmer
 def mer2scrs(xmer, jd, grad_req=False):
-    out = fkt.translations.kmer2scrs(xmer, jd)
-    return _return_if_grad_req(out, grad_req)
+    chunk = 10000
+    dim = xmer.shape[0]
+    ncols = xmer.shape[1]
+    xscrs = np.empty((dim, ncols))
+    dxscrs = np.empty((dim, dim, ncols))
+    for i in range(int(np.ceil(ncols / chunk))):
+        cols = np.arange(i * chunk, min((i + 1) * chunk, ncols))
+        xscrs[:, cols], dxscrs[:, :, cols] = fkt.translations.kmer2scrs(xmer[:, cols], jd[cols])
+    if grad_req:
+        return xscrs, dxscrs
+    else:
+        return xscrs
 def scrs2gcrs(xscrs, jd, DistUnit, VelUnit):
     return fkt.translations.kscrs2gcrs(xscrs, jd, DistUnit, VelUnit)
 def gcrs2scrs(xgcrs, jd, DistUnit, VelUnit):
