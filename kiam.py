@@ -111,11 +111,11 @@ def ee2rv(ee, mu, grad_req=False):
 def cart2sphere(cart):
     return fkt.translations.kcart2sphere(cart)
 def sphere2cart(sphere):
-    return fkt.translations.sphere2cart(sphere)
+    return fkt.translations.ksphere2cart(sphere)
 def cart2latlon(cart):
     return fkt.translations.kcart2latlon(cart)
 def latlon2cart(latlon):
-    return fkt.translations.latlon2cart(latlon)
+    return fkt.translations.klatlon2cart(latlon)
 def itrs2gcrs(xitrs, jd, grad_req=False):
     out = fkt.translations.kitrs2gcrs(xitrs, jd)
     return _return_if_grad_req(out, grad_req)
