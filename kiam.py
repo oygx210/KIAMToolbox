@@ -354,8 +354,50 @@ def prepare_sources_dict():
 
 # Visibility routines.
 def is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg):
-    vis_status, elev_deg, azim_deg = fkt.visibilitymodule.kisvisible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
-    return vis_status, elev_deg, azim_deg
+
+    # r_sat:         3d-vector or 3 x N matrix
+    # lat_deg:       scalar or vector
+    # long_deg:      scalar or vector
+    # threshold_deg: scalar or vector
+
+    if len(r_sat.shape) == 1:
+        if r_sat.shape[0] != 3:
+            raise 'r_sat as a vector should have 3 components.'
+        r_sat = np.reshape(r_sat, (3, 1), order='F')
+    if r_sat.shape[0] != 3 or len(r_sat.shape) != 2:
+        raise 'r_sat as a matrix should have N rows and 3 columns.'
+    r_sat = r_sat.copy().T / body_radius
+
+    if isinstance(lat_deg, (float, int)):
+        lat_deg = np.array([lat_deg])
+    if isinstance(long_deg, (float, int)):
+        long_deg = np.array([long_deg])
+    if len(lat_deg.shape) != 1:
+        raise 'lat_deg should be a scalar or a vector.'
+    if len(long_deg.shape) != 1:
+        raise 'long_deg should be a scalar or a vector.'
+    if lat_deg.shape[0] != long_deg.shape[0]:
+        raise 'lat_deg and long_deg should have the same size.'
+    lat_long = np.reshape(np.concatenate((lat_deg/180*np.pi, long_deg/180*np.pi), axis=0), (2, -1))
+
+    threshold = threshold_deg / 180 * np.pi
+    if isinstance(threshold, (float, int)):
+        threshold = np.full((r_sat.shape[0],), threshold)
+    if len(threshold.shape) != 1:
+        raise 'threshold_deg should be a scalar or a vector'
+    if threshold.shape[0] != r_sat.shape[0]:
+        raise 'threshold_deg should have r_sat.shape[0] number of elements'
+
+    fkt.visibilitymodule.r_sat = r_sat
+    fkt.visibilitymodule.lat_long = lat_long
+    fkt.visibilitymodule.threshold = threshold
+
+    status, elev, azim = fkt.visibilitymodule.isvisible(r_sat.shape[0], lat_long.shape[1])
+    status[status == -1] = 1
+    elev_deg = elev/np.pi*180
+    azim_deg = azim/np.pi*180
+
+    return status, elev_deg, azim_deg
 
 # Save and load routines.
 def save(variable, filename):
