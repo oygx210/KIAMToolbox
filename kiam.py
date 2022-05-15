@@ -392,7 +392,12 @@ def is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg):
     fkt.visibilitymodule.lat_long = lat_long
     fkt.visibilitymodule.threshold = threshold
 
-    status, elev, azim = fkt.visibilitymodule.isvisible(r_sat.shape[0], lat_long.shape[1])
+    fkt.visibilitymodule.isvisible(r_sat.shape[0], lat_long.shape[1])
+
+    status = fkt.visibilitymodule.status
+    elev = fkt.visibilitymodule.elev
+    azim = fkt.visibilitymodule.azim
+
     status[status == -1] = 1
     elev_deg = elev/np.pi*180
     azim_deg = azim/np.pi*180
