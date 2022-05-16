@@ -412,6 +412,15 @@ def load(filename):
     with open(filename, 'rb') as f:
         return pickle.load(f)
 
+# General astrodynamics.
+def period_hours(altitude_km, body):
+    ku = units(body)
+    return 2*np.pi*np.sqrt((ku['DistUnit']+altitude_km)**3/ku['GM'])/3600.0
+def altitude_km(period_hours, body):
+    ku = units(body)
+    period = period_hours*3600
+    return (period**2/(4*np.pi**2)*ku['GM'])**(1/3) - ku['DistUnit']
+
 # Trofimov-Shirobokov model.
 def get_order(altitude_thousands_km, approx_level='soft'):
     if approx_level == 'soft':
