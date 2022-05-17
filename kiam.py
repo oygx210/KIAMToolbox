@@ -31,8 +31,9 @@ def cotand(x):
     return 1/np.tan(x/180*np.pi)
 
 # Plotting functions
-def plot(x, y, style='-', xlabel='', ylabel='', linewidth=1.0, show=False, saveto=False):
-    fig, ax = plt.subplots()
+def plot(x, y, ax=None, style='-', xlabel='', ylabel='', linewidth=1.0, show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots()
     ax.plot(x, y, style, linewidth=linewidth)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -41,9 +42,10 @@ def plot(x, y, style='-', xlabel='', ylabel='', linewidth=1.0, show=False, savet
         plt.savefig(saveto, dpi=300)
     if show:
         plt.show()
-    return fig, ax
-def polar_plot(phi, r, rmax=None, style='-', linewidth=1.0, show=False, saveto=False):
-    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    return ax
+def polar_plot(phi, r, ax=None, rmax=None, style='-', linewidth=1.0, show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots(subplot_kw={'projection': 'polar'})
     ax.plot(phi, r, style, linewidth=linewidth)
     if rmax is not None:
         ax.set_rmax(rmax)
@@ -52,9 +54,10 @@ def polar_plot(phi, r, rmax=None, style='-', linewidth=1.0, show=False, saveto=F
         plt.savefig(saveto, dpi=300)
     if show:
         plt.show()
-    return fig, ax
-def histogram(x, num_bins=None, density=False, xlabel='', ylabel='', show=False, saveto=False):
-    fig, ax = plt.subplots()
+    return ax
+def histogram(x, num_bins=None, density=False, ax=None, xlabel='', ylabel='', show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots()
     n, bins, patches = ax.hist(x, bins=num_bins, density=density)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -63,9 +66,10 @@ def histogram(x, num_bins=None, density=False, xlabel='', ylabel='', show=False,
         plt.savefig(saveto, dpi=300)
     if show:
         plt.show()
-    return fig, ax, {'n': n, 'bins': bins, 'patches': patches}
-def boxplot(x, xlabel='', ylabel='', show=False, saveto=False):
-    fig, ax = plt.subplots()
+    return ax, {'n': n, 'bins': bins, 'patches': patches}
+def boxplot(x, ax=None, xlabel='', ylabel='', show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots()
     data = ax.boxplot(x, vert=True)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -74,7 +78,7 @@ def boxplot(x, xlabel='', ylabel='', show=False, saveto=False):
         plt.savefig(saveto, dpi=300)
     if show:
         plt.show()
-    return fig, ax, data
+    return ax, data
 def save_plot(saveto):
     plt.savefig(saveto, dpi=300)
 
