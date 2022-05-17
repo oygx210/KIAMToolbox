@@ -82,7 +82,7 @@ def boxplot(x, ax=None, xlabel='', ylabel='', show=False, saveto=False):
 def save_plot(saveto):
     plt.savefig(saveto, dpi=300)
 
-# Translations.
+# Translations
 def deg2rad(deg):
     return deg/180*np.pi
 def rad2deg(rad):
