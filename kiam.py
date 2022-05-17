@@ -31,48 +31,52 @@ def cotand(x):
     return 1/np.tan(x/180*np.pi)
 
 # Plotting functions
-def plot(x, y, style='-', LineWidth=1.5, xlabel='', ylabel=''):
-    plt.figure(layout='tight')
-    plt.plot(x, y, style, lw=LineWidth)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    grid2d()
-    plt.axis('equal')
-    plt.show()
-def polarplot(r, phi, style='-', rmax=None):
+def plot(x, y, style='-', xlabel='', ylabel='', linewidth=1.0, show=False, saveto=False):
+    fig, ax = plt.subplots()
+    ax.plot(x, y, style, linewidth=linewidth)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return fig, ax
+def polar_plot(phi, r, rmax=None, style='-', linewidth=1.0, show=False, saveto=False):
     fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-    ax.plot(phi, r, style)
+    ax.plot(phi, r, style, linewidth=linewidth)
     if rmax is not None:
         ax.set_rmax(rmax)
-    ax.grid(True, linestyle=":", alpha=0.5)
-    plt.show()
-def plotcol(x, style='-', LineWidth=1.5, xlabel='', ylabel='', zlabel=''):
-    if x.shape[0] == 2:
-        plt.figure(layout='tight')
-        plt.plot(x[0, :], x[1, :], style, lw=LineWidth)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        grid2d()
-        plt.axis('equal')
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
         plt.show()
-    elif x.shape[0] == 3:
-        fig = plt.figure(layout='tight')
-        ax = fig.add_subplot(projection='3d')
-        grid3d(ax)
-        ax.plot(x[0, :], x[1, :], x[2, :], style, lw=LineWidth)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.set_zlabel(zlabel)
+    return fig, ax
+def histogram(x, num_bins=None, density=False, xlabel='', ylabel='', show=False, saveto=False):
+    fig, ax = plt.subplots()
+    n, bins, patches = ax.hist(x, bins=num_bins, density=density)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
         plt.show()
-def grid2d():
-    plt.grid(True, linestyle=":", alpha=0.5)
-def grid3d(ax):
-    ax.xaxis._axinfo["grid"]['linestyle'] = ":"
-    ax.yaxis._axinfo["grid"]['linestyle'] = ":"
-    ax.zaxis._axinfo["grid"]['linestyle'] = ":"
-    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
-    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
-    ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+    return fig, ax, {'n': n, 'bins': bins, 'patches': patches}
+def boxplot(x, xlabel='', ylabel='', show=False, saveto=False):
+    fig, ax = plt.subplots()
+    data = ax.boxplot(x, vert=True)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return fig, ax, data
+def save_plot(saveto):
+    plt.savefig(saveto, dpi=300)
 
 # Translations.
 def deg2rad(deg):
