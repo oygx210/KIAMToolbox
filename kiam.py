@@ -181,6 +181,26 @@ def ine2rotEph(xine, jd, first_body, secondary_body, DistUnit, VelUnit):
     return fkt.translations.kine2roteph(xine, jd, first_body, secondary_body, DistUnit, VelUnit)
 def rot2ineEph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit):
     return fkt.translations.krot2ineeph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit)
+def mer2lvlh(xmer, lat, lon):
+    if len(xmer.shape) == 1 and xmer.shape[0] == 3:
+        return fkt.translations.kmer2lvlh(xmer, lat, lon)
+    elif len(xmer.shape) == 2 and xmer.shape[0] == 3:
+        XLVLH = np.zeros((3, xmer.shape[1]))
+        for i in range(xmer.shape[1]):
+            XLVLH[:, i] = fkt.translations.kmer2lvlh(xmer[:, i], lat, lon)
+        return XLVLH
+    else:
+        raise 'xmer should be a 3d vector or a 3xN matrix.'
+def lvlh2mer(xlvlh, lat, lon):
+    if len(xlvlh.shape) == 1 and xlvlh.shape[0] == 3:
+        return fkt.translations.kxlvlh2mer(xlvlh, lat, lon)
+    elif len(xlvlh.shape) == 2 and xlvlh.shape[0] == 3:
+        XMER = np.zeros((3, xlvlh.shape[1]))
+        for i in range(xlvlh.shape[1]):
+            XMER[:, i] = fkt.translations.kxlvlh2mer(xlvlh[:, i], lat, lon)
+        return XMER
+    else:
+        raise 'xlvlh should be a 3d vector or a 3xN matrix.'
 
 # Units and constants.
 def units(*args):

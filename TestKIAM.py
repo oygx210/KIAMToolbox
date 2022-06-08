@@ -867,6 +867,21 @@ class Test(unittest.TestCase):
             xrot1 = fkt.translations.kine2rot(xine1, t, t0)
             np.testing.assert_allclose(xrot1, xrot0, rtol=rtol, atol=atol)
 
+    def test_kmer2lvlh_klvlh2mer(self):
+
+        rtol = 1.0e-13
+        atol = 1.0e-13
+
+        for _ in range(100):
+            xmer0 = np.random.randn(3,)
+            lat = np.random.rand() * pi - pi / 2
+            lon = np.random.rand() * 2 * pi
+            xlvlh0 = fkt.translations.kmer2lvlh(xmer0, lat, lon)
+            xmer1 = fkt.translations.klvlh2mer(xlvlh0, lat, lon)
+            xlvlh1 = fkt.translations.kmer2lvlh(xmer1, lat, lon)
+            np.testing.assert_allclose(xmer0, xmer1, rtol=rtol, atol=atol)
+            np.testing.assert_allclose(xlvlh0, xlvlh1, rtol=rtol, atol=atol)
+
     def test_stm(self):
         central_body = 'earth'
         tspan = [0.0, 5*2*pi]
@@ -957,6 +972,7 @@ class Test(unittest.TestCase):
         threshold_deg = 0.0
 
         status, elev_deg, azim_deg = kiam.is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
+
 
 if __name__ == '__main__':
     unittest.main()
