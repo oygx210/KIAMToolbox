@@ -121,9 +121,15 @@ def cart2sphere(cart):
 def sphere2cart(sphere):
     return fkt.translations.ksphere2cart(sphere)
 def cart2latlon(cart):
-    return fkt.translations.kcart2latlon(cart)
-def latlon2cart(latlon):
-    return fkt.translations.klatlon2cart(latlon)
+    if len(cart.shape) == 2:
+        return fkt.translations.kcart2latlon(cart)
+    elif len(cart.shape) == 1:
+        return fkt.translations.kcart2latlon(np.rehshape(cart, (3, 1)))[:, 0]
+def c(latlon):
+    if len(latlon.shape) == 2:
+        return fkt.translations.klatlon2cart(latlon)
+    elif len(latlon.shape) == 1:
+        return fkt.translations.klatlon2cart(np.rehshape(latlon, (2, 1)))[:, 0]
 def itrs2gcrs(xitrs, jd, grad_req=False):
     out = fkt.translations.kitrs2gcrs(xitrs, jd)
     return _return_if_grad_req(out, grad_req)
