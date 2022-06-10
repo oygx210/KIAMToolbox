@@ -125,7 +125,7 @@ def cart2latlon(cart):
         return fkt.translations.kcart2latlon(cart)
     elif len(cart.shape) == 1:
         return fkt.translations.kcart2latlon(np.rehshape(cart, (3, 1)))[:, 0]
-def c(latlon):
+def latlon2cart(latlon):
     if len(latlon.shape) == 2:
         return fkt.translations.klatlon2cart(latlon)
     elif len(latlon.shape) == 1:
