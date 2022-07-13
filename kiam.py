@@ -296,16 +296,16 @@ def astro_const():
     planet['Neptune']['EquatorRadius'] = fkt.constantsandunits.neptune_equatorradius
     planet['Neptune']['SemimajorAxis'] = fkt.constantsandunits.neptune_semimajoraxis
 
-    moon['Moon']['OrbitsAround'] = fkt.constantsandunits.neptune_orbitsaround
-    moon['Moon']['GM'] = fkt.constantsandunits.neptune_gm
-    moon['Moon']['MeanRadius'] = fkt.constantsandunits.neptune_meanradius
-    moon['Moon']['SemimajorAxis'] = fkt.constantsandunits.neptune_semimajoraxis
+    moon['Moon']['OrbitsAround'] = fkt.constantsandunits.moon_orbitsaround
+    moon['Moon']['GM'] = fkt.constantsandunits.moon_gm
+    moon['Moon']['MeanRadius'] = fkt.constantsandunits.moon_meanradius
+    moon['Moon']['SemimajorAxis'] = fkt.constantsandunits.moon_semimajoraxis
 
-    small_body['Pluto']['OrbitsAround'] = fkt.constantsandunits.neptune_orbitsaround
-    small_body['Pluto']['GM'] = fkt.constantsandunits.neptune_gm
-    small_body['Pluto']['MeanRadius'] = fkt.constantsandunits.neptune_meanradius
-    small_body['Pluto']['EquatorRadius'] = fkt.constantsandunits.neptune_equatorradius
-    small_body['Pluto']['SemimajorAxis'] = fkt.constantsandunits.neptune_semimajoraxis
+    small_body['Pluto']['OrbitsAround'] = fkt.constantsandunits.pluto_orbitsaround
+    small_body['Pluto']['GM'] = fkt.constantsandunits.pluto_gm
+    small_body['Pluto']['MeanRadius'] = fkt.constantsandunits.pluto_meanradius
+    small_body['Pluto']['EquatorRadius'] = fkt.constantsandunits.pluto_equatorradius
+    small_body['Pluto']['SemimajorAxis'] = fkt.constantsandunits.pluto_semimajoraxis
 
     return uni_const, star, planet, moon, small_body
 
