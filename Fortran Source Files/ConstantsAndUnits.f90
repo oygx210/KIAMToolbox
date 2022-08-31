@@ -43,6 +43,7 @@ real(dp), parameter :: Earth_dObliquitydt  = -46.836769D0                       
 character(5), parameter :: Moon_OrbitsAround  = 'Earth'
 real(dp), parameter :: Moon_GM            = 0.0123000371D0*Earth_GM      ! km^3/s^2
 real(dp), parameter :: Moon_MeanRadius    = 1737.4D0                     ! km
+real(dp), parameter :: Moon_EquatorRadius = 1738.4D0                     ! km
 real(dp), parameter :: Moon_SemimajorAxis = 384402.0D0                   ! km        (LLRE)
 
 ! Mercury

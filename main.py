@@ -13,6 +13,4 @@ tr.model['data']['mass'] = 100.0
 tr.model['data']['area'] = 2.0
 tr.model['data']['order'] = 1
 tr.propagate(2*np.pi, 200000)
-tr.change_system('mer')
-
 tr.show('3d')

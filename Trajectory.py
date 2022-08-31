@@ -243,7 +243,7 @@ class Trajectory:
                     ylabel = '$y$, nondimensional'
                 else:
                     raise Exception('Unknown units.')
-                kiam.plotcol(self.states[0:2, :], xlabel=xlabel, ylabel=ylabel)
+                kiam.plot(self.states[0, :], self.states[1, :], xlabel=xlabel, ylabel=ylabel, show=True)
             elif variables == '3d':
                 if self.units_name == 'earth':
                     xlabel = '$x$, Earth radii'
@@ -263,7 +263,7 @@ class Trajectory:
                     zlabel = '$z$, nondimensional'
                 else:
                     raise Exception('Unknown units.')
-                kiam.plotcol(self.states[0:3, :], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
+                kiam.plot3(self.states[0, :], self.states[1, :], self.states[2, :], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, show=True)
         elif self.vars in ['oe', 'oem', 'oe_stm']:
             if variables == 'a':
                 if self.units_name == 'dim':
@@ -272,22 +272,22 @@ class Trajectory:
                     ylabel = 'Semi-major axis, Earth''s radii'
                 else:
                     ylabel = ''
-                kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'e':
                 ylabel = 'Eccentricity'
-                kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'inc':
                 ylabel = 'Inclination, degrees'
-                kiam.plot(self.times, self.states[2, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[2, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'Om':
                 ylabel = 'Longitude of the ascending node, degrees'
-                kiam.plot(self.times, self.states[3, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[3, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'w':
                 ylabel = 'Argument of pericenter, degrees'
-                kiam.plot(self.times, self.states[4, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[4, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'th':
                 ylabel = 'True anomaly, degrees'
-                kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
         elif self.vars in ['ee', 'eem', 'ee_stm']:
             if variables == 'h':
                 if self.units_name == 'dim':
@@ -296,22 +296,22 @@ class Trajectory:
                     ylabel = r'$h$, nondimensional'
                 else:
                     ylabel = ''
-                kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'ex':
                 ylabel = '$e_x$'
-                kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'ey':
                 ylabel = '$e_y$'
-                kiam.plot(self.times, self.states[2, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[2, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'ix':
                 ylabel = '$i_x$'
-                kiam.plot(self.times, self.states[3, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[3, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'iy':
                 ylabel = '$i_y$'
-                kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel, show=True)
             elif variables == 'L':
                 ylabel = 'True longitude, degrees'
-                kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+                kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
     def copy(self):
         return copy.deepcopy(self)
     def clear(self):

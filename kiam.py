@@ -5,6 +5,7 @@ import math
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 import pickle
 
 mpl.rcParams['figure.dpi'] = 150
@@ -38,6 +39,24 @@ def plot(x, y, ax=None, style='-', xlabel='', ylabel='', linewidth=1.0, show=Fal
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return ax
+def plot3(x, y, z, ax=None, style='-', xlabel='', ylabel='', zlabel='', linewidth=1.0, show=False, saveto=False):
+    if ax is None:
+        ax = plt.axes(projection='3d')
+    ax.plot3D(x, y, z, style, linewidth=linewidth)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_zlabel(zlabel)
+    ax.xaxis._axinfo["grid"]['linestyle'] = ":"
+    ax.yaxis._axinfo["grid"]['linestyle'] = ":"
+    ax.zaxis._axinfo["grid"]['linestyle'] = ":"
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
     if saveto:
         plt.savefig(saveto, dpi=300)
     if show:
