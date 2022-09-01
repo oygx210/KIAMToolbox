@@ -476,6 +476,15 @@ def altitude_km(period_hours, body):
 def circular_velocity_km_s(altitude_km, body):
     ku = units(body)
     return np.sqrt(ku['GM']/(ku['DistUnit'] + altitude_km))
+def dv_hohmann(r1_nondim, r2_nondim):
+    dv1 = np.sqrt(1.0 / r1_nondim) * (np.sqrt(2 * r2_nondim / (r1_nondim + r2_nondim)) - 1)
+    dv2 = np.sqrt(1.0 / r2_nondim) * (np.sqrt(2 * r1_nondim / (r1_nondim + r2_nondim)) - 1)
+    dv_nondim = dv1 + dv2
+    return dv_nondim
+def tof_hohmann(r1_nondim, r2_nondim):
+    a = (r1_nondim + r2_nondim) / 2
+    tof_nondim = np.pi * (a ** 1.5)
+    return tof_nondim
 
 # Trofimov-Shirobokov model.
 def get_order(altitude_thousands_km, approx_level='soft'):
