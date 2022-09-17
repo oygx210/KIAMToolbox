@@ -222,6 +222,11 @@ class Trajectory:
         self.times = np.append(self.times[0:-1], T)
         self.states = np.append(self.states[:, 0:-1], X, axis=1)
         self.finalDate = kiam.jd2time(self.jds[-1])
+    def repropagate(self, tof, npoints, start_index=0):
+        if start_index != 0:
+            raise 'TBD.'
+        self.clear()
+        self.propagate(tof, npoints)
     def show(self, variables):
         if self.units_name == 'dim':
             tlabel = 'Time of flight, days'
