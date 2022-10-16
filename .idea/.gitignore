@@ -7,5 +7,4 @@
 /dataSources.local.xml
 # Editor-based HTTP Client requests
 /httpRequests/
-/Archive Fortran Source Files/
-/Fortran Source Files/
+/main.py
