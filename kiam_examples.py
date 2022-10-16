@@ -1,47 +1,28 @@
 import kiam
+import numpy as np
+import Trajectory
 
-# Juliandate
+# Juliandate (year, month, day, hour, minute, second)
 jd = kiam.juliandate(2022, 2, 15, 0, 0, 0)
 
-# rv 2 oe
+# (x, y, z, vx, vy, vz) -> (a, e, i, Omega, omega, theta)
 oe = kiam.rv2oe([1.0, 2.0, 3.0, 4.0, 5.0, 6.0], 1.0)
 
 # Moon units
 ku = kiam.units('Moon')
 
-# r2bp right hand of equations (mu = 1.0)
+# two-body problem right hand of equations (mu = 1.0)
 dxdt = kiam.r2bp(0.0, [1.0, 0.0, 0.0, 0.0, 1.0, 0.0])
 
 # n-body problem, moon
-sources = {}  # order of perturbations is important!
-sources['sun'] = False
-sources['mercury'] = False
-sources['venus'] = False
-sources['earth'] = True
-sources['moon'] = False
-sources['mars'] = False
-sources['jupiter'] = False
-sources['saturn'] = False
-sources['uranus'] = False
-sources['neptune'] = False
-sources['srp'] = False
-sources['cmplxmoon'] = True
-sources['atm'] = False
-sources['j2'] = False
-data = {}
-data['jd_zero'] = kiam.juliandate(2022, 2, 15, 0, 0, 0)
-data['area'] = 2.0
-data['mass'] = 100.0
-data['order'] = 50
-units_data = {}
-ku = kiam.units('Moon')
-_, star, planet, moon, _ = kiam.astro_const()
-units_data['DistUnit'] = ku['DistUnit']
-units_data['VelUnit'] = ku['VelUnit']
-units_data['TimeUnit'] = ku['TimeUnit']
-units_data['AccUnit'] = ku['AccUnit']
-units_data['RSun'] = star['Sun']['MeanRadius'] / ku['DistUnit']  # 695700 km
-units_data['REarth'] = planet['Earth']['EquatorRadius'] / ku['DistUnit']  # 6378.1366 km
-units_data['RMoon'] = moon['Moon']['MeanRadius'] / ku['DistUnit']  # 1737.4 km
-dxdt = kiam.nbp_rv_moon(0.0, [1.5, 0.0, 0.0, 0.0, 0.9, 0.0], False, sources, data, units_data)
-print(dxdt)
+t0 = 0.0
+s0 = np.array([2.0, 0.0, 0.0, 0.0, 1/np.sqrt(2.0), 0.0])
+jd0 = kiam.juliandate(2022, 4, 30, 0, 0, 0)
+tr = Trajectory.Trajectory(s0, t0, jd0, 'rv', 'scrs', 'moon')
+tr.set_model('rv', 'nbp', 'moon', ['earth', 'sun'])
+tr.model['data']['jd_zero'] = jd0  # julian date corresponding to t = 0
+tr.model['data']['mass'] = 100.0  # spacecraft mass, kg
+tr.model['data']['area'] = 2.0  # spacecraft area, m^2
+tr.model['data']['order'] = 1  # order of the Moon's gravity field
+tr.propagate(6*np.pi, 20000)  # (time of flight, number of points)
+tr.show('3d')  # show the trajectory in 3d
