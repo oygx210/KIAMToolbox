@@ -5,7 +5,6 @@ import math
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
 import pickle
 
 mpl.rcParams['figure.dpi'] = 150
@@ -466,22 +465,22 @@ def load(filename):
         return pickle.load(f)
 
 # General astrodynamics.
-def period_hours(altitude_km, body):
+def get_period_hours(altitude_km, body):
     ku = units(body)
     return 2*np.pi*np.sqrt((ku['DistUnit']+altitude_km)**3/ku['GM'])/3600.0
-def altitude_km(period_hours, body):
+def get_altitude_km(period_hours, body):
     ku = units(body)
     period = period_hours*3600
     return (period**2/(4*np.pi**2)*ku['GM'])**(1/3) - ku['DistUnit']
-def circular_velocity_km_s(altitude_km, body):
+def get_circular_velocity_km_s(altitude_km, body):
     ku = units(body)
     return np.sqrt(ku['GM']/(ku['DistUnit'] + altitude_km))
-def dv_hohmann(r1_nondim, r2_nondim):
+def get_dv_hohmann(r1_nondim, r2_nondim):
     dv1 = np.sqrt(1.0 / r1_nondim) * (np.sqrt(2 * r2_nondim / (r1_nondim + r2_nondim)) - 1)
     dv2 = np.sqrt(1.0 / r2_nondim) * (np.sqrt(2 * r1_nondim / (r1_nondim + r2_nondim)) - 1)
     dv_nondim = dv1 + dv2
     return dv_nondim
-def tof_hohmann(r1_nondim, r2_nondim):
+def get_tof_hohmann(r1_nondim, r2_nondim):
     a = (r1_nondim + r2_nondim) / 2
     tof_nondim = np.pi * (a ** 1.5)
     return tof_nondim
