@@ -4,8 +4,7 @@ import numpy as np
 import concurrent.futures
 import time
 from scipy import misc
-from numpy import pi
-
+from numpy import pi, sin, cos, sqrt, tan
 import Trajectory
 import kiam
 
@@ -868,6 +867,21 @@ class Test(unittest.TestCase):
             xrot1 = fkt.translations.kine2rot(xine1, t, t0)
             np.testing.assert_allclose(xrot1, xrot0, rtol=rtol, atol=atol)
 
+    def test_kmer2lvlh_klvlh2mer(self):
+
+        rtol = 1.0e-13
+        atol = 1.0e-13
+
+        for _ in range(100):
+            xmer0 = np.random.randn(3,)
+            lat = np.random.rand() * pi - pi / 2
+            lon = np.random.rand() * 2 * pi
+            xlvlh0 = fkt.translations.kmer2lvlh(xmer0, lat, lon)
+            xmer1 = fkt.translations.klvlh2mer(xlvlh0, lat, lon)
+            xlvlh1 = fkt.translations.kmer2lvlh(xmer1, lat, lon)
+            np.testing.assert_allclose(xmer0, xmer1, rtol=rtol, atol=atol)
+            np.testing.assert_allclose(xlvlh0, xlvlh1, rtol=rtol, atol=atol)
+
     def test_stm(self):
         central_body = 'earth'
         tspan = [0.0, 5*2*pi]
@@ -922,6 +936,43 @@ class Test(unittest.TestCase):
         _, dfdx_true = complex_function(x0, True)
         da = np.max(np.abs(dfdx_num - dfdx_true))
         print(da)
+
+    def test_isvisible(self):
+
+        r_sat = np.array([2.0, 0.0, 0.0])
+        status, elev_deg, azim_deg = kiam.is_visible(r_sat, 0.0, 0.0, 1.0, 0.0)
+        np.testing.assert_array_equal(status, np.array([[1]]))
+        np.testing.assert_array_equal(elev_deg, np.array([[90.0]]))
+        np.testing.assert_array_equal(azim_deg, np.array([[0.0]]))
+
+        r_sat = np.array([2.0, 0.0, 0.0])
+        lat_deg = np.array([0.0, 0.0])
+        long_deg = np.array([0.0, 0.0])
+        status, elev_deg, azim_deg = kiam.is_visible(r_sat, lat_deg, long_deg, 1.0, 0.0)
+        np.testing.assert_array_equal(status, np.array([[1, 1]]))
+        np.testing.assert_array_equal(elev_deg, np.array([[90.0, 90.0]]))
+        np.testing.assert_array_equal(azim_deg, np.array([[0.0, 0.0]]))
+
+        t0 = 0.0
+        jd0 = kiam.juliandate(2022, 1, 1, 0, 0, 0)
+        s0 = np.array([2.0, 0.0, 0.0, 0.0, 1/sqrt(2.0), 0.0])
+        tr = Trajectory.Trajectory(s0, t0, jd0, 'rv', 'scrs', 'moon')
+        tr.set_model('rv', 'nbp', 'moon', [])
+        tr.model['data']['jd_zero'] = jd0
+        tr.model['data']['area'] = 2.0
+        tr.model['data']['mass'] = 100.0
+        tr.model['data']['order'] = 1
+
+        tr.propagate(10, 10)
+
+        r_sat = tr.states[0:3, :]
+        lat_deg = np.array([0.0,  0.0])
+        long_deg = np.array([0.0, 90.0])
+        body_radius = 1.0
+        threshold_deg = 0.0
+
+        status, elev_deg, azim_deg = kiam.is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
+
 
 if __name__ == '__main__':
     unittest.main()

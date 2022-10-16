@@ -1017,6 +1017,44 @@ module Translations
 			
 		
 		end subroutine ksors2scrs
+		subroutine klvlh2mer(xlvlh, lat, lon, xmer)
+		
+			implicit none
+			
+			real(dp), intent(in) :: xlvlh(3), lat, lon
+			real(dp), intent(out) :: xmer(3)
+			real(dp) :: lvlh2mer(3,3), e1(3), e2(3), e3(3)
+			
+			e1 = [ -sin(lon), cos(lon), 0.0D0 ]
+			e2 = [ -sin(lat)*cos(lon), -sin(lat)*sin(lon), cos(lat) ]
+			e3 = [ cos(lat)*cos(lon), cos(lat)*sin(lon), sin(lat) ]
+		
+			lvlh2mer(:, 1) = e1
+			lvlh2mer(:, 2) = e2
+			lvlh2mer(:, 3) = e3
+			
+			xmer = dotmv(lvlh2mer, xlvlh)
+		
+		end subroutine klvlh2mer
+		subroutine kmer2lvlh(xmer, lat, lon, xlvlh)
+		
+			implicit none
+			
+			real(dp), intent(in) :: xmer(3), lat, lon
+			real(dp), intent(out) :: xlvlh(3)
+			real(dp) :: mer2lvlh(3,3), e1(3), e2(3), e3(3)
+			
+			e1 = [ -sin(lon), cos(lon), 0.0D0 ]
+			e2 = [ -sin(lat)*cos(lon), -sin(lat)*sin(lon), cos(lat) ]
+			e3 = [ cos(lat)*cos(lon), cos(lat)*sin(lon), sin(lat) ]
+		
+			mer2lvlh(1, :) = e1
+			mer2lvlh(2, :) = e2
+			mer2lvlh(3, :) = e3
+			
+			xlvlh = dotmv(mer2lvlh, xmer)
+		
+		end subroutine kmer2lvlh
 		
         function getQ(X,Y) result(Q)
         

@@ -5,6 +5,7 @@ import math
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from mpl_toolkits import mplot3d
 import pickle
 
 mpl.rcParams['figure.dpi'] = 150
@@ -31,50 +32,76 @@ def cotand(x):
     return 1/np.tan(x/180*np.pi)
 
 # Plotting functions
-def plot(x, y, style='-', LineWidth=1.5, xlabel='', ylabel=''):
-    plt.figure(layout='tight')
-    plt.plot(x, y, style, lw=LineWidth)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-    grid2d()
-    plt.axis('equal')
-    plt.show()
-def polarplot(r, phi, style='-', rmax=None):
-    fig, ax = plt.subplots(subplot_kw={'projection': 'polar'})
-    ax.plot(phi, r, style)
-    if rmax is not None:
-        ax.set_rmax(rmax)
-    ax.grid(True, linestyle=":", alpha=0.5)
-    plt.show()
-def plotcol(x, style='-', LineWidth=1.5, xlabel='', ylabel='', zlabel=''):
-    if x.shape[0] == 2:
-        plt.figure(layout='tight')
-        plt.plot(x[0, :], x[1, :], style, lw=LineWidth)
-        plt.xlabel(xlabel)
-        plt.ylabel(ylabel)
-        grid2d()
-        plt.axis('equal')
+def plot(x, y, ax=None, style='-', xlabel='', ylabel='', linewidth=1.0, show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots()
+    ax.plot(x, y, style, linewidth=linewidth)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
         plt.show()
-    elif x.shape[0] == 3:
-        fig = plt.figure(layout='tight')
-        ax = fig.add_subplot(projection='3d')
-        grid3d(ax)
-        ax.plot(x[0, :], x[1, :], x[2, :], style, lw=LineWidth)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.set_zlabel(zlabel)
-        plt.show()
-def grid2d():
-    plt.grid(True, linestyle=":", alpha=0.5)
-def grid3d(ax):
+    return ax
+def plot3(x, y, z, ax=None, style='-', xlabel='', ylabel='', zlabel='', linewidth=1.0, show=False, saveto=False):
+    if ax is None:
+        ax = plt.axes(projection='3d')
+    ax.plot3D(x, y, z, style, linewidth=linewidth)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_zlabel(zlabel)
     ax.xaxis._axinfo["grid"]['linestyle'] = ":"
     ax.yaxis._axinfo["grid"]['linestyle'] = ":"
     ax.zaxis._axinfo["grid"]['linestyle'] = ":"
-    ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
-    ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
-    ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 1.0))
+    ax.xaxis.pane.fill = False
+    ax.yaxis.pane.fill = False
+    ax.zaxis.pane.fill = False
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return ax
+def polar_plot(phi, r, ax=None, rmax=None, style='-', linewidth=1.0, show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots(subplot_kw={'projection': 'polar'})
+    ax.plot(phi, r, style, linewidth=linewidth)
+    if rmax is not None:
+        ax.set_rmax(rmax)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return ax
+def histogram(x, num_bins=None, density=False, ax=None, xlabel='', ylabel='', show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots()
+    n, bins, patches = ax.hist(x, bins=num_bins, density=density)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return ax, {'n': n, 'bins': bins, 'patches': patches}
+def boxplot(x, ax=None, xlabel='', ylabel='', show=False, saveto=False):
+    if ax is None:
+        _, ax = plt.subplots()
+    data = ax.boxplot(x, vert=True)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.grid(True, alpha=0.5, linestyle=':')
+    if saveto:
+        plt.savefig(saveto, dpi=300)
+    if show:
+        plt.show()
+    return ax, data
+def save_plot(saveto):
+    plt.savefig(saveto, dpi=300)
 
-# Translations.
+# Translations
 def deg2rad(deg):
     return deg/180*np.pi
 def rad2deg(rad):
@@ -111,11 +138,17 @@ def ee2rv(ee, mu, grad_req=False):
 def cart2sphere(cart):
     return fkt.translations.kcart2sphere(cart)
 def sphere2cart(sphere):
-    return fkt.translations.sphere2cart(sphere)
+    return fkt.translations.ksphere2cart(sphere)
 def cart2latlon(cart):
-    return fkt.translations.kcart2latlon(cart)
+    if len(cart.shape) == 2:
+        return fkt.translations.kcart2latlon(cart)
+    elif len(cart.shape) == 1:
+        return fkt.translations.kcart2latlon(np.reshape(cart, (3, 1)))[:, 0]
 def latlon2cart(latlon):
-    return fkt.translations.latlon2cart(latlon)
+    if len(latlon.shape) == 2:
+        return fkt.translations.klatlon2cart(latlon)
+    elif len(latlon.shape) == 1:
+        return fkt.translations.klatlon2cart(np.reshape(latlon, (2, 1)))[:, 0]
 def itrs2gcrs(xitrs, jd, grad_req=False):
     out = fkt.translations.kitrs2gcrs(xitrs, jd)
     return _return_if_grad_req(out, grad_req)
@@ -126,11 +159,31 @@ def scrs2pa(xscrs, jd, grad_req=False):
     out = fkt.translations.kscrs2pa(xscrs, jd)
     return _return_if_grad_req(out, grad_req)
 def scrs2mer(xscrs, jd, grad_req=False):
-    out = fkt.translations.kscrs2mer(xscrs, jd)
-    return _return_if_grad_req(out, grad_req)
+    chunk = 10000
+    dim = xscrs.shape[0]
+    ncols = xscrs.shape[1]
+    xmer = np.empty((dim, ncols))
+    dxmer = np.empty((dim, dim, ncols))
+    for i in range(int(np.ceil(ncols/chunk))):
+        cols = np.arange(i*chunk, min((i+1)*chunk, ncols))
+        xmer[:, cols], dxmer[:, :, cols] = fkt.translations.kscrs2mer(xscrs[:, cols], jd[cols])
+    if grad_req:
+        return xmer, dxmer
+    else:
+        return xmer
 def mer2scrs(xmer, jd, grad_req=False):
-    out = fkt.translations.kmer2scrs(xmer, jd)
-    return _return_if_grad_req(out, grad_req)
+    chunk = 10000
+    dim = xmer.shape[0]
+    ncols = xmer.shape[1]
+    xscrs = np.empty((dim, ncols))
+    dxscrs = np.empty((dim, dim, ncols))
+    for i in range(int(np.ceil(ncols / chunk))):
+        cols = np.arange(i * chunk, min((i + 1) * chunk, ncols))
+        xscrs[:, cols], dxscrs[:, :, cols] = fkt.translations.kmer2scrs(xmer[:, cols], jd[cols])
+    if grad_req:
+        return xscrs, dxscrs
+    else:
+        return xscrs
 def scrs2gcrs(xscrs, jd, DistUnit, VelUnit):
     return fkt.translations.kscrs2gcrs(xscrs, jd, DistUnit, VelUnit)
 def gcrs2scrs(xgcrs, jd, DistUnit, VelUnit):
@@ -153,6 +206,26 @@ def ine2rotEph(xine, jd, first_body, secondary_body, DistUnit, VelUnit):
     return fkt.translations.kine2roteph(xine, jd, first_body, secondary_body, DistUnit, VelUnit)
 def rot2ineEph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit):
     return fkt.translations.krot2ineeph(xrot, jd, first_body, secondary_body, DistUnit, VelUnit)
+def mer2lvlh(xmer, lat, lon):
+    if len(xmer.shape) == 1 and xmer.shape[0] == 3:
+        return fkt.translations.kmer2lvlh(xmer, lat, lon)
+    elif len(xmer.shape) == 2 and xmer.shape[0] == 3:
+        XLVLH = np.zeros((3, xmer.shape[1]))
+        for i in range(xmer.shape[1]):
+            XLVLH[:, i] = fkt.translations.kmer2lvlh(xmer[:, i], lat, lon)
+        return XLVLH
+    else:
+        raise 'xmer should be a 3d vector or a 3xN matrix.'
+def lvlh2mer(xlvlh, lat, lon):
+    if len(xlvlh.shape) == 1 and xlvlh.shape[0] == 3:
+        return fkt.translations.kxlvlh2mer(xlvlh, lat, lon)
+    elif len(xlvlh.shape) == 2 and xlvlh.shape[0] == 3:
+        XMER = np.zeros((3, xlvlh.shape[1]))
+        for i in range(xlvlh.shape[1]):
+            XMER[:, i] = fkt.translations.kxlvlh2mer(xlvlh[:, i], lat, lon)
+        return XMER
+    else:
+        raise 'xlvlh should be a 3d vector or a 3xN matrix.'
 
 # Units and constants.
 def units(*args):
@@ -242,16 +315,16 @@ def astro_const():
     planet['Neptune']['EquatorRadius'] = fkt.constantsandunits.neptune_equatorradius
     planet['Neptune']['SemimajorAxis'] = fkt.constantsandunits.neptune_semimajoraxis
 
-    moon['Moon']['OrbitsAround'] = fkt.constantsandunits.neptune_orbitsaround
-    moon['Moon']['GM'] = fkt.constantsandunits.neptune_gm
-    moon['Moon']['MeanRadius'] = fkt.constantsandunits.neptune_meanradius
-    moon['Moon']['SemimajorAxis'] = fkt.constantsandunits.neptune_semimajoraxis
+    moon['Moon']['OrbitsAround'] = fkt.constantsandunits.moon_orbitsaround
+    moon['Moon']['GM'] = fkt.constantsandunits.moon_gm
+    moon['Moon']['MeanRadius'] = fkt.constantsandunits.moon_meanradius
+    moon['Moon']['SemimajorAxis'] = fkt.constantsandunits.moon_semimajoraxis
 
-    small_body['Pluto']['OrbitsAround'] = fkt.constantsandunits.neptune_orbitsaround
-    small_body['Pluto']['GM'] = fkt.constantsandunits.neptune_gm
-    small_body['Pluto']['MeanRadius'] = fkt.constantsandunits.neptune_meanradius
-    small_body['Pluto']['EquatorRadius'] = fkt.constantsandunits.neptune_equatorradius
-    small_body['Pluto']['SemimajorAxis'] = fkt.constantsandunits.neptune_semimajoraxis
+    small_body['Pluto']['OrbitsAround'] = fkt.constantsandunits.pluto_orbitsaround
+    small_body['Pluto']['GM'] = fkt.constantsandunits.pluto_gm
+    small_body['Pluto']['MeanRadius'] = fkt.constantsandunits.pluto_meanradius
+    small_body['Pluto']['EquatorRadius'] = fkt.constantsandunits.pluto_equatorradius
+    small_body['Pluto']['SemimajorAxis'] = fkt.constantsandunits.pluto_semimajoraxis
 
     return uni_const, star, planet, moon, small_body
 
@@ -334,8 +407,55 @@ def prepare_sources_dict():
 
 # Visibility routines.
 def is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg):
-    vis_status, elev_deg, azim_deg = fkt.visibilitymodule.kisvisible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
-    return vis_status, elev_deg, azim_deg
+
+    # r_sat:         3d-vector or 3 x N matrix
+    # lat_deg:       scalar or vector
+    # long_deg:      scalar or vector
+    # threshold_deg: scalar or vector
+
+    if len(r_sat.shape) == 1:
+        if r_sat.shape[0] != 3:
+            raise 'r_sat as a vector should have 3 components.'
+        r_sat = np.reshape(r_sat, (3, 1), order='F')
+    if r_sat.shape[0] != 3 or len(r_sat.shape) != 2:
+        raise 'r_sat as a matrix should have N rows and 3 columns.'
+    r_sat = r_sat.copy().T / body_radius
+
+    if isinstance(lat_deg, (float, int)):
+        lat_deg = np.array([lat_deg])
+    if isinstance(long_deg, (float, int)):
+        long_deg = np.array([long_deg])
+    if len(lat_deg.shape) != 1:
+        raise 'lat_deg should be a scalar or a vector.'
+    if len(long_deg.shape) != 1:
+        raise 'long_deg should be a scalar or a vector.'
+    if lat_deg.shape[0] != long_deg.shape[0]:
+        raise 'lat_deg and long_deg should have the same size.'
+    lat_long = np.reshape(np.concatenate((lat_deg/180*np.pi, long_deg/180*np.pi), axis=0), (2, -1))
+
+    threshold = threshold_deg / 180 * np.pi
+    if isinstance(threshold, (float, int)):
+        threshold = np.full((r_sat.shape[0],), threshold)
+    if len(threshold.shape) != 1:
+        raise 'threshold_deg should be a scalar or a vector'
+    if threshold.shape[0] != r_sat.shape[0]:
+        raise 'threshold_deg should have r_sat.shape[0] number of elements'
+
+    fkt.visibilitymodule.r_sat = r_sat
+    fkt.visibilitymodule.lat_long = lat_long
+    fkt.visibilitymodule.threshold = threshold
+
+    fkt.visibilitymodule.isvisible(r_sat.shape[0], lat_long.shape[1])
+
+    status = fkt.visibilitymodule.status.copy()
+    elev = fkt.visibilitymodule.elev.copy()
+    azim = fkt.visibilitymodule.azim.copy()
+
+    status[status == -1] = 1
+    elev_deg = elev/np.pi*180
+    azim_deg = azim/np.pi*180
+
+    return status, elev_deg, azim_deg
 
 # Save and load routines.
 def save(variable, filename):
@@ -344,6 +464,27 @@ def save(variable, filename):
 def load(filename):
     with open(filename, 'rb') as f:
         return pickle.load(f)
+
+# General astrodynamics.
+def period_hours(altitude_km, body):
+    ku = units(body)
+    return 2*np.pi*np.sqrt((ku['DistUnit']+altitude_km)**3/ku['GM'])/3600.0
+def altitude_km(period_hours, body):
+    ku = units(body)
+    period = period_hours*3600
+    return (period**2/(4*np.pi**2)*ku['GM'])**(1/3) - ku['DistUnit']
+def circular_velocity_km_s(altitude_km, body):
+    ku = units(body)
+    return np.sqrt(ku['GM']/(ku['DistUnit'] + altitude_km))
+def dv_hohmann(r1_nondim, r2_nondim):
+    dv1 = np.sqrt(1.0 / r1_nondim) * (np.sqrt(2 * r2_nondim / (r1_nondim + r2_nondim)) - 1)
+    dv2 = np.sqrt(1.0 / r2_nondim) * (np.sqrt(2 * r1_nondim / (r1_nondim + r2_nondim)) - 1)
+    dv_nondim = dv1 + dv2
+    return dv_nondim
+def tof_hohmann(r1_nondim, r2_nondim):
+    a = (r1_nondim + r2_nondim) / 2
+    tof_nondim = np.pi * (a ** 1.5)
+    return tof_nondim
 
 # Trofimov-Shirobokov model.
 def get_order(altitude_thousands_km, approx_level='soft'):
