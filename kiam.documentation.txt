@@ -26,41 +26,31 @@ FUNCTIONS
         uni_const : dict
             Universal constants containing the speed of light (SoL) in km/s,
             astronomical unit (AU) in km, constant of gravitation (G) in km^3/kg/s^2, 
-            standard acceleration due to gravity (g0) in m/s^2, degrees in 1 radian (RA
-D).
+            standard acceleration due to gravity (g0) in m/s^2, degrees in 1 radian (RAD).
         star : dict
-            Contains constants of the Sun: the gravitational parameter (GM) in km^3/s^2
-,
+            Contains constants of the Sun: the gravitational parameter (GM) in km^3/s^2,
             the mean radius (MeanRadius) in km.
         planet : dict
             Contains constants of the planets (Mercury, Venus, Earth, Mars, Jupiter,  
-            Saturn, Uranus, Neptune). The keys of the dictionary are the names of the p
-lanets.
+            Saturn, Uranus, Neptune). The keys of the dictionary are the names of the planets.
             Eack planet[planet_name] is also a dictionary that contains the
             gravitational parameter of the planet (GM) in km^3/s^2,
-            the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in k
-m,
-            the semi-major axis of the orbit around the Sun (SemimajorAxis) in km. For 
-the Earth
+            the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in km,
+            the semi-major axis of the orbit around the Sun (SemimajorAxis) in km. For the Earth
             there are additionaly the obliquity of the ecliptic (Obliquity) in degrees
             and its time derivative (dObliquitydt) in arcsec/cy (cy = century years). 
         moon : dict
-            Contains constants of the moons (currently only of the Moon). The dictionar
-y
+            Contains constants of the moons (currently only of the Moon). The dictionary
             has a single key named Moon and moon['Moon'] is also a dictionary.        
-            That dictionary contains the gravitational parameter of the Moon (GM) in km
-^3/s^2,
+            That dictionary contains the gravitational parameter of the Moon (GM) in km^3/s^2,
             the mean raidus (MeanRadius) in km,
             the semi-major axis of the orbit around the Sun (SemimajorAxis) in km.    
         small_body : dict
-            Contains constants of the small celestial bodies (currently only of the Plu
-to).
-            The dictionary has a single key named Pluto and small_body['Pluto'] is also
- a
+            Contains constants of the small celestial bodies (currently only of the Pluto).
+            The dictionary has a single key named Pluto and small_body['Pluto'] is also a
             dictionary. That dictionary contains the
             gravitational parameter of the Pluto (GM) in km^3/s^2,
-            the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in k
-m,
+            the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in km,
             the semi-major axis of the orbit around the Sun (SemimajorAxis) in km.    
 
     boxplot(x, ax=None, xlabel='', ylabel='', show=False, saveto=False)
@@ -129,8 +119,7 @@ m,
             A cotangent or array of cotangents of angles in degrees.
 
     cr3bp_fb(t: float, s: numpy.ndarray, mu: float, stm_req: bool) -> numpy.ndarray   
-        Right-hand side of the circular restricted three-body problem equations of moti
-on
+        Right-hand side of the circular restricted three-body problem equations of motion
         wrt the first primary body.
 
         Parameters:
@@ -159,8 +148,7 @@ on
             [fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, ... ] if stm_req = True     
 
     cr3bp_sb(t: float, s: numpy.ndarray, mu: float, stm_req: bool) -> numpy.ndarray   
-        Right-hand side of the circular restricted three-body problem equations of moti
-on
+        Right-hand side of the circular restricted three-body problem equations of motion
         wrt the secondary primary body.
 
         Parameters:
@@ -372,17 +360,14 @@ t) -> numpy.ndarray
         Parameters:
         -----------
         r1_nondim : float
-            Nondimensional distance to the center of mass of the central body at the st
-art.
+            Nondimensional distance to the center of mass of the central body at the start.
         r2_nondim : float
-            Nondimensional distance to the center of mass of the central body at the en
-d.
+            Nondimensional distance to the center of mass of the central body at the end.
 
         Returns:
         --------
         dv : float
-            Nondimensional delta-v in the Hohmann transfer connecting r1_nondim and r2_
-nondim.
+            Nondimensional delta-v in the Hohmann transfer connecting r1_nondim and r2_nondim.
             It is assumed that the gravitational parameter equals 1.0.
 
     get_order(altitude_thousands_km: float, approx_level: str = 'soft') -> int        
@@ -423,11 +408,9 @@ nondim.
         Parameters:
         -----------
         r1_nondim : float
-            Nondimensional distance to the center of mass of the central body at the st
-art.
+            Nondimensional distance to the center of mass of the central body at the start.
         r2_nondim : float
-            Nondimensional distance to the center of mass of the central body at the en
-d.
+            Nondimensional distance to the center of mass of the central body at the end.
 
         Returns:
         --------
@@ -472,8 +455,7 @@ e, saveto=False)
         t : numpy.ndarray, shape (n,)
             Times corresponding columns of xine
         t0 : numpy.ndarray, shape (1,), (n,)
-            Times corresponding to coincidence of INE and ROT c/s for each column of xi
-ne
+            Times corresponding to coincidence of INE and ROT c/s for each column of xine
 
         Returns:
         --------
@@ -705,8 +687,7 @@ umpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]
 
     nbp_ee_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, 
 units_data: dict) -> numpy.ndarray
-        Right-hand side of the n-body problem equations of motion wrt the Earth in term
-s of
+        Right-hand side of the n-body problem equations of motion wrt the Earth in terms of
         the equinoctial orbital elements.
 
         Parameters:
@@ -752,8 +733,7 @@ s of
             'moon'      (Gravitational acceleration of the Moon)
             'cmplxmoon' (Complex gravitational acceleration of the Moon)
             If sources[key] = True, the corresponding perturbation will be accounted. 
-            If sources[key] = False, the corresponding perturbation will not be account
-ed.
+            If sources[key] = False, the corresponding perturbation will not be accounted.
             The sources dictionary with all False values can be created by
             the kiam.prepare_sources_dict() function.
         data : dict
@@ -761,10 +741,8 @@ ed.
             The dictionary keys:
             'jd_zero' (Julian date that corresponds to t = 0)
             'order'   (Order of the lunar complex gravitational field)
-            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m
-^2)
-            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, k
-g)
+            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m^2)
+            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, kg)
             The data should be submitted even if the corresponding perturbations      
             are not accounted.
         units_data : dict
@@ -781,8 +759,7 @@ g)
         Returns:
         --------
         f : numpy.ndarray, shape (6,), (42,)
-            Phase state time dericatives according to the specified n-body problem equa
-tions
+            Phase state time dericatives according to the specified n-body problem equations
             of motion extended (if stm_req = True) by the derivative of the
             state-transition matrix.
             Vector structure:
@@ -791,8 +768,7 @@ tions
 
     nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, u
 nits_data: dict) -> numpy.ndarray
-        Right-hand side of the n-body problem equations of motion wrt the Moon in terms
- of
+        Right-hand side of the n-body problem equations of motion wrt the Moon in terms of
         the equinoctial orbital elements.
 
         Parameters:
@@ -838,8 +814,7 @@ nits_data: dict) -> numpy.ndarray
             'moon'      (Gravitational acceleration of the Moon)
             'cmplxmoon' (Complex gravitational acceleration of the Moon)
             If sources[key] = True, the corresponding perturbation will be accounted. 
-            If sources[key] = False, the corresponding perturbation will not be account
-ed.
+            If sources[key] = False, the corresponding perturbation will not be accounted.
             The sources dictionary with all False values can be created by
             the kiam.prepare_sources_dict() function.
         data : dict
@@ -847,10 +822,8 @@ ed.
             The dictionary keys:
             'jd_zero' (Julian date that corresponds to t = 0)
             'order'   (Order of the lunar complex gravitational field)
-            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m
-^2)
-            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, k
-g)
+            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m^2)
+            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, kg)
             The data should be submitted even if the corresponding perturbations      
             are not accounted.
         units_data : dict
@@ -867,8 +840,7 @@ g)
         Returns:
         --------
         f : numpy.ndarray, shape (6,), (42,)
-            Phase state time dericatives according to the specified n-body problem equa
-tions
+            Phase state time dericatives according to the specified n-body problem equations
             of motion extended (if stm_req = True) by the derivative of the
             state-transition matrix.
             Vector structure:
@@ -877,8 +849,7 @@ tions
 
     nbp_rv_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, 
 units_data: dict) -> numpy.ndarray
-        Right-hand side of the n-body problem equations of motion wrt the Earth in term
-s of
+        Right-hand side of the n-body problem equations of motion wrt the Earth in terms of
         the position and velocity variables.
 
         Parameters:
@@ -911,8 +882,7 @@ s of
             'moon'      (Gravitational acceleration of the Moon)
             'cmplxmoon' (Complex gravitational acceleration of the Moon)
             If sources[key] = True, the corresponding perturbation will be accounted. 
-            If sources[key] = False, the corresponding perturbation will not be account
-ed.
+            If sources[key] = False, the corresponding perturbation will not be accounted.
             The sources dictionary with all False values can be created by
             the kiam.prepare_sources_dict() function.
         data : dict
@@ -920,10 +890,8 @@ ed.
             The dictionary keys:
             'jd_zero' (Julian date that corresponds to t = 0)
             'order'   (Order of the lunar complex gravitational field)
-            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m
-^2)
-            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, k
-g)
+            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m^2)
+            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, kg)
             The data should be submitted even if the corresponding perturbations      
             are not accounted.
         units_data : dict
@@ -940,8 +908,7 @@ g)
         Returns:
         --------
         f : numpy.ndarray, shape (6,), (42,)
-            Gravitational acceleration according to the specified n-body problem equati
-ons
+            Gravitational acceleration according to the specified n-body problem equations
             of motion extended (if stm_req = True) by the derivative of the
             state-transition matrix.
             Vector structure:
@@ -950,8 +917,7 @@ ons
 
     nbp_rv_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, u
 nits_data: dict) -> numpy.ndarray
-        Right-hand side of the n-body problem equations of motion wrt the Moon in terms
- of
+        Right-hand side of the n-body problem equations of motion wrt the Moon in terms of
         the position and velocity variables.
 
         Parameters:
@@ -984,8 +950,7 @@ nits_data: dict) -> numpy.ndarray
             'moon'      (Gravitational acceleration of the Moon)
             'cmplxmoon' (Complex gravitational acceleration of the Moon)
             If sources[key] = True, the corresponding perturbation will be accounted. 
-            If sources[key] = False, the corresponding perturbation will not be account
-ed.
+            If sources[key] = False, the corresponding perturbation will not be accounted.
             The sources dictionary with all False values can be created by
             the kiam.prepare_sources_dict() function.
         data : dict
@@ -993,10 +958,8 @@ ed.
             The dictionary keys:
             'jd_zero' (Julian date that corresponds to t = 0)
             'order'   (Order of the lunar complex gravitational field)
-            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m
-^2)
-            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, k
-g)
+            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m^2)
+            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, kg)
             The data should be submitted even if the corresponding perturbations      
             are not accounted.
         units_data : dict
@@ -1013,8 +976,7 @@ g)
         Returns:
         --------
         f : numpy.ndarray, shape (6,), (42,)
-            Gravitational acceleration according to the specified n-body problem equati
-ons
+            Gravitational acceleration according to the specified n-body problem equations
             of motion extended (if stm_req = True) by the derivative of the
             state-transition matrix.
             Vector structure:
@@ -1113,8 +1075,7 @@ at, gm4b, a4b: float, theta0: float, stm: bool) -> tuple
         x0 : numpy.ndarray, shape (6,), (42,)
             Initial state containing:
             position and velocity (if stm = False),
-            position and velocoty extended by vectorized state-transition matrix (if st
-m = True),
+            position and velocoty extended by vectorized state-transition matrix (if stm = True),
             Vectory structure:
             [x, y, z, vx, vy, vz] if stm = False
             [x, y, z, vx, vy, vz, m11, m21, m31, ...] if stm = True
@@ -1155,8 +1116,7 @@ at, stm: bool) -> tuple
         x0 : numpy.ndarray, shape (6,), (42,)
             Initial state containing:
             position and velocity (if stm = False),
-            position and velocoty extended by vectorized state-transition matrix (if st
-m = True),
+            position and velocoty extended by vectorized state-transition matrix (if stm = True),
             Vectory structure:
             [x, y, z, vx, vy, vz] if stm = False
             [x, y, z, vx, vy, vz, m11, m21, m31, ...] if stm = True
@@ -1188,18 +1148,14 @@ ict: dict, dat_dict: dict, stm: bool, variables: str) -> tuple
         x0: numpy.ndarray, shape (6,), (42,)
             Initial state containing:
             position and velocity (if variables = 'rv', stm = False),
-            position and velocoty extended by vectorized state-transition matrix (if va
-riables = 'rv_stm', stm = True),
+            position and velocoty extended by vectorized state-transition matrix (if variables = 'rv_stm', stm = True),
             equinoctial orbital elements (if variables = 'ee', stm = False),
-            equinoctial orbital elements extended by vectorized state-transition matrix
- (if variables = 'ee_stm', stm = True),
+            equinoctial orbital elements extended by vectorized state-transition matrix (if variables = 'ee_stm', stm = True),
             Vectory structure:
             [x, y, z, vx, vy, vz] if variables = 'rv' and stm = False
-            [x, y, z, vx, vy, vz, m11, m21, m31, ...] if variables = 'rv_stm' and stm =
- True
+            [x, y, z, vx, vy, vz, m11, m21, m31, ...] if variables = 'rv_stm' and stm = True
             [h, ex, ey, ix, iy, L] if variables = 'ee' and stm = False
-            [h, ex, ey, ix, iy, L, m11, m21, m31, ...] if variables = 'ee_stm' and stm 
-= True
+            [h, ex, ey, ix, iy, L, m11, m21, m31, ...] if variables = 'ee_stm' and stm = True
             h = sqrt(p/mu),
             ex = e*cos(Omega+omega),
             ey = e*sin(Omega+omega),
@@ -1231,8 +1187,7 @@ riables = 'rv_stm', stm = True),
             'moon'      (Gravitational acceleration of the Moon)
             'cmplxmoon' (Complex gravitational acceleration of the Moon)
             If sources[key] = True, the corresponding perturbation will be accounted. 
-            If sources[key] = False, the corresponding perturbation will not be account
-ed.
+            If sources[key] = False, the corresponding perturbation will not be accounted.
             The sources dictionary with all False values can be created by
             the kiam.prepare_sources_dict() function.
         dat_dict: dict
@@ -1240,10 +1195,8 @@ ed.
             The dictionary keys:
             'jd_zero' (Julian date that corresponds to t = 0)
             'order'   (Order of the lunar complex gravitational field)
-            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m
-^2)
-            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, k
-g)
+            'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m^2)
+            'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, kg)
             The data should be submitted even if the corresponding perturbations      
             are not accounted.
         stm: bool
@@ -1262,11 +1215,9 @@ g)
             vectorized state-transition matrices.
             Vector structure:
             [x, y, z, vx, vy, vz] if stm = False and variables = 'rv'
-            [x, y, z, vx, vy, vz, m11, m21, m31, ... ] if stm = True and variables = 'r
-v_stm'
+            [x, y, z, vx, vy, vz, m11, m21, m31, ... ] if stm = True and variables = 'rv_stm'
             [h, ex, ey, ix, iy, L] if stm = False and variables = 'ee'
-            [h, ex, ey, ix, iy, L, m11, m21, m31, ... ] if stm = True and variables = '
-ee_stm'
+            [h, ex, ey, ix, iy, L, m11, m21, m31, ... ] if stm = True and variables = 'ee_stm'
             h = sqrt(p/mu),
             ex = e*cos(Omega+omega),
             ey = e*sin(Omega+omega),
@@ -1347,8 +1298,7 @@ ee_stm'
         t : numpy.ndarray, shape (n,)
             Times corresponding columns of xrot
         t0 : numpy.ndarray, shape (1,), (n,)
-            Times corresponding to coincidence of INE and ROT c/s for each column of xr
-ot
+            Times corresponding to coincidence of INE and ROT c/s for each column of xrot
 
         Returns:
         --------
@@ -1541,8 +1491,7 @@ rray, tuple[numpy.ndarray, numpy.ndarray]]
         xsors : numpy.ndarray, shape (3,n), (6,n)
             Array of 3D or 6D column vectors in the SORS coordinate system
         dxsors : numpy.ndarray, shape (3,3,n), (6,6,n)
-            Array of matrices of partial derivatives of xsors wrt xscrs (dxsors/dxscrs)
-.
+            Array of matrices of partial derivatives of xsors wrt xscrs (dxsors/dxscrs).
             Returns only if grad_req = True
 
     sind(x: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]
@@ -1576,8 +1525,7 @@ rray, tuple[numpy.ndarray, numpy.ndarray]]
         xscrs : numpy.ndarray, shape (3,n), (6,n)
             Array of 3D or 6D column vectors in the SCRS coordinate system
         dxscrs : numpy.ndarray, shape (3,3,n), (6,6,n)
-            Array of matrices of partial derivatives of xscrs wrt xsors (dxscrs/dxsors)
-.
+            Array of matrices of partial derivatives of xscrs wrt xsors (dxscrs/dxsors).
             Returns only if grad_req = True
 
     sphere2cart(sphere: numpy.ndarray) -> numpy.ndarray
