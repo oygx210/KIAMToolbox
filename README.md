@@ -44,7 +44,7 @@ KIAM Astrodynamics Toolbox - это библиотека, написанная �
 
 "Библиотека KIAM Astrodynamics Toolbox, Широбоков М.Г., MIT license, см. https://github.com/shmaxg/KIAMToolbox"
 
-"Package KIAM Astrodynamics Toolbox by Maksim Shirobokov, MIT license see https://github.com/shmaxg/KIAMToolbox for details"
+"Package KIAM Astrodynamics Toolbox by Maksim Shirobokov, MIT license, see https://github.com/shmaxg/KIAMToolbox for details"
 
 В дальнейшем здесь появится ссылка на статью, описывающая библиотеку, на которую также можно ссылаться.
 
