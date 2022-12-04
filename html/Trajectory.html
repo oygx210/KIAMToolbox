@@ -315,7 +315,7 @@ It also initializes tr.model['data'] property.</p>
 <p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p></div>
 </dd>
 <dt id="Trajectory.Trajectory.show"><code class="name flex">
-<span>def <span class="ident">show</span></span>(<span>self, variables: str) ‑> None</span>
+<span>def <span class="ident">show</span></span>(<span>self, variables: str)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plots the specified characteristics of the trajectory.</p>
@@ -347,7 +347,10 @@ It also initializes tr.model['data'] property.</p>
 <p>'iy' plots iy = tan(i/2)*sin(Omega) wrt time</p>
 <p>'L' plots L = theta + omega + Omega wrt time</p>
 </li>
-</ol></div>
+</ol>
+<h2 id="returns">Returns:</h2>
+<p>ax : matplotlib axis object</p>
+<p>The matplotlib axis object for further work.</p></div>
 </dd>
 </dl>
 </dd>
