@@ -460,7 +460,7 @@ class Trajectory:
 
         Returns:
         --------
-        ax : matplotlib axis object
+        `ax` : matplotlib axis object
 
         The matplotlib axis object for further work.
         """
@@ -721,32 +721,36 @@ class Trajectory:
                 raise Exception('Wrong units: rv2ee suggests earth or moon, mu = 1.0.')
             elif self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm.')
-            for i in range(self.states.shape[1]):
-                self.states[0:6, i] = kiam.rv2ee(self.states[0:6, i], 1.0)
+            self.states = kiam.rv2ee(self.states, 1.0)
+            # for i in range(self.states.shape[1]):
+            #    self.states[0:6, i] = kiam.rv2ee(self.states[0:6, i], 1.0)
             self.vars = 'ee'
         elif vars1 == 'ee' and vars2 == 'rv':  # mu = 1.0
             if self.units_name != 'earth' and self.units_name != 'moon':
                 raise Exception('Wrong units: ee2rv suggests earth or moon, mu = 1.0.')
             elif self.vars != 'ee' and self.vars != 'eem':
                 raise Exception('Vars should be ee or eem.')
-            for i in range(self.states.shape[1]):
-                self.states[0:6, i] = kiam.ee2rv(self.states[0:6, i], 1.0)
+            self.states = kiam.ee2rv(self.states, 1.0)
+            # for i in range(self.states.shape[1]):
+            #    self.states[0:6, i] = kiam.ee2rv(self.states[0:6, i], 1.0)
             self.vars = 'rv'
         elif vars1 == 'rv' and vars2 == 'oe':  # mu = 1.0
             if self.units_name != 'earth' and self.units_name != 'moon':
                 raise Exception('Wrong units: rv2oe suggests earth or moon, mu = 1.0.')
             elif self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm.')
-            for i in range(self.states.shape[1]):
-                self.states[0:6, i] = kiam.rv2oe(self.states[0:6, i], 1.0)
+            self.states = kiam.rv2oe(self.states, 1.0)
+            # for i in range(self.states.shape[1]):
+            #    self.states[0:6, i] = kiam.rv2oe(self.states[0:6, i], 1.0)
             self.vars = 'oe'
         elif vars1 == 'oe' and vars2 == 'rv':  # mu = 1.0
             if self.units_name != 'earth' and self.units_name != 'moon':
                 raise Exception('Wrong units: oe2rv suggests earth or moon, mu = 1.0.')
             elif self.vars != 'oe' and self.vars != 'oem':
                 raise Exception('Vars should be oe or oem.')
-            for i in range(self.states.shape[1]):
-                self.states[0:6, i] = kiam.oe2rv(self.states[0:6, i], 1.0)
+            self.states = kiam.oe2rv(self.states, 1.0)
+            # for i in range(self.states.shape[1]):
+            #    self.states[0:6, i] = kiam.oe2rv(self.states[0:6, i], 1.0)
             self.vars = 'rv'
         elif vars1 == 'rvm' and vars2 == 'eem':
             self._vars_transform('rv', 'ee')
@@ -869,18 +873,24 @@ class Trajectory:
                 raise Exception('Vars should be rv or rvm')
             elif self.system != 'itrs':
                 raise Exception('System should be itrs.')
-            for i in range(self.states.shape[1]):
-                self.states[0:3, i] = kiam.itrs2gcrs(self.states[0:3, i], self.jds[i])
-                self.states[3:6, i] = kiam.itrs2gcrs(self.states[3:6, i], self.jds[i])
+            self.states[0:6] = kiam.itrs2gcrs(self.states[0:6], self.jds)
+            # self.states[0:3, :] = kiam.itrs2gcrs(self.states[0:3, :], self.jds)
+            # self.states[3:6, :] = kiam.itrs2gcrs(self.states[3:6, :], self.jds)
+            # for i in range(self.states.shape[1]):
+            #    self.states[0:3, i] = kiam.itrs2gcrs(self.states[0:3, i], self.jds[i])
+            #    self.states[3:6, i] = kiam.itrs2gcrs(self.states[3:6, i], self.jds[i])
             self.system = 'gcrs'
         elif system1 == 'gcrs' and system2 == 'itrs':
             if self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm')
             elif self.system != 'gcrs':
                 raise Exception('System should be gcrs.')
-            for i in range(self.states.shape[1]):
-                self.states[0:3, i] = kiam.gcrs2itrs(self.states[0:3, i], self.jds[i])
-                self.states[3:6, i] = kiam.gcrs2itrs(self.states[3:6, i], self.jds[i])
+            self.states[0:6] = kiam.gcrs2itrs(self.states[0:6], self.jds)
+            # self.states[0:3, :] = kiam.gcrs2itrs(self.states[0:3, :], self.jds)
+            # self.states[3:6, :] = kiam.gcrs2itrs(self.states[3:6, :], self.jds)
+            # for i in range(self.states.shape[1]):
+            #    self.states[0:3, i] = kiam.gcrs2itrs(self.states[0:3, i], self.jds[i])
+            #    self.states[3:6, i] = kiam.gcrs2itrs(self.states[3:6, i], self.jds[i])
             self.system = 'itrs'
         elif system1 == 'gcrs' and system2 == 'gsrf_em':
             if self.vars != 'rv' and self.vars != 'rvm':

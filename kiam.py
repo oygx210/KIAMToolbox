@@ -72,7 +72,7 @@ def dotainvb(a: numpy.ndarray, b: numpy.ndarray) -> numpy.ndarray:
     """
     c = numpy.linalg.solve(b.T, a.T)
     return c.T
-def eyevec(n: int) -> numpy.ndarray:
+def eye2vec(n: int) -> numpy.ndarray:
     """
     Vector form of an identity matrix.
 
@@ -89,6 +89,69 @@ def eyevec(n: int) -> numpy.ndarray:
     Vector form of the identity matrix.
     """
     return numpy.reshape(numpy.eye(n), (n**2,))
+def mat2vec(a: numpy.ndarray) -> numpy.ndarray:
+    """
+    Square matrix to vector form translation.
+
+    Parameters:
+    -----------
+    a : numpy.ndarray, shape (n, n)
+
+    A square matrix.
+
+    Returns:
+    --------
+    v : numpy.ndarray, shape (n**2,)
+
+    Vector form of the matrix.
+
+    Vector structure (Fortran/MATLAB order): [a11, a21, a31, ... ]
+
+    Examples:
+    ---------
+    ```
+    >> a = numpy.array([[1, 2], [3, 4]])
+
+    >> v = kiam.mat2vec(a)
+
+    [1 3 2 4]
+    ```
+    """
+    v = numpy.reshape(a, (a.size,), order='F')
+    return v
+def vec2mat(v: numpy.ndarray) -> numpy.ndarray:
+    """
+    Vector to square matrix translation.
+
+    Parameters:
+    -----------
+    v : numpy.ndarray, shape (n**2,)
+
+    Vector.
+
+    Returns:
+    --------
+
+    a : numpy.ndarray, shape (n, n)
+
+    A square matrix.
+
+    Matrix structure (Fortran/MATLAB order): [[v1, v2, ..., vn], [v_(n+1), ...]].T
+
+    Examples:
+    ---------
+    ```
+    >> v = numpy.array([1, 2, 3, 4])
+
+    >> m = kiam.vec2mat(v)
+
+    [[1 3]
+
+    [2 4]]
+    ```
+    """
+    a = numpy.reshape(v, (int(round(numpy.sqrt(v.size))), -1), order='F')
+    return a
 def to_float(*args: Any) -> tuple:
     """
     Convert all arguments to the float64 type.
@@ -247,7 +310,7 @@ def boxplot(x, ax=None, xlabel='', ylabel='', show=False, saveto=False):
 def save_plot(saveto):
     plt.savefig(saveto, dpi=300)
 
-# Ephemeris information
+# Ephemeris information (documented with examples)
 def jd2time(jd: float) -> datetime.datetime:
     """
     Julian date to usual date and time.
@@ -266,9 +329,11 @@ def jd2time(jd: float) -> datetime.datetime:
 
     Examples:
     ---------
+    ```
     >> jd2time(2459905.5)
 
     2022-11-22 00:00:00
+    ```
     """
     gcal = jdcal.jd2gcal(2400000.5, jd - 2400000.5)
     frac_hours = gcal[3] * 24
@@ -299,9 +364,11 @@ def time2jd(time: datetime.datetime) -> float:
 
     Examples:
     ---------
+    ```
     >> time2jd(datetime.datetime(2022, 11, 22, 0, 0, 0, 0))
 
     2459905.5
+    ```
     """
     return sum(jdcal.gcal2jd(time.year, time.month, time.day)) + time.hour / 24 + \
         time.minute / 1440 + time.second / 86400 + (time.microsecond / 1000000) / 86400
@@ -343,9 +410,11 @@ def juliandate(year: int, month: int, day: int, hour: int, minute: int, second: 
 
     Examples:
     ---------
+    ```
     >> juliandate(2022, 11, 22, 0, 0, 0)
 
     2459905.5
+    ```
     """
     # return fkt.ephemeris.juliandate(year, month, day, hour, minute, second)
     return time2jd(datetime.datetime(year, month, day, hour, minute, second, 0))
@@ -378,16 +447,18 @@ def planet_state(jd: float, center: str, target: str) -> numpy.ndarray:
 
     Examples:
     ---------
+    ```
 
-        planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
+    >> planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
 
-        [ 3.76623766e+05  7.07472988e+04  1.01213236e+04
+    [ 3.76623766e+05  7.07472988e+04  1.01213236e+04
         -1.36269070e-01 8.97864551e-01  4.72492325e-01]
+    ```
     """
 
     return fkt.ephemeris.planetstate(jd, target, center)
 
-# Translations (documented without examples)
+# Translations (documented with examples)
 def deg2rad(deg: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     """
     Degrees to radians conversion.
@@ -406,9 +477,11 @@ def deg2rad(deg: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
 
     Examples:
     ---------
+    ```
     >> deg2rad(180)
 
     3.141592653589793
+    ```
     """
     return deg/180*numpy.pi
 def rad2deg(rad: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
@@ -429,9 +502,11 @@ def rad2deg(rad: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
 
     Examples:
     ---------
+    ```
     >> rad2deg(3.141592)
 
     179.99996255206332
+    ```
     """
     return rad/numpy.pi*180
 def rv2oe(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
@@ -440,9 +515,9 @@ def rv2oe(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Parameters:
     -----------
-    `rv` : numpy.ndarray, shape (6,)
+    `rv` : numpy.ndarray, shape (6,), (6,n)
 
-    6D phase vector containing position and velocity.
+    6D phase vector or array of column 6D phase vectors containing position and velocity.
 
     Vector structure: [x, y, z, vx, dy, dz].
 
@@ -456,9 +531,9 @@ def rv2oe(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Returns:
     --------
-    `oe` : numpy.ndarray, shape (6,)
+    `oe` : numpy.ndarray, shape (6,), (6,n)
 
-    6D vector of classical orbital elements:
+    6D vector or array of 6D column vectors of classical orbital elements:
 
     a (semi-major axis),
 
@@ -472,13 +547,30 @@ def rv2oe(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     theta (true anomaly)
 
-    `doe` : numpy.ndarray, shape (6,6)
+    `doe` : numpy.ndarray, shape (6,6), (6,6,n)
 
-    6x6 matrix of partial derivatives of oe wrt rv (doe/drv).
+    6x6 matrix or 6x6xn array of partial derivatives of oe wrt rv (doe/drv).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    rv = numpy.array([1, 0, 0, 0.1, 1, 0.1])
+
+    oe = kiam.rv2oe(rv, 1.0, False)
+
+    oe, doe = kiam.rv2oe(rv, 1.0, True)
+    ```
     """
-    out = fkt.translations.krv2oe(rv, mu, grad_req)
+    if rv.shape == (6,):
+        out = fkt.translations.krv2oe(rv, mu, grad_req)
+    elif len(rv.shape) == 2 and rv.shape[0] == 6:
+        fkt.translations.rv_mat = rv
+        fkt.translations.krv2oe_mat(mu, grad_req)
+        out = (fkt.translations.oe_mat, fkt.translations.doe_mat)
+    else:
+        raise 'rv should be a 6D vector or a 6xn array of 6D column vectors.'
     return _return_if_grad_req(out, grad_req)
 def oe2rv(oe: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -486,9 +578,9 @@ def oe2rv(oe: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Parameters:
     -----------
-    `oe` : numpy.ndarray, shape (6,)
+    `oe` : numpy.ndarray, shape (6,), (6,n)
 
-    6D vector of classical orbital elements:
+    6D vector or array of 6D column vectors of classical orbital elements:
 
     a (semi-major axis),
 
@@ -512,19 +604,36 @@ def oe2rv(oe: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Returns:
     --------
-    `rv` : numpy.ndarray, shape (6,)
+    `rv` : numpy.ndarray, shape (6,), (6,n)
 
-    6D phase vector containing position and velocity.
+    6D phase vector or array of 6D column vectors containing position and velocity.
 
     Vector structure: [x, y, z, vx, dy, dz].
 
-    `drv` : numpy.ndarray, shape (6,6)
+    `drv` : numpy.ndarray, shape (6,6), (6,6,n)
 
-    6x6 matrix of partial derivatives of rv wrt oe (drv/doe).
+    6x6 matrix or 6x6xn array of partial derivatives of rv wrt oe (drv/doe).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    oe = numpy.array([1, 0.1, 1.0, 0.0, 0.0, 0.0])
+
+    rv = kiam.oe2rv(oe, 1.0, False)
+
+    rv, drv = kiam.oe2rv(oe, 1.0, True)
+    ```
     """
-    out = fkt.translations.koe2rv(oe, mu, grad_req)
+    if oe.shape == (6,):
+        out = fkt.translations.koe2rv(oe, mu, grad_req)
+    elif len(oe.shape) == 2 and oe.shape[0] == 6:
+        fkt.translations.oe_mat = oe
+        fkt.translations.koe2rv_mat(mu, grad_req)
+        out = (fkt.translations.rv_mat, fkt.translations.drv_mat)
+    else:
+        raise 'oe should be a 6D vector or a 6xn array of 6D column vectors.'
     return _return_if_grad_req(out, grad_req)
 def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -532,9 +641,9 @@ def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Parameters:
     -----------
-    `rv` : numpy.ndarray, shape (6,)
+    `rv` : numpy.ndarray, shape (6,), (6,)
 
-    6D phase vector containing position and velocity.
+    6D phase vector or array of 6D column vectors containing position and velocity.
 
     Vector structure: [x, y, z, vx, dy, dz]
 
@@ -548,9 +657,9 @@ def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Returns:
     --------
-    `ee` : numpy.ndarray, shape (6,)
+    `ee` : numpy.ndarray, shape (6,), (6,n)
 
-    6D vector of equinoctial orbital elements:
+    6D vector or array of 6D column vectors of equinoctial orbital elements:
 
     h = sqrt(p/mu),
 
@@ -578,13 +687,30 @@ def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     i - inclination.
 
-    `dee` : numpy.ndarray, shape (6,6)
+    `dee` : numpy.ndarray, shape (6,6), (6,6,n)
 
-    6x6 matrix of partial derivatives of ee wrt rv (dee/drv).
+    6x6 matrix or 6x6xn array of partial derivatives of ee wrt rv (dee/drv).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    rv = numpy.array([1, 0, 0, 0, 1, 0])
+
+    ee = kiam.rv2ee(rv, 1.0, False)
+
+    ee, dee = kiam.rv2ee(rv, 1.0, True)
+    ```
     """
-    out = fkt.translations.krv2ee(rv, mu, grad_req)
+    if rv.shape == (6,):
+        out = fkt.translations.krv2ee(rv, mu, grad_req)
+    elif len(rv.shape) == 2 and rv.shape[0] == 6:
+        fkt.translations.rv_mat = rv
+        fkt.translations.krv2ee_mat(mu, grad_req)
+        out = (fkt.translations.ee_mat, fkt.translations.dee_mat)
+    else:
+        raise 'rv should be a 6D vector or a 6xn array of 6D column vectors.'
     return _return_if_grad_req(out, grad_req)
 def ee2rv(ee: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -592,9 +718,9 @@ def ee2rv(ee: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Parameters:
     -----------
-    `ee` : numpy.ndarray, shape (6,)
+    `ee` : numpy.ndarray, shape (6,), (6,n)
 
-    6D vector of equinoctial orbital elements:
+    6D vector or array of 6D column vectors of equinoctial orbital elements:
 
     h = sqrt(p/mu),
 
@@ -632,19 +758,36 @@ def ee2rv(ee: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
 
     Returns:
     --------
-    `rv` : numpy.ndarray, shape (6,)
+    `rv` : numpy.ndarray, shape (6,), (6,n)
 
-    6D phase vector containing position and velocity.
+    6D phase vector or array of 6D column vectors containing position and velocity.
 
     Vector structure: [x, y, z, vx, dy, dz].
 
-    `drv` : numpy.ndarray, shape (6,6)
+    `drv` : numpy.ndarray, shape (6,6), (6,6,n)
 
-    6x6 matrix of partial derivatives of rv wrt ee (drv/dee).
+    6x6 matrix or 6x6xn array of partial derivatives of rv wrt ee (drv/dee).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    ee = numpy.array([1, 0, 0, 0, 0, 0])
+
+    rv = kiam.ee2rv(ee, 1.0, False)
+
+    rv, drv = kiam.ee2rv(ee, 1.0, True)
+    ```
     """
-    out = fkt.translations.kee2rv(ee, mu, grad_req)
+    if ee.shape == (6,):
+        out = fkt.translations.kee2rv(ee, mu, grad_req)
+    elif len(ee.shape) == 2 and ee.shape[0] == 6:
+        fkt.translations.ee_mat = ee
+        fkt.translations.kee2rv_mat(mu, grad_req)
+        out = (fkt.translations.rv_mat, fkt.translations.drv_mat)
+    else:
+        raise 'ee should be a 6D vector or a 6xn array of 6D column vectors.'
     return _return_if_grad_req(out, grad_req)
 def cart2sphere(cart: numpy.ndarray) -> numpy.ndarray:
     """
@@ -652,17 +795,17 @@ def cart2sphere(cart: numpy.ndarray) -> numpy.ndarray:
 
     Parameters:
     -----------
-    `cart` : numpy.ndarray, shape (3, n)
+    `cart` : numpy.ndarray, shape (3,), (3, n)
 
-    Array of column 3D vectors of Cartesian coordinates
+    3D vector or 3xn array of column 3D vectors of Cartesian coordinates
 
     Vector structure: [x, y, z]
 
     Returns:
     --------
-    `sphere` : numpy.ndarray, shape (3, n)
+    `sphere` : numpy.ndarray, shape (3,), (3, n)
 
-    Array of column 3D vectors of spherical coordinates
+    3D vector or 3xn array of column 3D vectors of spherical coordinates
 
     Vector structure: [r, phi, theta], where
 
@@ -675,17 +818,33 @@ def cart2sphere(cart: numpy.ndarray) -> numpy.ndarray:
     y = r*cos(theta)*sin(phi),
 
     z = r*sin(theta).
+
+    Examples:
+    ---------
+    ```
+    >> cart = numpy.array([1, 0, 0])
+
+    >> sphere = kiam.cart2sphere(cart)
+
+    [1.         0.         1.57079633]
+    ```
     """
-    return fkt.translations.kcart2sphere(cart)
+    if cart.shape == (3,):
+        out = fkt.translations.kcart2sphere(numpy.reshape(cart, (3, 1)))
+        return out[:, 0]
+    elif len(cart.shape) == 2 and cart.shape[0] == 3:
+        return fkt.translations.kcart2sphere(cart)
+    else:
+        raise 'cart should be a 3D vector or a 3xn array of vectors.'
 def sphere2cart(sphere: numpy.ndarray) -> numpy.ndarray:
     """
     Spherical coordinates to Cartesian coordinates.
 
     Parameters:
     -----------
-    `sphere` : numpy.ndarray, shape (3, n)
+    `sphere` : numpy.ndarray, shape (3,), (3, n)
 
-    Array of column 3D vectors of spherical coordinates
+    3D vector or 3xn array of column 3D vectors of spherical coordinates
 
     Vector structure: [r, phi, theta], where
 
@@ -701,13 +860,29 @@ def sphere2cart(sphere: numpy.ndarray) -> numpy.ndarray:
 
     Returns:
     --------
-    `cart` : numpy.ndarray, shape (3, n)
+    `cart` : numpy.ndarray, shape (3,), (3, n)
 
-    Array of column 3D vectors of Cartesian coordinates.
+    3D vector or 3xn array of column 3D vectors of Cartesian coordinates.
 
     Vector structure: [x, y, z].
+
+    Examples:
+    ---------
+    ```
+    >> sphere = numpy.array([1, 0, 0])
+
+    >> cart = kiam.sphere2cart(sphere)
+
+    [0. 0. 1.]
+    ```
     """
-    return fkt.translations.ksphere2cart(sphere)
+    if sphere.shape == (3,):
+        out = fkt.translations.ksphere2cart(numpy.reshape(sphere, (3, 1)))
+        return out[:, 0]
+    elif len(sphere.shape) == 2 and sphere.shape[0] == 3:
+        return fkt.translations.ksphere2cart(sphere)
+    else:
+        raise 'sphere should be a 3D vector or a 3xn array of vectors.'
 def cart2latlon(cart: numpy.ndarray) -> numpy.ndarray:
     """
     Cartesian coordinates to latitude and longitude.
@@ -731,7 +906,19 @@ def cart2latlon(cart: numpy.ndarray) -> numpy.ndarray:
     lat in [-pi/2, pi/2],
 
     lon in [-pi, pi].
+
+    Examples:
+    ---------
+    ```
+    >> cart = numpy.array([1, 0, 0])
+
+    >> latlon = kiam.cart2latlon(cart)
+
+    [0. 0.]
+    ```
     """
+    if cart.shape[0] != 3 or len(cart.shape) not in [1, 2]:
+        raise 'cart should be a 3D vector or array of 3D column vectors.'
     if len(cart.shape) == 2:
         return fkt.translations.kcart2latlon(cart)
     elif len(cart.shape) == 1:
@@ -759,24 +946,36 @@ def latlon2cart(latlon: numpy.ndarray) -> numpy.ndarray:
     3D vector or array of column 3D vectors of Cartesian coordinates.
 
     Vector structure: [x, y, z].
+
+    Examples:
+    ---------
+    ```
+    >> latlon = numpy.array([0, 0])
+
+    >> cart = kiam.latlon2cart(latlon)
+
+    [1. 0. 0.]
+    ```
     """
+    if latlon.shape[0] != 2 or len(latlon.shape) not in [1, 2]:
+        raise 'latlon should be a 2D vector or array of 2D column vectors.'
     if len(latlon.shape) == 2:
         return fkt.translations.klatlon2cart(latlon)
     elif len(latlon.shape) == 1:
         return fkt.translations.klatlon2cart(numpy.reshape(latlon, (2, 1)))[:, 0]
-def itrs2gcrs(xitrs: numpy.ndarray, jd: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+def itrs2gcrs(xitrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vector from ITRS c/s to GCRS c/s.
 
     Parameters:
     -----------
-    `xitrs` : numpy.ndarray, shape (3,)
+    `xitrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector in the ITRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the ITRS coordinate system
 
-    `jd` : float
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian date corresponding to xitrs
+    Julian date(s) corresponding to column(s) of xitrs
 
     `grad_req` : bool
 
@@ -784,31 +983,69 @@ def itrs2gcrs(xitrs: numpy.ndarray, jd: float, grad_req: bool = False) -> Union[
 
     Returns:
     --------
-    `xgcrs` : numpy.ndarray, shape (3,)
+    `xgcrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector in the GCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the GCRS coordinate system
 
-    `dxgcrs` : numpy.ndarray, shape (3,3)
+    `dxgcrs` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
-    3x3 matrix of partial derivatives of xgcrs wrt xitrs (dxgcrs/dxitrs).
+    3x3 or 6x6 matrix or 3x3xn or 6x6xn array of partial derivatives of xgcrs wrt xitrs (dxgcrs/dxitrs).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+    xitrs = numpy.array([1, 0, 0])
+
+    xgcrs = kiam.itrs2gcrs(xitrs, jd, False)
+
+    xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
+    ```
     """
-    out = fkt.translations.kitrs2gcrs(xitrs, jd)
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+
+    if len(xitrs.shape) == 1 and jd.shape[0] != 1:
+        raise 'If xitrs is a vector, then jd should be a single number.'
+    elif len(xitrs.shape) == 2 and xitrs.shape[1] != jd.shape[0]:
+        raise 'Number of columns in xitrs should equal number of elements in jd.'
+
+    if xitrs.shape == (3,):
+        out = fkt.translations.kitrs2gcrs(xitrs, jd)
+        return _return_if_grad_req(out, grad_req)
+
+    if xitrs.shape == (6,):
+        xitrs = numpy.reshape(xitrs, (6, 1))
+        fkt.translations.xitrs_mat = xitrs
+        fkt.translations.jd_mat = jd
+        fkt.translations.kitrs2gcrs_mat()
+        out = (fkt.translations.xgcrs_mat[:, 0], fkt.translations.dxgcrs_mat[:, :, 0])
+        return _return_if_grad_req(out, grad_req)
+
+    if len(xitrs.shape) == 2 and xitrs.shape[0] in [3, 6]:
+        fkt.translations.xitrs_mat = xitrs
+        fkt.translations.jd_mat = jd
+        fkt.translations.kitrs2gcrs_mat()
+        out = (fkt.translations.xgcrs_mat, fkt.translations.dxgcrs_mat)
+    else:
+        raise 'xitrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.'
     return _return_if_grad_req(out, grad_req)
-def gcrs2itrs(xgcrs: numpy.ndarray, jd: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+def gcrs2itrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vector from GCRS c/s to ITRS c/s.
 
     Parameters:
     -----------
-    `xgcrs` : numpy.ndarray, shape (3,)
+    `xgcrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector in the GCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the GCRS coordinate system
 
-    `jd` : float
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian date corresponding to xgcrs
+    Julian date(s) corresponding to column(s) in xgcrs
 
     `grad_req` : bool
 
@@ -816,31 +1053,69 @@ def gcrs2itrs(xgcrs: numpy.ndarray, jd: float, grad_req: bool = False) -> Union[
 
     Returns:
     --------
-    `xitrs` : numpy.ndarray, shape (3,)
+    `xitrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector in the ITRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the ITRS coordinate system
 
-    `dxitrs` : numpy.ndarray, shape (3,3)
+    `dxitrs` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
-    3x3 matrix of partial derivatives of xitrs wrt xgcrs (dxitrs/dxgcrs).
+    3x3 or 6x6 matrix or 3x3xn or 6x6xn array of partial derivatives of xitrs wrt xgcrs (dxitrs/dxgcrs).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+    xgcrs = numpy.array([1, 0, 0])
+
+    xitrs = kiam.gcrs2itrs(xgcrs, jd, False)
+
+    xitrs, dxitrs = kiam.gcrs2itrs(xgcrs, jd, True)
+    ```
     """
-    out = fkt.translations.kgcrs2itrs(xgcrs, jd)
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+
+    if len(xgcrs.shape) == 1 and jd.shape[0] != 1:
+        raise 'If xgcrs is a vector, then jd should be a single number.'
+    elif len(xgcrs.shape) == 2 and xgcrs.shape[1] != jd.shape[0]:
+        raise 'Number of columns in xgcrs should equal number of elements in jd.'
+
+    if xgcrs.shape == (3,):
+        out = fkt.translations.kgcrs2itrs(xgcrs, jd)
+        return _return_if_grad_req(out, grad_req)
+
+    if xgcrs.shape == (6,):
+        xgcrs = numpy.reshape(xgcrs, (6, 1))
+        fkt.translations.xgcrs_mat = xgcrs
+        fkt.translations.jd_mat = jd
+        fkt.translations.kgcrs2itrs_mat()
+        out = (fkt.translations.xitrs_mat[:, 0], fkt.translations.dxitrs_mat[:, :, 0])
+        return _return_if_grad_req(out, grad_req)
+
+    if len(xgcrs.shape) == 2 and xgcrs.shape[0] in [3, 6]:
+        fkt.translations.xgcrs_mat = xgcrs
+        fkt.translations.jd_mat = jd
+        fkt.translations.kgcrs2itrs_mat()
+        out = (fkt.translations.xitrs_mat, fkt.translations.dxitrs_mat)
+    else:
+        raise 'xgcrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.'
     return _return_if_grad_req(out, grad_req)
-def scrs2pa(xscrs: numpy.ndarray, jd: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+def scrs2pa(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vector from SCRS c/s to PA c/s.
 
     Parameters:
     -----------
-    `xscrs` : numpy.ndarray, shape (3,)
+    `xscrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D phase vector in the SCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system
 
-    `jd` : float
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian date corresponding to xscrs
+    Julian date(s) corresponding to column(s) in xscrs
 
     `grad_req` : bool
 
@@ -848,31 +1123,69 @@ def scrs2pa(xscrs: numpy.ndarray, jd: float, grad_req: bool = False) -> Union[nu
 
     Returns:
     --------
-    `xpa` : numpy.ndarray, shape (3,)
+    `xpa` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D phase vector in the PA coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the PA coordinate system
 
-    `dxpa` : numpy.ndarray, shape (3,3)
+    `dxpa` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
-    3x3 matrix of partial derivatives of xpa wrt xscrs (dxpa/dxscrs).
+    3x3 or 6x6 matrix or 3x3xn or 6x6xn array of partial derivatives of xpa wrt xscrs (dxpa/dxscrs).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+    xscrs = numpy.array([1, 0, 0])
+
+    xpa = kiam.scrs2pa(xscrs, jd, False)
+
+    xpa, dxpa = kiam.scrs2pa(xscrs, jd, True)
+    ```
     """
-    out = fkt.translations.kscrs2pa(xscrs, jd)
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+
+    if len(xscrs.shape) == 1 and jd.shape[0] != 1:
+        raise 'If xscrs is a vector, then jd should be a single number.'
+    elif len(xscrs.shape) == 2 and xscrs.shape[1] != jd.shape[0]:
+        raise 'Number of columns in xscrs should equal number of elements in jd.'
+
+    if xscrs.shape == (3,):
+        out = fkt.translations.kscrs2pa(xscrs, jd)
+        return _return_if_grad_req(out, grad_req)
+
+    if xscrs.shape == (6,):
+        xscrs = numpy.reshape(xscrs, (6, 1))
+        fkt.translations.xscrs_mat = xscrs
+        fkt.translations.jd_mat = jd
+        fkt.translations.kscrs2pa_mat()
+        out = (fkt.translations.xpa_mat[:, 0], fkt.translations.dxpa_mat[:, :, 0])
+        return _return_if_grad_req(out, grad_req)
+
+    if len(xscrs.shape) == 2 and xscrs.shape[0] in [3, 6]:
+        fkt.translations.xscrs_mat = xscrs
+        fkt.translations.jd_mat = jd
+        fkt.translations.kscrs2pa_mat()
+        out = (fkt.translations.xpa_mat, fkt.translations.dxpa_mat)
+    else:
+        raise 'xscrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.'
     return _return_if_grad_req(out, grad_req)
-def scrs2mer(xscrs: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+def scrs2mer(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vectors from SCRS c/s to MER c/s.
 
     Parameters:
     -----------
-    `xscrs` : numpy.ndarray, shape (3,n), (6,n)
+    `xscrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the SCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian dates corresponding to columns in xscrs
+    Julian date(s) corresponding to vector or columns in xscrs
 
     `grad_req` : bool
 
@@ -880,41 +1193,71 @@ def scrs2mer(xscrs: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) ->
 
     Returns:
     --------
-    `xmer` : numpy.ndarray, shape (3,n), (6,n)
+    `xmer` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the MER coordinate system.
+    3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system.
 
-    `dxmer` : numpy.ndarray, shape (3,3,n), (6,6,n)
+    `dxmer` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
-    Array of matrices of partial derivatives of xmer wrt xscrs (dxmer/dxscrs).
+    Matrix or array of matrices of partial derivatives of xmer wrt xscrs (dxmer/dxscrs).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    xscrs = numpy.array([1, 0, 0])
+
+    jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+    xmer = kiam.scrs2mer(xscrs, jd, False)
+
+    dxmer = kiam.scrs2mer(xscrs, jd, True)
+    ```
     """
+    initial_xscrs_shape = xscrs.shape
+    if len(initial_xscrs_shape) == 1:
+        xscrs = numpy.reshape(xscrs, (xscrs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
     chunk = 10000
     dim = xscrs.shape[0]
     ncols = xscrs.shape[1]
+    if dim != 3 and dim != 6:
+        raise 'xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+    if xscrs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xscrs should equal number of elements in jd.'
     xmer = numpy.empty((dim, ncols))
-    dxmer = numpy.empty((dim, dim, ncols))
-    for i in range(int(numpy.ceil(ncols/chunk))):
-        cols = numpy.arange(i*chunk, min((i+1)*chunk, ncols))
-        xmer[:, cols], dxmer[:, :, cols] = fkt.translations.kscrs2mer(xscrs[:, cols], jd[cols])
     if grad_req:
-        return xmer, dxmer
+        dxmer = numpy.empty((dim, dim, ncols))
+        for i in range(int(numpy.ceil(ncols / chunk))):
+            cols = numpy.arange(i * chunk, min((i + 1) * chunk, ncols))
+            xmer[:, cols], dxmer[:, :, cols] = fkt.translations.kscrs2mer(xscrs[:, cols], jd[cols])
+        if len(initial_xscrs_shape) == 1:
+            return xmer[:, 0], dxmer[:, :, 0]
+        else:
+            return xmer, dxmer
     else:
-        return xmer
-def mer2scrs(xmer: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+        for i in range(int(numpy.ceil(ncols / chunk))):
+            cols = numpy.arange(i * chunk, min((i + 1) * chunk, ncols))
+            xmer[:, cols], _ = fkt.translations.kscrs2mer(xscrs[:, cols], jd[cols])
+        if len(initial_xscrs_shape) == 1:
+            return xmer[:, 0]
+        else:
+            return xmer
+def mer2scrs(xmer: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vectors from MER c/s to SCRS c/s.
 
     Parameters:
     -----------
-    `xmer` : numpy.ndarray, shape (3,n), (6,n)
+    `xmer` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the MER coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian dates corresponding to columns in xmer
+    Julian date(s) corresponding to vector or columns in xmer
 
     `grad_req` : bool
 
@@ -922,41 +1265,71 @@ def mer2scrs(xmer: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -> 
 
     Returns:
     --------
-    `xscrs` : numpy.ndarray, shape (3,n), (6,n)
+    `xscrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 6D column vectors in the SCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system
 
-    `dxscrs` : numpy.ndarray, shape (3,3,n), (6,6,n)
+    `dxscrs` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
     Array of matrices of partial derivatives of xscrs wrt xmer (dxscrs/dxmer).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    xmer = numpy.array([1, 0, 0])
+
+    jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+    xscrs = kiam.mer2scrs(xmer, jd, False)
+
+    dxscrs = kiam.mer2scrs(xmer, jd, True)
+    ```
     """
+    initial_xmer_shape = xmer.shape
+    if len(initial_xmer_shape) == 1:
+        xmer = numpy.reshape(xmer, (xmer.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
     chunk = 10000
     dim = xmer.shape[0]
     ncols = xmer.shape[1]
+    if dim != 3 and dim != 6:
+        raise 'xmer should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+    if xmer.shape[1] != jd.shape[0]:
+        raise 'number of columns in xmer should equal number of elements in jd.'
     xscrs = numpy.empty((dim, ncols))
-    dxscrs = numpy.empty((dim, dim, ncols))
-    for i in range(int(numpy.ceil(ncols / chunk))):
-        cols = numpy.arange(i * chunk, min((i + 1) * chunk, ncols))
-        xscrs[:, cols], dxscrs[:, :, cols] = fkt.translations.kmer2scrs(xmer[:, cols], jd[cols])
     if grad_req:
-        return xscrs, dxscrs
+        dxscrs = numpy.empty((dim, dim, ncols))
+        for i in range(int(numpy.ceil(ncols / chunk))):
+            cols = numpy.arange(i * chunk, min((i + 1) * chunk, ncols))
+            xscrs[:, cols], dxscrs[:, :, cols] = fkt.translations.kmer2scrs(xmer[:, cols], jd[cols])
+        if len(initial_xmer_shape) == 1:
+            return xscrs[:, 0], dxscrs[:, :, 0]
+        else:
+            return xscrs, dxscrs
     else:
-        return xscrs
-def scrs2gcrs(xscrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_unit: float) -> numpy.ndarray:
+        for i in range(int(numpy.ceil(ncols / chunk))):
+            cols = numpy.arange(i * chunk, min((i + 1) * chunk, ncols))
+            xscrs[:, cols], _ = fkt.translations.kmer2scrs(xmer[:, cols], jd[cols])
+        if len(initial_xmer_shape) == 1:
+            return xscrs[:, 0]
+        else:
+            return xscrs
+def scrs2gcrs(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
     Translate phase vectors from SCRS c/s to GCRS c/s.
 
     Parameters:
     -----------
-    `xscrs` : numpy.ndarray, shape (6,n)
+    `xscrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the SCRS coordinate system
+    6D vector or array of 6D column phase vectors in the SCRS coordinate system
 
     Vector structure: [x, y, z, vx, vy, vz]
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
     Julian dates corresponding to columns in xscrs
 
@@ -970,26 +1343,64 @@ def scrs2gcrs(xscrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_uni
 
     Returns:
     --------
-    `xgcrs` : numpy.ndarray, shape (6,n)
+    `xgcrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the GCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the GCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    Example 1 (6D -> 6D):
+
+    ku = kiam.units('earth', 'moon')
+
+    xscrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    Example 2 (6x1 -> 6x1):
+
+    ku = kiam.units('earth', 'moon')
+
+    xscrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
+    ```
     """
-    return fkt.translations.kscrs2gcrs(xscrs, jd, dist_unit, vel_unit)
-def gcrs2scrs(xgcrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_unit: float) -> numpy.ndarray:
+    initial_xscrs_shape = xscrs.shape
+    if len(initial_xscrs_shape) == 1:
+        xscrs = numpy.reshape(xscrs, (xscrs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xscrs.shape[0]
+    if dim != 6:
+        raise 'xscrs should be a 6D vector or 6xn array of vectors.'
+    if xscrs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xscrs should equal number of elements in jd.'
+    xgcrs = fkt.translations.kscrs2gcrs(xscrs, jd, dist_unit, vel_unit)
+    if len(initial_xscrs_shape) == 1:
+        return xgcrs[:, 0]
+    else:
+        return xgcrs
+def gcrs2scrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
     Translate phase vectors from GCRS c/s to SCRS c/s.
 
     Parameters:
     -----------
-    `xgcrs` : numpy.ndarray, shape (6,n)
+    `xgcrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the GCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the GCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz]
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
     Julian dates corresponding to columns in xgcrs
 
@@ -1003,26 +1414,64 @@ def gcrs2scrs(xgcrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_uni
 
     Returns:
     --------
-    `xscrs` : numpy.ndarray, shape (6,n)
+    `xscrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the SCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the SCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    Example 1 (6D -> 6D):
+
+    ku = kiam.units('earth', 'moon')
+
+    xgcrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    Example 2 (6x1 -> 6x1)
+
+    ku = kiam.units('earth', 'moon')
+
+    xgcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+    ```
     """
-    return fkt.translations.kgcrs2scrs(xgcrs, jd, dist_unit, vel_unit)
-def hcrs2gcrs(xhcrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_unit: float) -> numpy.ndarray:
+    initial_xgcrs_shape = xgcrs.shape
+    if len(initial_xgcrs_shape) == 1:
+        xgcrs = numpy.reshape(xgcrs, (xgcrs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xgcrs.shape[0]
+    if dim != 6:
+        raise 'xgcrs should be a 6D vector or 6xn array of vectors.'
+    if xgcrs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xgcrs should equal number of elements in jd.'
+    xscrs = fkt.translations.kgcrs2scrs(xgcrs, jd, dist_unit, vel_unit)
+    if len(initial_xgcrs_shape) == 1:
+        return xscrs[:, 0]
+    else:
+        return xscrs
+def hcrs2gcrs(xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
     Translate phase vectors from HCRS c/s to GCRS c/s.
 
     Parameters:
     -----------
-    `xhcrs` : numpy.ndarray, shape (6,n)
+    `xhcrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the HCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the HCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
     Julian dates corresponding to columns in xhcrs
 
@@ -1036,26 +1485,64 @@ def hcrs2gcrs(xhcrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_uni
 
     Returns:
     --------
-    `xgcrs` : numpy.ndarray, shape (6,n)
+    `xgcrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the GCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the GCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    Example 1 (6D -> 6D)
+
+    ku = kiam.units('sun', 'earth')
+
+    xhcrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    Example 2 (6x1 -> 6x1)
+
+    ku = kiam.units('sun', 'earth')
+
+    xhcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
+    ```
     """
-    return fkt.translations.khcrs2gcrs(xhcrs, jd, dist_unit, vel_unit)
-def gcrs2hcrs(xgcrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_unit: float) -> numpy.ndarray:
+    initial_xhcrs_shape = xhcrs.shape
+    if len(initial_xhcrs_shape) == 1:
+        xhcrs = numpy.reshape(xhcrs, (xhcrs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xhcrs.shape[0]
+    if dim != 6:
+        raise 'xhcrs should be a 6D vector or 6xn array of vectors.'
+    if xhcrs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xhcrs should equal number of elements in jd.'
+    xgcrs = fkt.translations.khcrs2gcrs(xhcrs, jd, dist_unit, vel_unit)
+    if len(initial_xhcrs_shape) == 1:
+        return xgcrs[:, 0]
+    else:
+        return xgcrs
+def gcrs2hcrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
     Translate phase vectors from GCRS c/s to HCRS c/s.
 
     Parameters:
     -----------
-    `xgcrs` : numpy.ndarray, shape (6,n)
+    `xgcrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the GCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the GCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
     Julian dates corresponding to columns in xgcrs
 
@@ -1069,24 +1556,62 @@ def gcrs2hcrs(xgcrs: numpy.ndarray, jd: numpy.ndarray, dist_unit: float, vel_uni
 
     Returns:
     --------
-    `xhcrs` : numpy.ndarray, shape (6,n)
+    `xhcrs` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the HCRS coordinate system.
+    6D vector or array of 6D column phase vectors in the HCRS coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    Example 1 (6D -> 6D):
+
+    ku = kiam.units('sun', 'earth')
+
+    xgcrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    Example 2 (6x1 -> 6x1):
+
+    ku = kiam.units('sun', 'earth')
+
+    xgcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+    ```
     """
-    return fkt.translations.kgcrs2hcrs(xgcrs, jd, dist_unit, vel_unit)
-def scrs2sors(xscrs: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+    initial_xgcrs_shape = xgcrs.shape
+    if len(initial_xgcrs_shape) == 1:
+        xgcrs = numpy.reshape(xgcrs, (xgcrs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xgcrs.shape[0]
+    if dim != 6:
+        raise 'xgcrs should be a 6D vector or 6xn array of vectors.'
+    if xgcrs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xgcrs should equal number of elements in jd.'
+    xhcrs = fkt.translations.kgcrs2hcrs(xgcrs, jd, dist_unit, vel_unit)
+    if len(initial_xgcrs_shape) == 1:
+        return xhcrs[:, 0]
+    else:
+        return xhcrs
+def scrs2sors(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vectors from SCRS c/s to SORS c/s.
 
     Parameters:
     -----------
-    `xscrs` : numpy.ndarray, shape (3,n), (6,n)
+    `xscrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the SCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
     Julian dates corresponding to columns in xscrs
 
@@ -1096,29 +1621,60 @@ def scrs2sors(xscrs: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -
 
     Returns:
     --------
-    `xsors` : numpy.ndarray, shape (3,n), (6,n)
+    `xsors` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the SORS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SORS coordinate system
 
-    `dxsors` : numpy.ndarray, shape (3,3,n), (6,6,n)
+    `dxsors` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
-    Array of matrices of partial derivatives of xsors wrt xscrs (dxsors/dxscrs).
+    Matrix or array of matrices of partial derivatives of xsors wrt xscrs (dxsors/dxscrs).
 
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    xscrs = numpy.array([1, 0, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xsors = kiam.scrs2sors(xscrs, jd, False)
+
+    xsors, dxsors = kiam.scrs2sors(xscrs, jd, True)
+    ```
     """
-    out = fkt.translations.kscrs2sors(xscrs, jd)
-    return _return_if_grad_req(out, grad_req)
-def sors2scrs(xsors: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
+    initial_xscrs_shape = xscrs.shape
+    if len(initial_xscrs_shape) == 1:
+        xscrs = numpy.reshape(xscrs, (xscrs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xscrs.shape[0]
+    if dim != 3 and dim != 6:
+        raise 'xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+    if xscrs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xscrs should equal number of elements in jd.'
+    xsors, dxsors = fkt.translations.kscrs2sors(xscrs, jd)
+    if grad_req:
+        if len(initial_xscrs_shape) == 1:
+            return xsors[:, 0], dxsors[:, :, 0]
+        else:
+            return xsors, dxsors
+    else:
+        if len(initial_xscrs_shape) == 1:
+            return xsors[:, 0]
+        else:
+            return xsors
+def sors2scrs(xsors: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
     Translate vectors from SORS c/s to SCRS c/s.
 
     Parameters:
     -----------
-    `xsors` : numpy.ndarray, shape (3,n), (6,n)
+    `xsors` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the SORS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SORS coordinate system
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
     Julian dates corresponding to columns in xsors
 
@@ -1128,98 +1684,196 @@ def sors2scrs(xsors: numpy.ndarray, jd: numpy.ndarray, grad_req: bool = False) -
 
     Returns:
     --------
-    `xscrs` : numpy.ndarray, shape (3,n), (6,n)
+    `xscrs` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    Array of 3D or 6D column vectors in the SCRS coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system
 
-    `dxscrs` : numpy.ndarray, shape (3,3,n), (6,6,n)
+    `dxscrs` : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)
 
-    Array of matrices of partial derivatives of xscrs wrt xsors (dxscrs/dxsors).
+    Matrix or array of matrices of partial derivatives of xscrs wrt xsors (dxscrs/dxsors).
+
     Returns only if `grad_req = True`.
+
+    Examples:
+    ---------
+    ```
+    xsors = numpy.array([1, 0, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xscrs = kiam.sors2scrs(xsors, jd, False)
+
+    xscrs, dxscrs = kiam.sors2scrs(xsors, jd, True)
+    ```
     """
-    out = fkt.translations.ksors2scrs(xsors, jd)
-    return _return_if_grad_req(out, grad_req)
-def ine2rot(xine: numpy.ndarray, t: numpy.ndarray, t0: numpy.ndarray) -> numpy.ndarray:
+    initial_xsors_shape = xsors.shape
+    if len(initial_xsors_shape) == 1:
+        xsors = numpy.reshape(xsors, (xsors.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xsors.shape[0]
+    if dim != 3 and dim != 6:
+        raise 'xsors should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+    if xsors.shape[1] != jd.shape[0]:
+        raise 'number of columns in xsors should equal number of elements in jd.'
+    xscrs, dxscrs = fkt.translations.ksors2scrs(xsors, jd)
+    if grad_req:
+        if len(initial_xsors_shape) == 1:
+            return xscrs[:, 0], dxscrs[:, :, 0]
+        else:
+            return xscrs, dxscrs
+    else:
+        if len(initial_xsors_shape) == 1:
+            return xscrs[:, 0]
+        else:
+            return xscrs
+def ine2rot(xine: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float, numpy.ndarray]) -> numpy.ndarray:
     """
     Translate phase vectors from INE c/s to ROT c/s.
 
     Parameters:
     -----------
-    `xine` : numpy.ndarray, shape (6,n)
+    `xine` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the INE coordinate system.
+    6D vector or array of 6D column phase vectors in the INE coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
 
-    `t` : numpy.ndarray, shape (n,)
+    `t` : float, numpy.ndarray, shape (1,), (n,)
 
-    Times corresponding columns of xine
+    Time(s) corresponding to column(s) of xine
 
-    `t0` : numpy.ndarray, shape (1,), (n,)
+    `t0` : float, numpy.ndarray, shape (1,), (n,)
 
-    Times corresponding to coincidence of INE and ROT c/s for each column of xine.
+    Time(s) of INE and ROT c/s coincidence for each column of xine.
 
     Returns:
     --------
-    `xrot` : numpy.ndarray, shape (6,n)
+    `xrot` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the ROT coordinate system.
+    6D vector or array of 6D column phase vectors in the ROT coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    xine = numpy.array([1, 0, 0, 0, 1, 0])
+
+    t = 1.0
+
+    t0 = 0.0
+
+    xrot = kiam.ine2rot(xine, t, t0)
+    ```
     """
-    return fkt.translations.kine2rot(xine, t, t0)
-def rot2ine(xrot: numpy.ndarray, t: numpy.ndarray, t0: numpy.ndarray) -> numpy.ndarray:
+    initial_xine_shape = xine.shape
+    if len(initial_xine_shape) == 1:
+        xine = numpy.reshape(xine, (xine.shape[0], 1))
+    if type(t) == float or t.shape == ():
+        t = numpy.reshape(t, (1,))
+    if type(t0) == float or t0.shape == ():
+        t0 = numpy.reshape(t0, (1,))
+    dim = xine.shape[0]
+    if dim != 6:
+        raise 'xine should be a 6D vector or 6xn array of vectors.'
+    if xine.shape[1] != t.shape[0]:
+        raise 'number of columns in xine should equal number of elements in t.'
+    if xine.shape[1] != t0.shape[0] and 1 != t0.shape[0]:
+        raise 'number of elements in t0 should equal 1 or number of elements in xine.'
+    xrot = fkt.translations.kine2rot(xine, t, t0)
+    if len(initial_xine_shape) == 1:
+        return xrot[:, 0]
+    else:
+        return xrot
+def rot2ine(xrot: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float, numpy.ndarray]) -> numpy.ndarray:
     """
     Translate phase vectors from ROT c/s to INE c/s.
 
     Parameters:
     -----------
-    `xrot` : numpy.ndarray, shape (6,n)
+    `xrot` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the ROT coordinate system.
+    6D vector or array of 6D column phase vectors in the ROT coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
 
-    `t` : numpy.ndarray, shape (n,)
+    `t` : float, numpy.ndarray, shape (n,)
 
-    Times corresponding columns of xrot
+    Time(s) corresponding to column(s) of xrot
 
-    `t0` : numpy.ndarray, shape (1,), (n,)
+    `t0` : float, numpy.ndarray, shape (1,), (n,)
 
-    Times corresponding to coincidence of INE and ROT c/s for each column of xrot.
+    Time(s) of of INE and ROT c/s coincidence for each column of xrot.
 
     Returns:
     --------
-    `xine` : numpy.ndarray, shape (6,n)
+    `xine` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the INE coordinate system.
+    6D vector or array of 6D column phase vectors in the INE coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    xrot = numpy.array([1, 0, 0, 0, 0, 0])
+
+    t = 1.0
+
+    t0 = 0.0
+
+    xine = kiam.rot2ine(xrot, t, t0)
+    ```
     """
-    return fkt.translations.krot2ine(xrot, t, t0)
-def ine2rot_eph(xine: numpy.ndarray, jd: numpy.ndarray, first_body: str, secondary_body: str, dist_unit: float, vel_unit: float) -> numpy.ndarray:
+    initial_xrot_shape = xrot.shape
+    if len(initial_xrot_shape) == 1:
+        xrot = numpy.reshape(xrot, (xrot.shape[0], 1))
+    if type(t) == float or t.shape == ():
+        t = numpy.reshape(t, (1,))
+    if type(t0) == float or t0.shape == ():
+        t0 = numpy.reshape(t0, (1,))
+    dim = xrot.shape[0]
+    if dim != 6:
+        raise 'xrot should be a 6D vector or 6xn array of vectors.'
+    if xrot.shape[1] != t.shape[0]:
+        raise 'number of columns in xrot should equal number of elements in t.'
+    if xrot.shape[1] != t0.shape[0] and 1 != t0.shape[0]:
+        raise 'number of elements in t0 should equal 1 or number of elements in xrot.'
+    xine = fkt.translations.krot2ine(xrot, t, t0)
+    if len(initial_xrot_shape) == 1:
+        return xine[:, 0]
+    else:
+        return xine
+def ine2rot_eph(xine: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body: str, secondary_body: str, dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
     Translate phase vectors from INEEPH c/s to ROTEPH c/s.
 
     Parameters:
     -----------
-    `xine` : numpy.ndarray, shape (6,n)
+    `xine` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the INEEPH coordinate system.
+    6D vector or array of 6D column phase vectors in the INEEPH coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian dates corresponding to columns in xine
+    Julian date(s) corresponding to column(s) in xine
 
     `first_body` : str
 
     Name of the first primary body
 
+    Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+    'jupiter', 'saturn', 'uranus', 'neptune'
+
     `secondary_body` : str
 
     Name of the secondary primary body
+
+    Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+    'jupiter', 'saturn', 'uranus', 'neptune'
 
     `dist_unit` : float
 
@@ -1231,36 +1885,72 @@ def ine2rot_eph(xine: numpy.ndarray, jd: numpy.ndarray, first_body: str, seconda
 
     Returns:
     --------
-    `xrot` : numpy.ndarray, shape (6,n)
+    `xrot` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the ROTEPH coordinate system.
+    6D vector or array of 6D column phase vectors in the ROTEPH coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    xine = numpy.array([1, 0, 0, 0, 1, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    ku = kiam.units('earth', 'moon')
+
+    xrot = kiam.ine2rot_eph(xine, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+    ```
     """
-    return fkt.translations.kine2roteph(xine, jd, first_body, secondary_body, dist_unit, vel_unit)
-def rot2ine_eph(xrot: numpy.ndarray, jd: numpy.ndarray, first_body: str, secondary_body: str, dist_unit: float, vel_unit: float) -> numpy.ndarray:
+    first_body = first_body.capitalize()
+    secondary_body = secondary_body.capitalize()
+    if first_body == secondary_body:
+        raise 'Bodies should be different.'
+    initial_xine_shape = xine.shape
+    if len(initial_xine_shape) == 1:
+        xine = numpy.reshape(xine, (xine.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xine.shape[0]
+    if dim != 6:
+        raise 'xine should be a 6D vector or 6xn array of vectors.'
+    if xine.shape[1] != jd.shape[0]:
+        raise 'number of columns in xine should equal number of elements in jd.'
+    xrot = fkt.translations.kine2roteph(xine, jd, first_body, secondary_body, dist_unit, vel_unit)
+    if len(initial_xine_shape) == 1:
+        return xrot[:, 0]
+    else:
+        return xrot
+def rot2ine_eph(xrot: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body: str, secondary_body: str, dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
     Translate phase vectors from ROTEPH c/s to INEEPH c/s.
 
     Parameters:
     -----------
-    `xrot` : numpy.ndarray, shape (6,n)
+    `xrot` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the ROTEPH coordinate system.
+    6D vector array or 6D column phase vectors in the ROTEPH coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
 
-    `jd` : numpy.ndarray, shape (n,)
+    `jd` : float, numpy.ndarray, shape (n,)
 
-    Julian dates corresponding to columns in xrot
+    Julian date(s) corresponding to column(s) in xrot
 
     `first_body` : str
 
     Name of the first primary body
 
+    Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+    'jupiter', 'saturn', 'uranus', 'neptune'
+
     `secondary_body` : str
 
     Name of the secondary primary body
+
+    Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+    'jupiter', 'saturn', 'uranus', 'neptune'
 
     `dist_unit` : float
 
@@ -1272,80 +1962,146 @@ def rot2ine_eph(xrot: numpy.ndarray, jd: numpy.ndarray, first_body: str, seconda
 
     Returns:
     --------
-    `xine` : numpy.ndarray, shape (6,n)
+    `xine` : numpy.ndarray, shape (6,), (6,n)
 
-    Array of 6D column phase vectors in the INEEPH coordinate system.
+    6D vector or array of 6D column phase vectors in the INEEPH coordinate system.
 
     Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    xrot = numpy.array([1, 0, 0, 0, 1, 0])
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    ku = kiam.units('earth', 'moon')
+
+    xine = kiam.ine2rot_eph(xrot, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+    ```
     """
-    return fkt.translations.krot2ineeph(xrot, jd, first_body, secondary_body, dist_unit, vel_unit)
+    initial_xrot_shape = xrot.shape
+    if len(initial_xrot_shape) == 1:
+        xrot = numpy.reshape(xrot, (xrot.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xrot.shape[0]
+    if dim != 6:
+        raise 'xrot should be a 6D vector or 6xn array of vectors.'
+    if xrot.shape[1] != jd.shape[0]:
+        raise 'number of columns in xrot should equal number of elements in jd.'
+    xine = fkt.translations.krot2ineeph(xrot, jd, first_body, secondary_body, dist_unit, vel_unit)
+    if len(initial_xrot_shape) == 1:
+        return xine[:, 0]
+    else:
+        return xine
 def mer2lvlh(xmer: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
     """
     Translate phase vector(s) from MER c/s to LVLH c/s.
 
     Parameters:
     -----------
-    `xmer` : numpy.ndarray, shape (3,), (3,n)
+    `xmer` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector or array of 3D column phase vectors in the MER coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system
 
     `lat` : float
 
-    Latitude that specifies the LVLH c/s
+    Latitude that specifies the LVLH c/s in radians
 
     `lon` : float
-        Longitude that specifies the LVLH c/s
+
+    Longitude that specifies the LVLH c/s in radians
 
     Returns:
     --------
-    `xlvlh` : numpy.ndarray, shape (3,), (3,n)
+    `xlvlh` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector or array of 3D column phase vectors in the LVLH coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the LVLH coordinate system
+
+    Examples:
+    ---------
+    ```
+    xmer = numpy.array([1, 2, 3])
+
+    lat = 0.0
+
+    lon = 1.0
+
+    xlvlh = kiam.mer2lvlh(xmer, lat, lon)
+    ```
     """
-    if len(xmer.shape) == 1 and xmer.shape[0] == 3:
+
+    if xmer.shape[0] not in [3, 6]:
+        raise 'xmer should be a 3D or 6D vector or array of column 3D or 6D vectors'
+
+    if xmer.shape == (3,):
         return fkt.translations.kmer2lvlh(xmer, lat, lon)
-    elif len(xmer.shape) == 2 and xmer.shape[0] == 3:
-        XLVLH = numpy.zeros((3, xmer.shape[1]))
-        for i in range(xmer.shape[1]):
-            XLVLH[:, i] = fkt.translations.kmer2lvlh(xmer[:, i], lat, lon)
-        return XLVLH
-    else:
-        raise 'xmer should be a 3d vector or a 3xN matrix.'
+
+    if xmer.shape == (6,):
+        xmer = numpy.reshape(xmer, (6, 1))
+        fkt.translations.xmer_mat = xmer
+        fkt.translations.kmer2lvlh_mat(lat, lon)
+        return fkt.translations.xlvlh_mat[:, 0]
+
+    if len(xmer.shape) == 2:
+        fkt.translations.xmer_mat = xmer
+        fkt.translations.kmer2lvlh_mat(lat, lon)
+        return fkt.translations.xlvlh_mat
 def lvlh2mer(xlvlh: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
     """
     Translate phase vector(s) from LVLH c/s to MER c/s.
 
     Parameters:
     -----------
-    `xlvlh` : numpy.ndarray, shape (3,), (3,n)
+    `xlvlh` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector or array of 3D column phase vectors in the LVLH coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the LVLH coordinate system
 
     `lat` : float
 
-    Latitude that specifies the LVLH c/s
+    Latitude that specifies the LVLH c/s in radians
 
     `lon` : float
 
-    Longitude that specifies the LVLH c/s
+    Longitude that specifies the LVLH c/s in radians
 
     Returns:
     --------
-    `xmer` : numpy.ndarray, shape (3,), (3,n)
+    `xmer` : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)
 
-    3D vector or array of 3D column phase vectors in the MER coordinate system
+    3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system
+
+    Examples:
+    ---------
+    ```
+    xlvlh = numpy.array([1, 2, 3])
+
+    lat = 0.0
+
+    lon = 1.0
+
+    xmer = kiam.lvlh2mer(xlvlh, lat, lon)
+    ```
     """
-    if len(xlvlh.shape) == 1 and xlvlh.shape[0] == 3:
-        return fkt.translations.klvlh2mer(xlvlh, lat, lon)
-    elif len(xlvlh.shape) == 2 and xlvlh.shape[0] == 3:
-        XMER = numpy.zeros((3, xlvlh.shape[1]))
-        for i in range(xlvlh.shape[1]):
-            XMER[:, i] = fkt.translations.kxlvlh2mer(xlvlh[:, i], lat, lon)
-        return XMER
-    else:
-        raise 'xlvlh should be a 3d vector or a 3xN matrix.'
+    if xlvlh.shape[0] not in [3, 6]:
+        raise 'xlvlh should be a 3D or 6D vector or array of column 3D or 6D vectors'
 
-# Units and constants (documented without examples)
+    if xlvlh.shape == (3,):
+        return fkt.translations.klvlh2mer(xlvlh, lat, lon)
+
+    if xlvlh.shape == (6,):
+        xlvlh = numpy.reshape(xlvlh, (6, 1))
+        fkt.translations.xlvlh_mat = xlvlh
+        fkt.translations.klvlh2mer_mat(lat, lon)
+        return fkt.translations.xmer_mat[:, 0]
+
+    if len(xlvlh.shape) == 2:
+        fkt.translations.xlvlh_mat = xlvlh
+        fkt.translations.klvlh2mer_mat(lat, lon)
+        return fkt.translations.xmer_mat
+
+# Units and constants (documented with examples)
 def units(*args: str) -> dict:
     """
     Get units of distance, velocity, and time.
@@ -1354,13 +2110,30 @@ def units(*args: str) -> dict:
     -----------
     `*args`
 
-    Name of a pair of names of a celestial bodies
+    Name or a pair of names of a celestial bodies
+
+    Options for a single argument: 'earth', 'moon', 'sun', 'mercury', 'venus',
+    'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'
+
+    Options for two arguments: ('earth', 'moon'), ('sun', 'earth')
 
     Returns:
     --------
     `units_dict` : dict
 
     A dictionary containing the units of distance, velocity, and time.
+
+    Examples:
+    ---------
+    ```
+    un = kiam.units('earth')
+
+    DU = un['DistUnit']  # Unit of distance for the earth system of units
+
+    un = kiam.units('earth', 'moon')
+
+    VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
+    ```
     """
     units_info = {}
     if len(args) == 1:
@@ -1395,7 +2168,7 @@ def astro_const() -> tuple[dict, dict, dict, dict, dict]:
 
     `star` : dict
 
-    Contains constants of the Sun: the gravitational parameter (GM) in km^3/s^2,
+    Contains a dictionary that constants of the Sun: the gravitational parameter (GM) in km^3/s^2,
     the mean radius (MeanRadius) in km.
 
     `planet` : dict
@@ -1425,6 +2198,20 @@ def astro_const() -> tuple[dict, dict, dict, dict, dict]:
     gravitational parameter of the Pluto (GM) in km^3/s^2,
     the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in km,
     the semi-major axis of the orbit around the Sun (SemimajorAxis) in km.
+
+    Examples:
+    ---------
+    ```
+    uni_const, star, planet, moon, small_body = astro_const()  # If you need all the dicts
+
+    _, star, planet, _, _ = astro_const()  # If you need only star and planet dicts
+
+    star['Sun']['MeanRadius']  # Mean radius of the Sun
+
+    planet['Earth']['GM']  # Gravitational parameter of the Earth
+
+    planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
+    ```
     """
 
     uni_const = {}
