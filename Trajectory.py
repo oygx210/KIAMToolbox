@@ -123,6 +123,69 @@ class Trajectory:
 
         It can be 'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.
 
+        Properties:
+        -----------
+        `finalDate` : datetime.datetime
+
+        The date and time of the last phase state in trajectory.
+
+        `initialDate` : datetime.datetime
+
+        The date and time of the first phase state in trajectory.
+
+        `jds` : numpy.ndarray, shape(n,)
+
+        Julian dates corresponding to phase vectors in states property.
+
+        `model` : dict
+
+        The model used for trajectory propagation.
+
+        `parts` : list[int]
+
+        The numbers of nodes between which the trajectory was sequentially propagated.
+
+        `states` : numpy.array, shape(m,n)
+
+        Phase vectors along the trajectory.
+
+        `system` : str
+
+        The current coordinate system.
+
+        `system_graph` : networkx.classes.graph.Graph
+
+        The graph of transormations between coordinate systems.
+
+        `times` : numpy.array(n,)
+
+        Times along the trajectory.
+
+        `units` : dict
+
+        The dictionary of the current units.
+
+        `units_graph` : networkx.classes.graph.Graph
+
+        The graph of transormations between units.
+
+        `units_name` : str
+
+        The name of the current units.
+
+        `vars` : str
+
+        The current variables.
+
+        `vars_graph` : networkx.classes.digraph.DiGraph
+
+        The graph of transormations between variables.
+
+        Examples:
+        ---------
+
+        Examples can be found in kiam_examples.py.
+
         """
 
         variables = variables.lower()
@@ -333,7 +396,10 @@ class Trajectory:
                 self._set_model_units('moon')
                 self.model['system'] = 'scrs'
             else:
-                raise Exception('Unknown model.')
+                raise Exception('Unknown model for the current variables and primary.')
+
+        else:
+            raise Exception('Unknown model type.')
 
     def propagate(self, tof: float, npoints: int = 2) -> None:
         """
@@ -471,40 +537,40 @@ class Trajectory:
         if self.vars in ['rv', 'rvm', 'rv_stm']:
             if variables == 'xy':
                 if self.units_name == 'earth':
-                    xlabel = '$x$, Earth radii'
-                    ylabel = '$y$, Earth radii'
+                    xlabel = r'$x\text{, Earth radii}$'
+                    ylabel = r'$y\text{, Earth radii}$'
                 elif self.units_name == 'moon':
-                    xlabel = '$x$, Moon radii'
-                    ylabel = '$y$, Moon radii'
+                    xlabel = r'$x\text{, Moon radii}$'
+                    ylabel = r'$y\text{, Moon radii}$'
                 elif self.units_name == 'dim':
-                    xlabel = '$x$, km'
-                    ylabel = '$y$, km'
+                    xlabel = r'$x\text{, km}$'
+                    ylabel = r'$y\text{, km}$'
                 elif self.units_name in ['earth_moon', 'sun_earth']:
-                    xlabel = '$x$, nondimensional'
-                    ylabel = '$y$, nondimensional'
+                    xlabel = r'$x\text{, nondimensional}$'
+                    ylabel = r'$y\text{, nondimensional}$'
                 else:
                     raise Exception('Unknown units.')
-                ax = kiam.plot(self.states[0, :], self.states[1, :], xlabel=xlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.states[0, :], self.states[1, :], xlabel=xlabel, ylabel=ylabel)
             elif variables == '3d':
                 if self.units_name == 'earth':
-                    xlabel = '$x$, Earth radii'
-                    ylabel = '$y$, Earth radii'
-                    zlabel = '$z$, Earth radii'
+                    xlabel = r'x, Earth radii'
+                    ylabel = r'y, Earth radii'
+                    zlabel = r'z, Earth radii'
                 elif self.units_name == 'moon':
-                    xlabel = '$x$, Moon radii'
-                    ylabel = '$y$, Moon radii'
-                    zlabel = '$z$, Moon radii'
+                    xlabel = r'x, Moon radii'
+                    ylabel = r'y, Moon radii'
+                    zlabel = r'z, Moon radii'
                 elif self.units_name == 'dim':
-                    xlabel = '$x$, km'
-                    ylabel = '$y$, km'
-                    zlabel = '$y$, km'
+                    xlabel = r'x, km}'
+                    ylabel = r'y, km}'
+                    zlabel = r'y, km}'
                 elif self.units_name in ['earth_moon', 'sun_earth']:
-                    xlabel = '$x$, nondimensional'
-                    ylabel = '$y$, nondimensional'
-                    zlabel = '$z$, nondimensional'
+                    xlabel = r'x, nondimensional'
+                    ylabel = r'y, nondimensional'
+                    zlabel = r'z, nondimensional'
                 else:
                     raise Exception('Unknown units.')
-                ax = kiam.plot3(self.states[0, :], self.states[1, :], self.states[2, :], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel, show=True)
+                fig = kiam.plot3(self.states[0, :], self.states[1, :], self.states[2, :], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             else:
                 raise 'Unknown variables to show.'
         elif self.vars in ['oe', 'oem', 'oe_stm']:
@@ -515,53 +581,54 @@ class Trajectory:
                     ylabel = 'Semi-major axis, Earth''s radii'
                 else:
                     ylabel = ''
-                ax = kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'e':
                 ylabel = 'Eccentricity'
-                ax = kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'inc':
                 ylabel = 'Inclination, degrees'
-                ax = kiam.plot(self.times, self.states[2, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[2, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif variables == 'Om':
-                ylabel = 'Longitude of the ascending node, degrees'
-                ax = kiam.plot(self.times, self.states[3, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
+                ylabel = 'Right ascension of the ascending node, degrees'
+                fig = kiam.plot(self.times, self.states[3, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif variables == 'w':
                 ylabel = 'Argument of pericenter, degrees'
-                ax = kiam.plot(self.times, self.states[4, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[4, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif variables == 'th':
                 ylabel = 'True anomaly, degrees'
-                ax = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             else:
                 raise 'Unknown classical orbital element. Elements: a, e, inc, Om, w, th.'
         elif self.vars in ['ee', 'eem', 'ee_stm']:
             if variables == 'h':
                 if self.units_name == 'dim':
-                    ylabel = r'$h$, (km/s)^{-1}'
+                    ylabel = r'$h\text{, (km/s)}^{-1}$'
                 elif self.units_name == 'earth':
-                    ylabel = r'$h$, nondimensional'
+                    ylabel = r'$h\text{, nondimensional}$'
                 else:
                     ylabel = ''
-                ax = kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ex':
                 ylabel = '$e_x$'
-                ax = kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ey':
                 ylabel = '$e_y$'
-                ax = kiam.plot(self.times, self.states[2, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[2, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'ix':
                 ylabel = '$i_x$'
-                ax = kiam.plot(self.times, self.states[3, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[3, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'iy':
                 ylabel = '$i_y$'
-                ax = kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'L':
                 ylabel = 'True longitude, degrees'
-                ax = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel, show=True)
+                fig = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             else:
                 raise 'Unknown equinoctial orbital element. Elements: h, ex, ey, ix, iy, L.'
         else:
             raise 'Unknown variables.'
-        return ax
+        fig.show()
+        return fig
     def copy(self):
         """
         Returns independent copy of the trajectory object.
@@ -589,15 +656,15 @@ class Trajectory:
 
         It can be 'rv', 'rvm', 'rv_stm', 'ee', 'eem', 'ee_stm', 'oe', 'oem', 'oe_stm'.
 
-        All translations are possible with given rules:
+        All transformations are possible with given rules:
 
         1. units_name are 'earth' or 'moon'
 
-        2. translations that increases the number of variables are impossible.
+        2. transformations that increases the number of variables are impossible.
 
-        E.g. rv -> rvm or rv -> rv_stm translations are impossible.
+        E.g. rv -> rvm or rv -> rv_stm transformations are impossible.
 
-        The routine automatically find the chain of translations from the current variables to
+        The routine automatically find the chain of transformations from the current variables to
         the specified variables.
         """
         if self.vars == new_vars:
@@ -625,13 +692,13 @@ class Trajectory:
 
         'hcrs', 'hsrf_se' (the Sun-centered systems)
 
-        All translations are possible within given rules:
+        All transformations are possible within given rules:
 
         1. The variables are 'rv', 'rvm', or 'rv_stm'.
 
         2. Changes with variables 'rv_stm' are possible only in scrs <-> sors and scrs <-> mer translations.
 
-        The routine automatically find the chain of translations from the current coordinate system to
+        The routine automatically find the chain of transformations from the current coordinate system to
         the specified coordinate system.
         """
         if self.system == new_system:
@@ -655,9 +722,9 @@ class Trajectory:
 
         'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.
 
-        All translations are possible.
+        All transformations are possible.
 
-        The routine automatically find the chain of translations from the current units to
+        The routine automatically find the chain of transformations from the current units to
         the specified units.
         """
         if self.units_name == new_units:
@@ -672,7 +739,7 @@ class Trajectory:
     def _allocate_vars_graph(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Allocates the graph of variables for further automating translations.
+        Allocates the graph of variables for further automating transformations.
         """
 
         self.vars_graph.add_edge('rv', 'ee')
@@ -703,18 +770,18 @@ class Trajectory:
     def _vars_transform(self, vars1: str, vars2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Call the routine that translates variables from one to another.
-        Routine checks the rules for the translation.
+        Call the routine that transforms variables from one to another.
+        Routine checks the rules for the transformation.
 
         Parameters:
         -----------
         `vars1` : str
 
-        Variables before translation.
+        Variables before transformation.
 
         `vars2` : str
 
-        Variables after translation.
+        Variables after transformation.
         """
         if vars1 == 'rv' and vars2 == 'ee':  # mu = 1.0
             if self.units_name != 'earth' and self.units_name != 'moon':
@@ -841,7 +908,7 @@ class Trajectory:
     def _allocate_systems_graph(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Allocates the graph of coordinate systems for further automating translations.
+        Allocates the graph of coordinate systems for further automating transformations.
         """
         self.systems_graph.add_edge('itrs', 'gcrs')
         self.systems_graph.add_edge('gcrs', 'gsrf_em')
@@ -855,18 +922,18 @@ class Trajectory:
     def _system_transform(self, system1: str, system2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Call the routine that translates coordinate systems from one to another.
-        Routine checks the rules for the translation.
+        Call the routine that transforms coordinate systems from one to another.
+        Routine checks the rules for the transformation.
 
         Parameters:
         -----------
         `system1` : str
 
-        Coordinate system before translation.
+        Coordinate system before transformation.
 
         `system2` : str
 
-        Coordinate system after translation
+        Coordinate system after transformation.
         """
         if system1 == 'itrs' and system2 == 'gcrs':
             if self.vars != 'rv' and self.vars != 'rvm':
@@ -1037,7 +1104,7 @@ class Trajectory:
     def _allocate_units_graph(self):
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Allocates the graph of units for further automating translations.
+        Allocates the graph of units for further automating transformations.
         """
         self.units_graph.add_edge('dim', 'earth')
         self.units_graph.add_edge('dim', 'moon')
@@ -1046,18 +1113,18 @@ class Trajectory:
     def _units_transform(self, units1: str, units2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Call the routine that translates units from one to another.
-        Routine checks the rules for the translation.
+        Call the routine that transforms units from one to another.
+        Routine checks the rules for the transformation.
 
         Parameters:
         -----------
         `units1` : str
 
-        Units before translation.
+        Units before transformation.
 
         `units2` : str
 
-        Units after translation
+        Units after transformation.
         """
         if units1 == 'dim' and units2 == 'earth':
             if self.units_name != 'dim':
@@ -1179,7 +1246,7 @@ class Trajectory:
     def _set_earth_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Set coefficients for translations to/from Earth units.
+        Set coefficients for transformations to/from Earth units.
         """
         ku = kiam.units('Earth')
         self.units['mu'] = 1.0
@@ -1190,7 +1257,7 @@ class Trajectory:
     def _set_moon_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Set coefficients for translations to/from Moon units.
+        Set coefficients for transformations to/from Moon units.
         """
         ku = kiam.units('Moon')
         self.units['mu'] = 1.0
@@ -1201,7 +1268,7 @@ class Trajectory:
     def _set_earth_moon_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Set coefficients for translations to/from Earth--Moon units.
+        Set coefficients for transformations to/from Earth--Moon units.
         """
         ku = kiam.units('Earth', 'Moon')
         self.units['DistUnit'] = ku['DistUnit']  # km
@@ -1211,7 +1278,7 @@ class Trajectory:
     def _set_sun_earth_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Set coefficients for translations to/from Sun--Earth units.
+        Set coefficients for transformations to/from Sun--Earth units.
         """
         ku = kiam.units('Sun', 'Earth')
         self.units['DistUnit'] = ku['DistUnit']  # km
@@ -1221,7 +1288,7 @@ class Trajectory:
     def _set_dim_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
-        Set coefficients for translations to/from dimensional units.
+        Set coefficients for transformations to/from dimensional units.
         """
         ku = kiam.units('Earth')
         self.units['mu'] = ku['GM']    # km^3/s^2

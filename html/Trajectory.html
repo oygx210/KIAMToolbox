@@ -141,7 +141,38 @@ their characteristics.</p>
 <p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
 <p><code>units_name</code> : str</p>
 <p>The name of the units in which initial_state is given.</p>
-<p>It can be 'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p></div>
+<p>It can be 'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p>
+<h2 id="properties">Properties:</h2>
+<p><code>finalDate</code> : datetime.datetime</p>
+<p>The date and time of the last phase state in trajectory.</p>
+<p><code>initialDate</code> : datetime.datetime</p>
+<p>The date and time of the first phase state in trajectory.</p>
+<p><code>jds</code> : numpy.ndarray, shape(n,)</p>
+<p>Julian dates corresponding to phase vectors in states property.</p>
+<p><code>model</code> : dict</p>
+<p>The model used for trajectory propagation.</p>
+<p><code>parts</code> : list[int]</p>
+<p>The numbers of nodes between which the trajectory was sequentially propagated.</p>
+<p><code>states</code> : numpy.array, shape(m,n)</p>
+<p>Phase vectors along the trajectory.</p>
+<p><code>system</code> : str</p>
+<p>The current coordinate system.</p>
+<p><code>system_graph</code> : networkx.classes.graph.Graph</p>
+<p>The graph of transormations between coordinate systems.</p>
+<p><code>times</code> : numpy.array(n,)</p>
+<p>Times along the trajectory.</p>
+<p><code>units</code> : dict</p>
+<p>The dictionary of the current units.</p>
+<p><code>units_graph</code> : networkx.classes.graph.Graph</p>
+<p>The graph of transormations between units.</p>
+<p><code>units_name</code> : str</p>
+<p>The name of the current units.</p>
+<p><code>vars</code> : str</p>
+<p>The current variables.</p>
+<p><code>vars_graph</code> : networkx.classes.digraph.DiGraph</p>
+<p>The graph of transormations between variables.</p>
+<h2 id="examples">Examples:</h2>
+<p>Examples can be found in kiam_examples.py.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="Trajectory.Trajectory.change_system"><code class="name flex">
@@ -156,7 +187,7 @@ their characteristics.</p>
 <p>'scrs', 'mer', 'sors', 'ssrm_em' (the Moon-centered systems)</p>
 <p>'gcrs', 'itrs', 'gsrf_em', 'gsrf_se' (the Earth-centered systems)</p>
 <p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
-<p>All translations are possible within given rules:</p>
+<p>All transformations are possible within given rules:</p>
 <ol>
 <li>
 <p>The variables are 'rv', 'rvm', or 'rv_stm'.</p>
@@ -165,7 +196,7 @@ their characteristics.</p>
 <p>Changes with variables 'rv_stm' are possible only in scrs &lt;-&gt; sors and scrs &lt;-&gt; mer translations.</p>
 </li>
 </ol>
-<p>The routine automatically find the chain of translations from the current coordinate system to
+<p>The routine automatically find the chain of transformations from the current coordinate system to
 the specified coordinate system.</p></div>
 </dd>
 <dt id="Trajectory.Trajectory.change_units"><code class="name flex">
@@ -178,8 +209,8 @@ the specified coordinate system.</p></div>
 <p>The name of the new units.</p>
 <p>Options:</p>
 <p>'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p>
-<p>All translations are possible.</p>
-<p>The routine automatically find the chain of translations from the current units to
+<p>All transformations are possible.</p>
+<p>The routine automatically find the chain of transformations from the current units to
 the specified units.</p></div>
 </dd>
 <dt id="Trajectory.Trajectory.change_vars"><code class="name flex">
@@ -191,17 +222,17 @@ the specified units.</p></div>
 <p><code>new_vars</code> : str</p>
 <p>The name of the new variables.</p>
 <p>It can be 'rv', 'rvm', 'rv_stm', 'ee', 'eem', 'ee_stm', 'oe', 'oem', 'oe_stm'.</p>
-<p>All translations are possible with given rules:</p>
+<p>All transformations are possible with given rules:</p>
 <ol>
 <li>
 <p>units_name are 'earth' or 'moon'</p>
 </li>
 <li>
-<p>translations that increases the number of variables are impossible.</p>
+<p>transformations that increases the number of variables are impossible.</p>
 </li>
 </ol>
-<p>E.g. rv -&gt; rvm or rv -&gt; rv_stm translations are impossible.</p>
-<p>The routine automatically find the chain of translations from the current variables to
+<p>E.g. rv -&gt; rvm or rv -&gt; rv_stm transformations are impossible.</p>
+<p>The routine automatically find the chain of transformations from the current variables to
 the specified variables.</p></div>
 </dd>
 <dt id="Trajectory.Trajectory.clear"><code class="name flex">
