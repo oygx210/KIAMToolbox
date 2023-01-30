@@ -20,6 +20,24 @@ import networkx as nx
 import math
 import copy
 
+variables_all = ['rv', 'rvm', 'rv_stm',
+                 'ee', 'eem', 'ee_stm',
+                 'oe', 'oem', 'oe_stm']
+
+systems_ephemeris = ['itrs', 'gcrs', 'gsrf_em', 'gsrf_se',  # Earth-cent. systems
+                     'scrs', 'ssrf_em', 'mer', 'sors',  # Moon-cent. systems
+                     'hcrs', 'hsrf_se']  # Sun-cent. systems
+
+systems_cr3bp = ['ine_fb', 'ine_sb', 'ine_cm', 'rot_fb', 'rot_sb', 'rot_cm']
+
+systems_all = [*systems_cr3bp, *systems_ephemeris]
+
+units_all = ['earth', 'moon', 'dim', 'earth_moon', 'sun_earth']
+
+models_cr3bp = ['cr3bp_fb', 'cr3bp_sb']
+
+models_all = [*models_cr3bp, 'nbp']
+
 class Trajectory:
 
     def __init__(self, initial_state: numpy.ndarray, initial_time: float, initial_jd: float,
@@ -117,6 +135,12 @@ class Trajectory:
 
         'hcrs', 'hsrf_se' (the Sun-centered systems)
 
+        'ine_fb', 'rot_fb' (first primary-centered systems in CR3BP)
+
+        'ine_sb', 'rot_sb' (second primary-centered systems in CR3BP)
+
+        'ine_cm', 'rot_cm' (baricenter-centered systems in CR3BP)
+
         `units_name` : str
 
         The name of the units in which initial_state is given.
@@ -192,8 +216,14 @@ class Trajectory:
         system = system.lower()
         units_name = units_name.lower()
 
-        if variables not in ['rv', 'rvm', 'rv_stm', 'ee', 'eem', 'ee_stm', 'oe', 'oem', 'oe_stm']:
+        if variables not in variables_all:
             raise Exception('Unknown variables.')
+
+        if system not in systems_all:
+            raise Exception('Unknown system.')
+
+        if units_name not in units_all:
+            raise Exception('Unknown units_name.')
 
         if variables in ['rv', 'ee', 'oe'] and len(initial_state) != 6:
             raise Exception('Wrong number of variables.')
@@ -203,9 +233,6 @@ class Trajectory:
 
         if variables in ['rv_stm', 'ee_stm', 'oe_stm'] and len(initial_state) != 42:
             raise Exception('Wrong number of variables.')
-
-        if units_name not in ['earth', 'moon', 'dim', 'earth_moon', 'sun_earth']:
-            raise Exception('Unknown units_name.')
 
         initial_state, initial_time, initial_jd = kiam.to_float(initial_state, initial_time, initial_jd)
 
@@ -271,11 +298,11 @@ class Trajectory:
 
         1. Any string if model_type = 'r2bp'
 
-        2. 'earthmoon', 'sunearth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'
+        2. 'earth_moon', 'sun_earth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'
 
         3. 'earth', 'moon' if model_type = 'nbp'
 
-        `sources_list` : list of str
+        `sources_lits` : list of str
 
         Listed sources of perturbations to be taken into account if model_type = 'nbp'.
 
@@ -308,6 +335,11 @@ class Trajectory:
         'moon'      (Gravitational acceleration of the Moon)
 
         'cmplxmoon' (Complex gravitational acceleration of the Moon)
+
+        If `model_type` is 'cr3bp', then `model_specifics` is a dictionary.
+
+        The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.
+
         """
 
         self.model = {}
@@ -340,31 +372,37 @@ class Trajectory:
 
         elif model_type == 'cr3bp_fb':
 
-            if primary == 'earthmoon':
+            if variables not in ['rv', 'rv_stm']:
+                raise Exception('CR3BP model assumes rv or rv_stm variables.')
+
+            if primary == 'earth_moon':
                 ku = kiam.units('Earth', 'Moon')
                 self.model['data']['mass_parameter'] = ku['mu']
                 self._set_model_units('earth_moon')
-                self.model['system'] = 'gsrf_em'
-            elif primary == 'sunearth':
+                self.model['system'] = 'rot_fb'
+            elif primary == 'sun_earth':
                 ku = kiam.units('Sun', 'Earth')
                 self.model['data']['mass_parameter'] = ku['mu']
                 self._set_model_units('sun_earth')
-                self.model['system'] = 'hsrf_se'
+                self.model['system'] = 'rot_fb'
             else:
                 raise Exception('Unknown primary.')
 
         elif model_type == 'cr3bp_sb':
 
-            if primary == 'earthmoon':
+            if variables not in ['rv', 'rv_stm']:
+                raise Exception('CR3BP model assumes rv or rv_stm variables.')
+
+            if primary == 'earth_moon':
                 ku = kiam.units('Earth', 'Moon')
                 self.model['data']['mass_parameter'] = ku['mu']
                 self._set_model_units('earth_moon')
-                self.model['system'] = 'ssrf_em'
-            elif primary == 'sunearth':
+                self.model['system'] = 'rot_sb'
+            elif primary == 'sun_earth':
                 ku = kiam.units('Sun', 'Earth')
                 self.model['data']['mass_parameter'] = ku['mu']  # Sun - (Earth + Moon)
                 self._set_model_units('sun_earth')
-                self.model['system'] = 'gsrf_se'
+                self.model['system'] = 'rot_sb'
             else:
                 raise Exception('Unknown primary.')
 
@@ -478,7 +516,7 @@ class Trajectory:
             raise 'TBD.'
         self.clear()
         self.propagate(tof, npoints)
-    def show(self, variables: str):
+    def show(self, variables: str, draw=True):
         """
         Plots the specified characteristics of the trajectory.
 
@@ -523,6 +561,12 @@ class Trajectory:
             'iy' plots iy = tan(i/2)*sin(Omega) wrt time
 
             'L' plots L = theta + omega + Omega wrt time
+
+        `draw` : bool
+
+        If True (by default), the fig plotly object will be returned and figure will be showed.
+
+        If False, the fig plot object will be returned and the figure will not be showed.
 
         Returns:
         --------
@@ -627,7 +671,8 @@ class Trajectory:
                 raise 'Unknown equinoctial orbital element. Elements: h, ex, ey, ix, iy, L.'
         else:
             raise 'Unknown variables.'
-        fig.show()
+        if draw:
+            fig.show()
         return fig
     def copy(self):
         """
@@ -910,6 +955,8 @@ class Trajectory:
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Allocates the graph of coordinate systems for further automating transformations.
         """
+
+        # Ephemeris coordinate systems
         self.systems_graph.add_edge('itrs', 'gcrs')
         self.systems_graph.add_edge('gcrs', 'gsrf_em')
         self.systems_graph.add_edge('gcrs', 'gsrf_se')
@@ -919,6 +966,20 @@ class Trajectory:
         self.systems_graph.add_edge('gcrs', 'hcrs')
         self.systems_graph.add_edge('hcrs', 'hsrf_se')
         self.systems_graph.add_edge('scrs', 'sors')
+
+        # CR3BP and BR4BP coordinate systems
+        self.systems_graph.add_edge('ine_fb', 'rot_fb')
+        self.systems_graph.add_edge('ine_sb', 'rot_sb')
+        self.systems_graph.add_edge('ine_cm', 'rot_cm')
+        self.systems_graph.add_edge('rot_fb', 'ine_fb')
+        self.systems_graph.add_edge('rot_sb', 'ine_sb')
+        self.systems_graph.add_edge('rot_cm', 'ine_cm')
+        self.systems_graph.add_edge('rot_fb', 'rot_cm')
+        self.systems_graph.add_edge('rot_cm', 'rot_fb')
+        self.systems_graph.add_edge('rot_fb', 'rot_sb')
+        self.systems_graph.add_edge('rot_sb', 'rot_fb')
+        self.systems_graph.add_edge('rot_sb', 'rot_cm')
+        self.systems_graph.add_edge('rot_cm', 'rot_sb')
     def _system_transform(self, system1: str, system2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -935,6 +996,11 @@ class Trajectory:
 
         Coordinate system after transformation.
         """
+
+        if system1 in systems_ephemeris and system2 in systems_ephemeris:
+            if self.model['type'] != 'nbp':
+                raise Exception('The model should be nbp when using ephemeris systems.')
+
         if system1 == 'itrs' and system2 == 'gcrs':
             if self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm')
@@ -1099,6 +1165,51 @@ class Trajectory:
                     phi_scrs = kiam.dotainvb(numpy.matmul(dxscrs[:, :, i], phi_sors), dxscrs[:, :, 0])
                     self.states[6:42, i] = numpy.reshape(phi_scrs.T, (36,))
             self.system = 'scrs'
+
+        if system1 in systems_cr3bp and system2 in systems_cr3bp:
+            if self.vars not in ['rv', 'rvm']:
+                raise Exception('Vars should be rv or rvm.')
+            if self.model['primary'] not in ['sun_earth', 'earth_moon']:
+                raise Exception("Model's primary should be sun_earth or earth_moon.")
+            if self.units_name != self.model['primary']:
+                raise Exception('Units_name should equal primary.')
+            if self.model['type'] not in ['cr3bp_fb', 'cr3bp_sb']:
+                raise Exception('Model should be cr3bp_fb or cr3bp_sb when using cr3bp systems.')
+
+        if (system1 == 'ine_fb' and system2 == 'rot_fb') or \
+           (system1 == 'ine_sb' and system2 == 'rot_sb') or \
+           (system1 == 'ine_cm' and system2 == 'rot_cm'):
+            t0 = self.model['data'].get('t0')
+            if t0 is None:
+                raise Exception('Please set t0 to self.model["data"]')
+            self.states[0:6, :] = kiam.ine2rot(self.states[0:6, :], self.times, t0)
+            self.system = system2
+        elif (system1 == 'rot_fb' and system2 == 'ine_fb') or \
+             (system1 == 'rot_sb' and system2 == 'ine_sb') or \
+             (system1 == 'rot_cm' and system2 == 'ine_cm'):
+            t0 = self.model['data'].get('t0')
+            if t0 is None:
+                raise Exception('Please set t0 to self.model["data"]')
+            self.states[0:6, :] = kiam.rot2ine(self.states[0:6, :], self.times, t0)
+            self.system = system2
+        elif system1 == 'rot_fb' and system2 == 'rot_sb':
+            self.states[0] = self.states[0] - 1.0
+            self.system = system2
+        elif system1 == 'rot_fb' and system2 == 'rot_cm':
+            self.states[0] = self.states[0] - self.model['data']['mass_parameter']
+            self.system = system2
+        elif system1 == 'rot_sb' and system2 == 'rot_fb':
+            self.states[0] = self.states[0] + 1.0
+            self.system = system2
+        elif system1 == 'rot_sb' and system2 == 'rot_cm':
+            self.states[0] = self.states[0] + 1.0 - self.model['data']['mass_parameter']
+            self.system = system2
+        elif system1 == 'rot_cm' and system2 == 'rot_fb':
+            self.states[0] = self.states[0] + self.model['data']['mass_parameter']
+            self.system = system2
+        elif system1 == 'rot_cm' and system2 == 'rot_sb':
+            self.states[0] = self.states[0] - 1.0 + self.model['data']['mass_parameter']
+            self.system = system2
 
     # Units transformations and settings.
     def _allocate_units_graph(self):
