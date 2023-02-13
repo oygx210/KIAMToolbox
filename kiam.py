@@ -24,6 +24,8 @@ import plotly
 import plotly.graph_objects as go
 import pickle
 from typing import Union, Any
+from PIL import Image
+
 
 # General mathematics and tools (documented with examples)
 def invadotb(a: numpy.ndarray, b: numpy.ndarray) -> numpy.ndarray:
@@ -1058,6 +1060,126 @@ def save_figure(fig: plotly.graph_objects.Figure, filename: str):
     ```
     """
     fig.write_html(filename)
+def body_surface(body: str, radius: float = 1.0, quality: str = 'medium'):
+    """
+    Return figure object for showing the surface of a celestial body (Earth, Moon).
+
+    Parameters:
+    -----------
+
+    `body` : str
+
+    The name of the celestial body.
+
+    Options: 'earth', 'moon'.
+
+    `radius` : float
+
+    The radius of the body.
+
+    Default: 1.0.
+
+    `quality` : str
+
+    The quality of the image.
+
+    Options: 'high', 'medium' (default), 'low'.
+
+    Returns:
+    --------
+
+    `fig` : plotly.graph_objects.Figure
+
+    The Plotly figure object..
+
+    Examples:
+    ---------
+    ```
+    fig = body_surface('earth')
+
+    fig.show()
+
+    fig = body_surface('moon')
+
+    fig.show()
+    ```
+    """
+    if quality.lower() not in ['low', 'medium', 'high']:
+        raise 'Quality should be "low", "medium", or "high".'
+    if body.lower() == 'earth':
+        image = Image.open('./Images/Earth2.jpg').convert('L')
+        colorscale = [[0.0, 'rgb(30, 59, 117)'],
+                      [0.1, 'rgb(46, 68, 21)'],
+                      [0.2, 'rgb(74, 96, 28)'],
+                      [0.3, 'rgb(115, 141, 90)'],
+                      [0.4, 'rgb(122, 126, 75)'],
+                      [0.6, 'rgb(122, 126, 75)'],
+                      [0.7, 'rgb(141, 115, 96)'],
+                      [0.8, 'rgb(223, 197, 170)'],
+                      [0.9, 'rgb(237, 214, 183)'],
+                      [1.0, 'rgb(255, 255, 255)']]
+    elif body.lower() == 'moon':
+        image = Image.open('./Images/Moon1.jpg').convert('L')
+        colorscale = 'gray'
+    else:
+        raise 'Unknown body. Only earth and moon are currently supported.'
+    body_texture = numpy.asarray(image)
+    if quality.lower() in ['medium', 'low']:
+        body_texture = numpy.delete(body_texture, list(range(0, body_texture.shape[0], 2)), axis=0)
+        body_texture = numpy.delete(body_texture, list(range(0, body_texture.shape[1], 2)), axis=1)
+    if quality.lower() == 'low':
+        body_texture = numpy.delete(body_texture, list(range(0, body_texture.shape[0], 2)), axis=0)
+        body_texture = numpy.delete(body_texture, list(range(0, body_texture.shape[1], 2)), axis=1)
+    x, y, z = sphere_coordinates(radius, int(body_texture.shape[0]), int(body_texture.shape[1]))
+    surf = go.Surface(x=x, y=y, z=z, surfacecolor=body_texture, colorscale=colorscale, showscale=False)
+    fig = go.Figure(data=[surf])
+    return fig
+def sphere_coordinates(radius: float, nlat: int, nlon:  int):
+    """
+    Get x, y, z coordinates on a sphere.
+
+    Parameters:
+    -----------
+
+    `radius` : float
+
+    The radius of the sphere.
+
+    `nlat` : int
+
+    The number of latitude angles in a grid.
+
+    `nlon` : int
+
+    The number of longitude angles in a grid.
+
+    Returns:
+    --------
+
+    `x` : numpy.ndarray, shape(nlat, nlon)
+
+    The x-coordinates.
+
+    `y` : numpy.ndarray, shape(nlat, nlon)
+
+    The y-coordinates.
+
+    `z` : numpy.ndarray, shape(nlat, nlon)
+
+    The z-coordinates.
+
+    Examples:
+    ---------
+    ```
+    x, y, z = sphere_coordinates(1.0, 100, 100)
+    ```
+    """
+    lon = numpy.linspace(-numpy.pi, numpy.pi, nlon)
+    lat = numpy.linspace(-numpy.pi/2, numpy.pi/2, nlat)
+    x = radius * numpy.outer(numpy.cos(lat), numpy.cos(lon))
+    y = radius * numpy.outer(numpy.cos(lat), numpy.sin(lon))
+    z = radius * numpy.outer(numpy.sin(-lat), numpy.ones(nlon))
+    return x, y, z
 
 # Ephemeris information (documented with examples)
 def jd2time(jd: float) -> datetime.datetime:
@@ -4437,9 +4559,9 @@ def propagate_br4bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
 
     stm = False
 
-    gm4b = 3.289e+05
+    gm4b =  3.289005596e+05
 
-    a4b = 389.17
+    a4b = 389.170375544352
 
     theta0 = 0.0
 
@@ -4450,6 +4572,48 @@ def propagate_br4bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
     tspan, x0, mu, gm4b, a4b, theta0 = to_float(tspan, x0, mu, gm4b, a4b, theta0)
     neq = 42 if stm else 6
     t, y = FKIAMToolbox.propagationmodule.propagate_br4bp(central_body.lower(), tspan, x0, mu, gm4b, a4b, theta0, stm, neq)
+    return t, y
+def propagate_hill(tspan: numpy.ndarray, x0: numpy.ndarray) -> tuple[numpy.ndarray, numpy.ndarray]:
+    """
+    Propagate trajectory in Hill's model of motion.
+
+    Parameters:
+    -----------
+    `tspan`: numpy.ndarray, shape (n,)
+
+    Time nodes at which the solution is required
+
+    `x0`: numpy.ndarray, shape (6,)
+
+    Initial state containing position and velocity.
+
+    Vector structure: [x, y, z, vx, vy, vz]
+
+    Returns:
+    --------
+    `t` : numpy.ndarray, shape(n,)
+
+    Times (nodes) in tspan at which the solution is obtained
+
+    `y` : numpy.ndarray, shape(6, n)
+
+    Array of column trajectory phase states.
+
+    Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    tspan = numpy.linspace(0, 2*numpy.pi, 1000)
+
+    x0 = numpy.array([-0.5, 0, 0, 0, 2.0, 0])
+
+    t, y = kiam.propagate_hill(tspan, x0)
+    ```
+
+    """
+    tspan, x0 = to_float(tspan, x0)
+    t, y = FKIAMToolbox.propagationmodule.propagate_hill(tspan, x0)
     return t, y
 
 # Visibility routines (documented with examples)

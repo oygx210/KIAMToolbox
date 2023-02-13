@@ -20,23 +20,34 @@ import networkx as nx
 import math
 import copy
 
-variables_all = ['rv', 'rvm', 'rv_stm',
+variables_all = {'rv', 'rvm', 'rv_stm',
                  'ee', 'eem', 'ee_stm',
-                 'oe', 'oem', 'oe_stm']
+                 'oe', 'oem', 'oe_stm'}
 
-systems_ephemeris = ['itrs', 'gcrs', 'gsrf_em', 'gsrf_se',  # Earth-cent. systems
+systems_ephemeris = {'itrs', 'gcrs', 'gsrf_em', 'gsrf_se',  # Earth-cent. systems
                      'scrs', 'ssrf_em', 'mer', 'sors',  # Moon-cent. systems
-                     'hcrs', 'hsrf_se']  # Sun-cent. systems
+                     'hcrs', 'hsrf_se'}  # Sun-cent. systems
 
-systems_cr3bp = ['ine_fb', 'ine_sb', 'ine_cm', 'rot_fb', 'rot_sb', 'rot_cm']
+systems_cr3bp = {'ine_fb', 'ine_sb', 'ine_cm', 'rot_fb', 'rot_sb', 'rot_cm'}
 
-systems_all = [*systems_cr3bp, *systems_ephemeris]
+systems_br4bp = {'ine_fb', 'ine_sb', 'ine_cm', 'rot_fb', 'rot_sb', 'rot_cm'}
 
-units_all = ['earth', 'moon', 'dim', 'earth_moon', 'sun_earth']
+systems_hill = {'rot_sb', 'ine_sb'}
 
-models_cr3bp = ['cr3bp_fb', 'cr3bp_sb']
+systems_all = {*systems_cr3bp, *systems_br4bp, *systems_hill, *systems_ephemeris}
 
-models_all = [*models_cr3bp, 'nbp']
+units_all = {'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'}
+
+models_nbp = {'nbp'}
+
+models_cr3bp = {'cr3bp_fb', 'cr3bp_sb'}
+
+models_br4bp = {'br4bp_fb', 'br4bp_sb'}
+
+models_hill = {'hill'}
+
+models_all = {*models_cr3bp, *models_br4bp, *models_hill, *models_nbp}
+
 
 class Trajectory:
 
@@ -265,6 +276,7 @@ class Trajectory:
             self._set_sun_earth_units()
         elif units_name == 'moon':
             self._set_moon_units()
+
     def set_model(self, variables: str, model_type, primary: str, sources_list: list[str]) -> None:
         """
         Set the model used for propagating the trajectory.
@@ -406,6 +418,48 @@ class Trajectory:
             else:
                 raise Exception('Unknown primary.')
 
+        elif model_type == 'br4bp_fb':
+
+            if variables not in ['rv', 'rv_stm']:
+                raise Exception('BR4BP model assumes rv or rv_stm variables.')
+
+            if primary == 'earth_moon':
+                ku = kiam.units('Earth', 'Moon')
+                self.model['data']['mass_parameter'] = ku['mu']
+                self.model['data']['gm4b'] = 3.289005596e+05
+                self.model['data']['a4b'] = 389.170375544352
+                self.model['data']['theta0'] = 0.0
+                self._set_model_units('earth_moon')
+                self.model['system'] = 'rot_fb'
+            else:
+                raise Exception('Unknown primary.')
+
+        elif model_type == 'br4bp_sb':
+
+            if variables not in ['rv', 'rv_stm']:
+                raise Exception('BR4BP model assumes rv or rv_stm variables.')
+
+            if primary == 'earth_moon':
+                ku = kiam.units('Earth', 'Moon')
+                self.model['data']['mass_parameter'] = ku['mu']
+                self.model['data']['gm4b'] = 3.289005596e+05
+                self.model['data']['a4b'] = 389.170375544352  # 328 900·5596
+                self.model['data']['theta0'] = 0.0
+                self._set_model_units('earth_moon')
+                self.model['system'] = 'rot_sb'
+
+        elif model_type == 'hill':
+
+            if variables not in ['rv']:
+                raise Exception('Hill model assumes rv variables.')
+
+            if primary == 'earth_moon':
+                self._set_model_units('earth_moon')
+                self.model['system'] = 'rot_sb'
+            elif primary == 'sun_earth':
+                self._set_model_units('sun_earth')
+                self.model['system'] = 'rot_sb'
+
         elif model_type == 'nbp':
 
             self._set_model_sources()
@@ -478,6 +532,20 @@ class Trajectory:
         elif self.model['type'] == 'cr3bp_sb':
             T, X = kiam.propagate_cr3bp(central_body='Secondary', tspan=tspan, x0=self.states[0:, -1],
                                         mu=self.model['data']['mass_parameter'], stm=stm)
+        elif self.model['type'] == 'br4bp_fb':
+            T, X = kiam.propagate_br4bp(central_body='First', tspan=tspan, x0=self.states[0:, -1],
+                                        mu=self.model['data']['mass_parameter'],
+                                        gm4b=self.model['data']['gm4b'],
+                                        a4b=self.model['data']['a4b'],
+                                        theta0=self.model['data']['theta0'], stm=stm)
+        elif self.model['type'] == 'br4bp_sb':
+            T, X = kiam.propagate_br4bp(central_body='Secondary', tspan=tspan, x0=self.states[0:, -1],
+                                        mu=self.model['data']['mass_parameter'],
+                                        gm4b=self.model['data']['gm4b'],
+                                        a4b=self.model['data']['a4b'],
+                                        theta0=self.model['data']['theta0'], stm=stm)
+        elif self.model['type'] == 'hill':
+            T, X = kiam.propagate_hill(tspan=tspan, x0=self.states[0:, -1])
         else:
             raise Exception('Unknown model_type.')
 
@@ -490,9 +558,10 @@ class Trajectory:
         self.times = numpy.append(self.times[0:-1], T)
         self.states = numpy.append(self.states[:, 0:-1], X, axis=1)
         self.finalDate = kiam.jd2time(self.jds[-1])
+
     def repropagate(self, tof: float, npoints: int = 2, start_index: int = 0) -> None:
         """
-        Clears the calculated data in tr and propagate the trajectory from the beginning.
+        Clears the calculated data in trajectory and propagate the trajectory from the beginning.
 
         Parameters:
         -----------
@@ -516,6 +585,7 @@ class Trajectory:
             raise 'TBD.'
         self.clear()
         self.propagate(tof, npoints)
+
     def show(self, variables: str, draw=True):
         """
         Plots the specified characteristics of the trajectory.
@@ -674,11 +744,13 @@ class Trajectory:
         if draw:
             fig.show()
         return fig
+
     def copy(self):
         """
         Returns independent copy of the trajectory object.
         """
         return copy.deepcopy(self)
+
     def clear(self) -> None:
         """
         Clears states, times, julian dates, parts, and resets the final date.
@@ -717,8 +789,9 @@ class Trajectory:
         if new_vars not in self.vars_graph.nodes:
             raise Exception('Unknown new_vars.')
         p = nx.shortest_path(self.vars_graph, self.vars, new_vars)
-        for i in range(len(p)-1):
+        for i in range(len(p) - 1):
             self._vars_transform(p[i], p[i + 1])
+
     def change_system(self, new_system: str) -> None:
         """
         Change coordinate system to the specified one.
@@ -737,11 +810,33 @@ class Trajectory:
 
         'hcrs', 'hsrf_se' (the Sun-centered systems)
 
+        'ine_fb' (non-rotating frame in CR3BP, BR4BP at first primary)
+
+        'ine_cm' (non-rotating frame in CR3BP, BR4BP at barycenter)
+
+        'ine_sb' (non-rotating frame in CR3BP, BR4BP, Hill at secondary primary)
+
+        'rot_fb' (rotating frame in CR3BP, BR4BP at first primary)
+
+        'rot_cm' (rotating frame in CR3BP, BR4BP at barycenter)
+
+        'rot_sb' (rotating frame in CR3BP, BR4BP, Hill at secondary primary)
+
         All transformations are possible within given rules:
 
         1. The variables are 'rv', 'rvm', or 'rv_stm'.
 
         2. Changes with variables 'rv_stm' are possible only in scrs <-> sors and scrs <-> mer translations.
+
+        Implemented transformations:
+
+        Model nbp, both systems should be from: systems_ephemeris.
+
+        Model CR3BP, both systems should be from: systems_cr3bp.
+
+        Model BR4BP, both systems should be from: systems_br4bp.
+
+        Model Hill, both systems should be from: systems_hill.
 
         The routine automatically find the chain of transformations from the current coordinate system to
         the specified coordinate system.
@@ -751,8 +846,9 @@ class Trajectory:
         if new_system not in self.systems_graph.nodes:
             raise Exception('Unknown new_system.')
         p = nx.shortest_path(self.systems_graph, self.system, new_system)
-        for i in range(len(p)-1):
+        for i in range(len(p) - 1):
             self._system_transform(p[i], p[i + 1])
+
     def change_units(self, new_units: str) -> None:
         """
         Change units to the specified ones.
@@ -777,7 +873,7 @@ class Trajectory:
         if new_units not in self.units_graph.nodes:
             raise Exception('Unknown new_units.')
         p = nx.shortest_path(self.units_graph, self.units_name, new_units)
-        for i in range(len(p)-1):
+        for i in range(len(p) - 1):
             self._units_transform(p[i], p[i + 1])
 
     # Variables transformations.
@@ -812,6 +908,7 @@ class Trajectory:
 
         self.vars_graph.add_edge('rv_stm', 'ee_stm')
         self.vars_graph.add_edge('ee_stm', 'rv_stm')
+
     def _vars_transform(self, vars1: str, vars2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -980,6 +1077,7 @@ class Trajectory:
         self.systems_graph.add_edge('rot_sb', 'rot_fb')
         self.systems_graph.add_edge('rot_sb', 'rot_cm')
         self.systems_graph.add_edge('rot_cm', 'rot_sb')
+
     def _system_transform(self, system1: str, system2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -997,219 +1095,254 @@ class Trajectory:
         Coordinate system after transformation.
         """
 
-        if system1 in systems_ephemeris and system2 in systems_ephemeris:
-            if self.model['type'] != 'nbp':
-                raise Exception('The model should be nbp when using ephemeris systems.')
+        case_nbp = self.model['type'] == 'nbp' and system1 in systems_ephemeris and system2 in systems_ephemeris
+        if case_nbp:
+            if system1 == 'itrs' and system2 == 'gcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'itrs':
+                    raise Exception('System should be itrs.')
+                self.states[0:6] = kiam.itrs2gcrs(self.states[0:6], self.jds)
+                # self.states[0:3, :] = kiam.itrs2gcrs(self.states[0:3, :], self.jds)
+                # self.states[3:6, :] = kiam.itrs2gcrs(self.states[3:6, :], self.jds)
+                # for i in range(self.states.shape[1]):
+                #    self.states[0:3, i] = kiam.itrs2gcrs(self.states[0:3, i], self.jds[i])
+                #    self.states[3:6, i] = kiam.itrs2gcrs(self.states[3:6, i], self.jds[i])
+                self.system = 'gcrs'
+            elif system1 == 'gcrs' and system2 == 'itrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gcrs':
+                    raise Exception('System should be gcrs.')
+                self.states[0:6] = kiam.gcrs2itrs(self.states[0:6], self.jds)
+                # self.states[0:3, :] = kiam.gcrs2itrs(self.states[0:3, :], self.jds)
+                # self.states[3:6, :] = kiam.gcrs2itrs(self.states[3:6, :], self.jds)
+                # for i in range(self.states.shape[1]):
+                #    self.states[0:3, i] = kiam.gcrs2itrs(self.states[0:3, i], self.jds[i])
+                #    self.states[3:6, i] = kiam.gcrs2itrs(self.states[3:6, i], self.jds[i])
+                self.system = 'itrs'
+            elif system1 == 'gcrs' and system2 == 'gsrf_em':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gcrs':
+                    raise Exception('System should be gcrs.')
+                self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'gsrf_em'
+            elif system1 == 'gsrf_em' and system2 == 'gcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gsrf_em':
+                    raise Exception('System should be gsrf_em.')
+                self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'gcrs'
+            elif system1 == 'gcrs' and system2 == 'gsrf_se':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gcrs':
+                    raise Exception('System should be gcrs.')
+                self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'gsrf_se'
+            elif system1 == 'gsrf_se' and system2 == 'gcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gsrf_se':
+                    raise Exception('System should be gsrf_se.')
+                self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'gcrs'
+            elif system1 == 'scrs' and system2 == 'ssrf_em':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'scrs':
+                    raise Exception('System should be scrs.')
+                self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'ssrf_em'
+            elif system1 == 'ssrf_em' and system2 == 'scrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'ssrf_em':
+                    raise Exception('System should be ssrf_em.')
+                self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'scrs'
+            elif system1 == 'gcrs' and system2 == 'scrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gcrs':
+                    raise Exception('System should be gcrs.')
+                self.states[0:6, :] = kiam.gcrs2scrs(self.states[0:6, :], self.jds,
+                                                     self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'scrs'
+            elif system1 == 'scrs' and system2 == 'gcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'scrs':
+                    raise Exception('System should be scrs.')
+                self.states[0:6, :] = kiam.scrs2gcrs(self.states[0:6, :], self.jds,
+                                                     self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'gcrs'
+            elif system1 == 'scrs' and system2 == 'mer':
+                if self.vars not in ['rv', 'rvm', 'rv_stm']:
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'scrs':
+                    raise Exception('System should be scrs.')
+                self.states[0:6, :] = kiam.scrs2mer(self.states[0:6, :], self.jds)
+                self.system = 'mer'
+            elif system1 == 'mer' and system2 == 'scrs':
+                if self.vars not in ['rv', 'rvm', 'rv_stm']:
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'mer':
+                    raise Exception('System should be mer.')
+                self.states[0:6, :] = kiam.mer2scrs(self.states[0:6, :], self.jds)
+                self.system = 'scrs'
+            elif system1 == 'gcrs' and system2 == 'hcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'gcrs':
+                    raise Exception('System should be gcrs.')
+                self.states[0:6, :] = kiam.gcrs2hcrs(self.states[0:6, :], self.jds,
+                                                     self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'hcrs'
+            elif system1 == 'hcrs' and system2 == 'gcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'hcrs':
+                    raise Exception('System should be hcrs.')
+                self.states[0:6, :] = kiam.hcrs2gcrs(self.states[0:6, :], self.jds,
+                                                     self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'gcrs'
+            elif system1 == 'hcrs' and system2 == 'hsrf_se':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'hcrs':
+                    raise Exception('System should be hcrs.')
+                self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'hsrf_se'
+            elif system1 == 'hsrf_se' and system2 == 'hcrs':
+                if self.vars != 'rv' and self.vars != 'rvm':
+                    raise Exception('Vars should be rv or rvm')
+                elif self.system != 'hsrf_se':
+                    raise Exception('System should be hsrf_se.')
+                self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
+                                                       self.units['DistUnit'], self.units['VelUnit'])
+                self.system = 'hcrs'
+            elif system1 == 'scrs' and system2 == 'sors':
+                if self.vars not in ['rv', 'rvm', 'rv_stm']:
+                    raise Exception('Vars should be rv, rvm or rv_stm.')
+                elif self.system != 'scrs':
+                    raise Exception('System should be scrs.')
+                if self.vars != 'rv_stm':
+                    self.states[0:6, :] = kiam.scrs2sors(self.states[0:6, :], self.jds, False)
+                else:
+                    xsors, dxsors = kiam.scrs2sors(self.states[0:6, :], self.jds, True)
+                    self.states[0:6, :] = xsors
+                    for i in range(dxsors.shape[2]):
+                        phi_scrs = numpy.reshape(self.states[6:42, i], (6, 6)).T
+                        phi_sors = kiam.dotainvb(numpy.matmul(dxsors[:, :, i], phi_scrs), dxsors[:, :, 0])
+                        self.states[6:42, i] = numpy.reshape(phi_sors.T, (36,))
+                self.system = 'sors'
+            elif system1 == 'sors' and system2 == 'scrs':
+                if self.vars not in ['rv', 'rvm', 'rv_stm']:
+                    raise Exception('Vars should be rv, rvm or rv_stm.')
+                elif self.system != 'sors':
+                    raise Exception('System should be sors.')
+                if self.vars != 'rv_stm':
+                    self.states[0:6, :] = kiam.sors2scrs(self.states[0:6, :], self.jds, False)
+                else:
+                    xscrs, dxscrs = kiam.sors2scrs(self.states[0:6, :], self.jds, True)
+                    self.states[0:6, :] = xscrs
+                    for i in range(dxscrs.shape[2]):
+                        phi_sors = numpy.reshape(self.states[6:42, i], (6, 6)).T
+                        phi_scrs = kiam.dotainvb(numpy.matmul(dxscrs[:, :, i], phi_sors), dxscrs[:, :, 0])
+                        self.states[6:42, i] = numpy.reshape(phi_scrs.T, (36,))
+                self.system = 'scrs'
+            return
 
-        if system1 == 'itrs' and system2 == 'gcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'itrs':
-                raise Exception('System should be itrs.')
-            self.states[0:6] = kiam.itrs2gcrs(self.states[0:6], self.jds)
-            # self.states[0:3, :] = kiam.itrs2gcrs(self.states[0:3, :], self.jds)
-            # self.states[3:6, :] = kiam.itrs2gcrs(self.states[3:6, :], self.jds)
-            # for i in range(self.states.shape[1]):
-            #    self.states[0:3, i] = kiam.itrs2gcrs(self.states[0:3, i], self.jds[i])
-            #    self.states[3:6, i] = kiam.itrs2gcrs(self.states[3:6, i], self.jds[i])
-            self.system = 'gcrs'
-        elif system1 == 'gcrs' and system2 == 'itrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gcrs':
-                raise Exception('System should be gcrs.')
-            self.states[0:6] = kiam.gcrs2itrs(self.states[0:6], self.jds)
-            # self.states[0:3, :] = kiam.gcrs2itrs(self.states[0:3, :], self.jds)
-            # self.states[3:6, :] = kiam.gcrs2itrs(self.states[3:6, :], self.jds)
-            # for i in range(self.states.shape[1]):
-            #    self.states[0:3, i] = kiam.gcrs2itrs(self.states[0:3, i], self.jds[i])
-            #    self.states[3:6, i] = kiam.gcrs2itrs(self.states[3:6, i], self.jds[i])
-            self.system = 'itrs'
-        elif system1 == 'gcrs' and system2 == 'gsrf_em':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gcrs':
-                raise Exception('System should be gcrs.')
-            self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'gsrf_em'
-        elif system1 == 'gsrf_em' and system2 == 'gcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gsrf_em':
-                raise Exception('System should be gsrf_em.')
-            self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'gcrs'
-        elif system1 == 'gcrs' and system2 == 'gsrf_se':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gcrs':
-                raise Exception('System should be gcrs.')
-            self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'gsrf_se'
-        elif system1 == 'gsrf_se' and system2 == 'gcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gsrf_se':
-                raise Exception('System should be gsrf_se.')
-            self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'gcrs'
-        elif system1 == 'scrs' and system2 == 'ssrf_em':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'scrs':
-                raise Exception('System should be scrs.')
-            self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'ssrf_em'
-        elif system1 == 'ssrf_em' and system2 == 'scrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'ssrf_em':
-                raise Exception('System should be ssrf_em.')
-            self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Earth', 'Moon',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'scrs'
-        elif system1 == 'gcrs' and system2 == 'scrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gcrs':
-                raise Exception('System should be gcrs.')
-            self.states[0:6, :] = kiam.gcrs2scrs(self.states[0:6, :], self.jds,
-                                                 self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'scrs'
-        elif system1 == 'scrs' and system2 == 'gcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'scrs':
-                raise Exception('System should be scrs.')
-            self.states[0:6, :] = kiam.scrs2gcrs(self.states[0:6, :], self.jds,
-                                                 self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'gcrs'
-        elif system1 == 'scrs' and system2 == 'mer':
-            if self.vars not in ['rv', 'rvm', 'rv_stm']:
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'scrs':
-                raise Exception('System should be scrs.')
-            self.states[0:6, :] = kiam.scrs2mer(self.states[0:6, :], self.jds)
-            self.system = 'mer'
-        elif system1 == 'mer' and system2 == 'scrs':
-            if self.vars not in ['rv', 'rvm', 'rv_stm']:
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'mer':
-                raise Exception('System should be mer.')
-            self.states[0:6, :] = kiam.mer2scrs(self.states[0:6, :], self.jds)
-            self.system = 'scrs'
-        elif system1 == 'gcrs' and system2 == 'hcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'gcrs':
-                raise Exception('System should be gcrs.')
-            self.states[0:6, :] = kiam.gcrs2hcrs(self.states[0:6, :], self.jds,
-                                                 self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'hcrs'
-        elif system1 == 'hcrs' and system2 == 'gcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'hcrs':
-                raise Exception('System should be hcrs.')
-            self.states[0:6, :] = kiam.hcrs2gcrs(self.states[0:6, :], self.jds,
-                                                 self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'gcrs'
-        elif system1 == 'hcrs' and system2 == 'hsrf_se':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'hcrs':
-                raise Exception('System should be hcrs.')
-            self.states[0:6, :] = kiam.ine2rot_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'hsrf_se'
-        elif system1 == 'hsrf_se' and system2 == 'hcrs':
-            if self.vars != 'rv' and self.vars != 'rvm':
-                raise Exception('Vars should be rv or rvm')
-            elif self.system != 'hsrf_se':
-                raise Exception('System should be hsrf_se.')
-            self.states[0:6, :] = kiam.rot2ine_eph(self.states[0:6, :], self.jds, 'Sun', 'Earth',
-                                                   self.units['DistUnit'], self.units['VelUnit'])
-            self.system = 'hcrs'
-        elif system1 == 'scrs' and system2 == 'sors':
-            if self.vars not in ['rv', 'rvm', 'rv_stm']:
-                raise Exception('Vars should be rv, rvm or rv_stm.')
-            elif self.system != 'scrs':
-                raise Exception('System should be scrs.')
-            if self.vars != 'rv_stm':
-                self.states[0:6, :] = kiam.scrs2sors(self.states[0:6, :], self.jds, False)
-            else:
-                xsors, dxsors = kiam.scrs2sors(self.states[0:6, :], self.jds, True)
-                self.states[0:6, :] = xsors
-                for i in range(dxsors.shape[2]):
-                    phi_scrs = numpy.reshape(self.states[6:42, i], (6, 6)).T
-                    phi_sors = kiam.dotainvb(numpy.matmul(dxsors[:, :, i], phi_scrs), dxsors[:, :, 0])
-                    self.states[6:42, i] = numpy.reshape(phi_sors.T, (36,))
-            self.system = 'sors'
-        elif system1 == 'sors' and system2 == 'scrs':
-            if self.vars not in ['rv', 'rvm', 'rv_stm']:
-                raise Exception('Vars should be rv, rvm or rv_stm.')
-            elif self.system != 'sors':
-                raise Exception('System should be sors.')
-            if self.vars != 'rv_stm':
-                self.states[0:6, :] = kiam.sors2scrs(self.states[0:6, :], self.jds, False)
-            else:
-                xscrs, dxscrs = kiam.sors2scrs(self.states[0:6, :], self.jds, True)
-                self.states[0:6, :] = xscrs
-                for i in range(dxscrs.shape[2]):
-                    phi_sors = numpy.reshape(self.states[6:42, i], (6, 6)).T
-                    phi_scrs = kiam.dotainvb(numpy.matmul(dxscrs[:, :, i], phi_sors), dxscrs[:, :, 0])
-                    self.states[6:42, i] = numpy.reshape(phi_scrs.T, (36,))
-            self.system = 'scrs'
+        case_cr3bp = self.model['type'] in models_cr3bp and system1 in systems_cr3bp and system2 in systems_cr3bp
+        case_br4bp = self.model['type'] in models_br4bp and system1 in systems_br4bp and system2 in systems_br4bp
+        if case_cr3bp or case_br4bp:
+            if case_cr3bp:
+                if self.vars not in ['rv', 'rvm']:
+                    raise Exception('Vars should be rv or rvm.')
+                if self.model['primary'] not in ['sun_earth', 'earth_moon']:
+                    raise Exception("Model's primary should be sun_earth or earth_moon.")
+                if self.units_name != self.model['primary']:
+                    raise Exception('Units_name should equal primary.')
+            elif case_br4bp:
+                if self.vars not in ['rv', 'rvm']:
+                    raise Exception('Vars should be rv or rvm.')
+                if self.model['primary'] not in ['earth_moon']:
+                    raise Exception("Model's primary should be earth_moon.")
+                if self.units_name != self.model['primary']:
+                    raise Exception('Units_name should equal primary.')
+            if (system1 == 'ine_fb' and system2 == 'rot_fb') or \
+                    (system1 == 'ine_sb' and system2 == 'rot_sb') or \
+                    (system1 == 'ine_cm' and system2 == 'rot_cm'):
+                t0 = self.model['data'].get('t0')
+                if t0 is None:
+                    raise Exception('Please set t0 to self.model["data"]')
+                self.states[0:6, :] = kiam.ine2rot(self.states[0:6, :], self.times, t0)
+                self.system = system2
+            elif (system1 == 'rot_fb' and system2 == 'ine_fb') or \
+                    (system1 == 'rot_sb' and system2 == 'ine_sb') or \
+                    (system1 == 'rot_cm' and system2 == 'ine_cm'):
+                t0 = self.model['data'].get('t0')
+                if t0 is None:
+                    raise Exception('Please set t0 to self.model["data"]')
+                self.states[0:6, :] = kiam.rot2ine(self.states[0:6, :], self.times, t0)
+                self.system = system2
+            elif system1 == 'rot_fb' and system2 == 'rot_sb':
+                self.states[0] = self.states[0] - 1.0
+                self.system = system2
+            elif system1 == 'rot_fb' and system2 == 'rot_cm':
+                self.states[0] = self.states[0] - self.model['data']['mass_parameter']
+                self.system = system2
+            elif system1 == 'rot_sb' and system2 == 'rot_fb':
+                self.states[0] = self.states[0] + 1.0
+                self.system = system2
+            elif system1 == 'rot_sb' and system2 == 'rot_cm':
+                self.states[0] = self.states[0] + 1.0 - self.model['data']['mass_parameter']
+                self.system = system2
+            elif system1 == 'rot_cm' and system2 == 'rot_fb':
+                self.states[0] = self.states[0] + self.model['data']['mass_parameter']
+                self.system = system2
+            elif system1 == 'rot_cm' and system2 == 'rot_sb':
+                self.states[0] = self.states[0] - 1.0 + self.model['data']['mass_parameter']
+                self.system = system2
+            return
 
-        if system1 in systems_cr3bp and system2 in systems_cr3bp:
+        case_hill = self.model['type'] in models_hill and system1 in systems_hill and system2 in systems_hill
+        if case_hill:
             if self.vars not in ['rv', 'rvm']:
                 raise Exception('Vars should be rv or rvm.')
-            if self.model['primary'] not in ['sun_earth', 'earth_moon']:
-                raise Exception("Model's primary should be sun_earth or earth_moon.")
+            if self.model['primary'] not in ['earth_moon', 'sun_earth']:
+                raise Exception("Model's primary should be earth_moon.")
             if self.units_name != self.model['primary']:
                 raise Exception('Units_name should equal primary.')
-            if self.model['type'] not in ['cr3bp_fb', 'cr3bp_sb']:
-                raise Exception('Model should be cr3bp_fb or cr3bp_sb when using cr3bp systems.')
+            if system1 == 'ine_sb' and system2 == 'rot_sb':
+                t0 = self.model['data'].get('t0')
+                if t0 is None:
+                    raise Exception('Please set t0 to self.model["data"]')
+                self.states[0:6, :] = kiam.ine2rot(self.states[0:6, :], self.times, t0)
+                self.system = system2
+            elif system1 == 'rot_sb' and system2 == 'ine_sb':
+                t0 = self.model['data'].get('t0')
+                if t0 is None:
+                    raise Exception('Please set t0 to self.model["data"]')
+                self.states[0:6, :] = kiam.rot2ine(self.states[0:6, :], self.times, t0)
+                self.system = system2
+            return
 
-        if (system1 == 'ine_fb' and system2 == 'rot_fb') or \
-           (system1 == 'ine_sb' and system2 == 'rot_sb') or \
-           (system1 == 'ine_cm' and system2 == 'rot_cm'):
-            t0 = self.model['data'].get('t0')
-            if t0 is None:
-                raise Exception('Please set t0 to self.model["data"]')
-            self.states[0:6, :] = kiam.ine2rot(self.states[0:6, :], self.times, t0)
-            self.system = system2
-        elif (system1 == 'rot_fb' and system2 == 'ine_fb') or \
-             (system1 == 'rot_sb' and system2 == 'ine_sb') or \
-             (system1 == 'rot_cm' and system2 == 'ine_cm'):
-            t0 = self.model['data'].get('t0')
-            if t0 is None:
-                raise Exception('Please set t0 to self.model["data"]')
-            self.states[0:6, :] = kiam.rot2ine(self.states[0:6, :], self.times, t0)
-            self.system = system2
-        elif system1 == 'rot_fb' and system2 == 'rot_sb':
-            self.states[0] = self.states[0] - 1.0
-            self.system = system2
-        elif system1 == 'rot_fb' and system2 == 'rot_cm':
-            self.states[0] = self.states[0] - self.model['data']['mass_parameter']
-            self.system = system2
-        elif system1 == 'rot_sb' and system2 == 'rot_fb':
-            self.states[0] = self.states[0] + 1.0
-            self.system = system2
-        elif system1 == 'rot_sb' and system2 == 'rot_cm':
-            self.states[0] = self.states[0] + 1.0 - self.model['data']['mass_parameter']
-            self.system = system2
-        elif system1 == 'rot_cm' and system2 == 'rot_fb':
-            self.states[0] = self.states[0] + self.model['data']['mass_parameter']
-            self.system = system2
-        elif system1 == 'rot_cm' and system2 == 'rot_sb':
-            self.states[0] = self.states[0] - 1.0 + self.model['data']['mass_parameter']
-            self.system = system2
+        raise Exception('Possible relations:\n'
+                        f'Model: nbp, both systems should be from: {", ".join(systems_ephemeris)}.\n'
+                        f'Model: CR3BP, both systems should be from: {", ".join(systems_cr3bp)}.\n'
+                        f'Model: BR4BP, both systems should be from: {", ".join(systems_br4bp)}.\n'
+                        f'Model: Hill, both systems should be from: {", ".join(systems_hill)}.\n')
 
     # Units transformations and settings.
     def _allocate_units_graph(self):
@@ -1221,6 +1354,7 @@ class Trajectory:
         self.units_graph.add_edge('dim', 'moon')
         self.units_graph.add_edge('dim', 'earth_moon')
         self.units_graph.add_edge('dim', 'sun_earth')
+
     def _units_transform(self, units1: str, units2: str) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -1310,50 +1444,57 @@ class Trajectory:
                 raise Exception('Unknown vars.')
             self._set_dim_units()
             self.units_name = 'dim'
+
     def _undim_rv(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Undimensionalize the time and position-velocity states
         """
-        self.times = self.times/self.units['TimeUnit']
-        self.states[0:3, :] = self.states[0:3, :]/self.units['DistUnit']
-        self.states[3:6, :] = self.states[3:6, :]/self.units['VelUnit']
+        self.times = self.times / self.units['TimeUnit']
+        self.states[0:3, :] = self.states[0:3, :] / self.units['DistUnit']
+        self.states[3:6, :] = self.states[3:6, :] / self.units['VelUnit']
+
     def _dim_rv(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Dimensionalize the time and position-velocity states
         """
-        self.times = self.times*self.units['TimeUnit']
-        self.states[0:3, :] = self.states[0:3, :]*self.units['DistUnit']
-        self.states[3:6, :] = self.states[3:6, :]*self.units['VelUnit']
+        self.times = self.times * self.units['TimeUnit']
+        self.states[0:3, :] = self.states[0:3, :] * self.units['DistUnit']
+        self.states[3:6, :] = self.states[3:6, :] * self.units['VelUnit']
+
     def _undim_ee(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Undimensionalize the time and equinoctial orbits elements in states.
         """
-        self.times = self.times/self.units['TimeUnit']
-        self.states[0, :] = self.states[0, :]*self.units['VelUnit']
+        self.times = self.times / self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :] * self.units['VelUnit']
+
     def _dim_ee(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Dimensionalize the time and equinoctial orbits elements in states.
         """
-        self.times = self.times*self.units['TimeUnit']
-        self.states[0, :] = self.states[0, :]/self.units['VelUnit']
+        self.times = self.times * self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :] / self.units['VelUnit']
+
     def _undim_oe(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Undimensionalize the time and classical orbits elements in states.
         """
-        self.times = self.times/self.units['TimeUnit']
-        self.states[0, :] = self.states[0, :]/self.units['DistUnit']
+        self.times = self.times / self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :] / self.units['DistUnit']
+
     def _dim_oe(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Dimensionalize the time and classical orbits elements in states.
         """
-        self.times = self.times*self.units['TimeUnit']
-        self.states[0, :] = self.states[0, :]*self.units['DistUnit']
+        self.times = self.times * self.units['TimeUnit']
+        self.states[0, :] = self.states[0, :] * self.units['DistUnit']
+
     def _set_earth_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -1362,9 +1503,10 @@ class Trajectory:
         ku = kiam.units('Earth')
         self.units['mu'] = 1.0
         self.units['DistUnit'] = ku['DistUnit']  # km
-        self.units['VelUnit'] = ku['VelUnit']    # km/s
+        self.units['VelUnit'] = ku['VelUnit']  # km/s
         self.units['TimeUnit'] = ku['TimeUnit']  # days
-        self.units['AccUnit'] = ku['AccUnit']    # m/s^2
+        self.units['AccUnit'] = ku['AccUnit']  # m/s^2
+
     def _set_moon_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -1373,9 +1515,10 @@ class Trajectory:
         ku = kiam.units('Moon')
         self.units['mu'] = 1.0
         self.units['DistUnit'] = ku['DistUnit']  # km
-        self.units['VelUnit'] = ku['VelUnit']    # km/s
+        self.units['VelUnit'] = ku['VelUnit']  # km/s
         self.units['TimeUnit'] = ku['TimeUnit']  # days
-        self.units['AccUnit'] = ku['AccUnit']    # m/s^2
+        self.units['AccUnit'] = ku['AccUnit']  # m/s^2
+
     def _set_earth_moon_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -1383,9 +1526,10 @@ class Trajectory:
         """
         ku = kiam.units('Earth', 'Moon')
         self.units['DistUnit'] = ku['DistUnit']  # km
-        self.units['VelUnit'] = ku['VelUnit']    # km/s
+        self.units['VelUnit'] = ku['VelUnit']  # km/s
         self.units['TimeUnit'] = ku['TimeUnit']  # days
-        self.units['AccUnit'] = ku['AccUnit']    # m/s^2
+        self.units['AccUnit'] = ku['AccUnit']  # m/s^2
+
     def _set_sun_earth_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -1393,20 +1537,21 @@ class Trajectory:
         """
         ku = kiam.units('Sun', 'Earth')
         self.units['DistUnit'] = ku['DistUnit']  # km
-        self.units['VelUnit'] = ku['VelUnit']    # km/s
+        self.units['VelUnit'] = ku['VelUnit']  # km/s
         self.units['TimeUnit'] = ku['TimeUnit']  # days
-        self.units['AccUnit'] = ku['AccUnit']    # m/s^2
+        self.units['AccUnit'] = ku['AccUnit']  # m/s^2
+
     def _set_dim_units(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
         Set coefficients for transformations to/from dimensional units.
         """
         ku = kiam.units('Earth')
-        self.units['mu'] = ku['GM']    # km^3/s^2
-        self.units['DistUnit'] = 1.0   # km
-        self.units['VelUnit'] = 1.0    # km/s
-        self.units['TimeUnit'] = 1.0   # days
-        self.units['AccUnit'] = 1.0    # m/s^2
+        self.units['mu'] = ku['GM']  # km^3/s^2
+        self.units['DistUnit'] = 1.0  # km
+        self.units['VelUnit'] = 1.0  # km/s
+        self.units['TimeUnit'] = 1.0  # days
+        self.units['AccUnit'] = 1.0  # m/s^2
 
     # Auxilary model routines.
     def _set_model_units(self, units_name: str) -> None:
@@ -1460,6 +1605,7 @@ class Trajectory:
         self.model['units']['RSun'] = star['Sun']['MeanRadius'] / units['DistUnit']  # 695700 km
         self.model['units']['REarth'] = planet['Earth']['EquatorRadius'] / units['DistUnit']  # 6378.1366 km
         self.model['units']['RMoon'] = moon['Moon']['MeanRadius'] / units['DistUnit']  # 1737.4 km
+
     def _set_model_sources(self) -> None:
         """
         FOR THE TOOLBOX DEVELOPERS ONLY.
@@ -1470,6 +1616,7 @@ class Trajectory:
 
         for source in self.model['sources_list']:
             self.model['sources'][source.lower()] = True
+
 
 def traj2dict(tr: Trajectory) -> dict:
     """
@@ -1493,6 +1640,8 @@ def traj2dict(tr: Trajectory) -> dict:
          'initialDate': tr.initialDate, 'finalDate': tr.finalDate,
          'units': tr.units, 'parts': tr.parts, 'model': tr.model}
     return d
+
+
 def dict2traj(d: dict) -> Trajectory:
     """
     Converts dictionary to trajectory object.
