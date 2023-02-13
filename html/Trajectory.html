@@ -139,6 +139,9 @@ their characteristics.</p>
 <p>'scrs', 'mer', 'sors', 'ssrm_em' (the Moon-centered systems)</p>
 <p>'gcrs', 'itrs', 'gsrf_em', 'gsrf_se' (the Earth-centered systems)</p>
 <p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
+<p>'ine_fb', 'rot_fb' (first primary-centered systems in CR3BP)</p>
+<p>'ine_sb', 'rot_sb' (second primary-centered systems in CR3BP)</p>
+<p>'ine_cm', 'rot_cm' (baricenter-centered systems in CR3BP)</p>
 <p><code>units_name</code> : str</p>
 <p>The name of the units in which initial_state is given.</p>
 <p>It can be 'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p>
@@ -187,6 +190,12 @@ their characteristics.</p>
 <p>'scrs', 'mer', 'sors', 'ssrm_em' (the Moon-centered systems)</p>
 <p>'gcrs', 'itrs', 'gsrf_em', 'gsrf_se' (the Earth-centered systems)</p>
 <p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
+<p>'ine_fb' (non-rotating frame in CR3BP, BR4BP at first primary)</p>
+<p>'ine_cm' (non-rotating frame in CR3BP, BR4BP at barycenter)</p>
+<p>'ine_sb' (non-rotating frame in CR3BP, BR4BP, Hill at secondary primary)</p>
+<p>'rot_fb' (rotating frame in CR3BP, BR4BP at first primary)</p>
+<p>'rot_cm' (rotating frame in CR3BP, BR4BP at barycenter)</p>
+<p>'rot_sb' (rotating frame in CR3BP, BR4BP, Hill at secondary primary)</p>
 <p>All transformations are possible within given rules:</p>
 <ol>
 <li>
@@ -196,6 +205,11 @@ their characteristics.</p>
 <p>Changes with variables 'rv_stm' are possible only in scrs &lt;-&gt; sors and scrs &lt;-&gt; mer translations.</p>
 </li>
 </ol>
+<p>Implemented transformations:</p>
+<p>Model nbp, both systems should be from: systems_ephemeris.</p>
+<p>Model CR3BP, both systems should be from: systems_cr3bp.</p>
+<p>Model BR4BP, both systems should be from: systems_br4bp.</p>
+<p>Model Hill, both systems should be from: systems_hill.</p>
 <p>The routine automatically find the chain of transformations from the current coordinate system to
 the specified coordinate system.</p></div>
 </dd>
@@ -263,7 +277,7 @@ the specified variables.</p></div>
 <span>def <span class="ident">repropagate</span></span>(<span>self, tof: float, npoints: int = 2, start_index: int = 0) ‑> None</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Clears the calculated data in tr and propagate the trajectory from the beginning.</p>
+<div class="desc"><p>Clears the calculated data in trajectory and propagate the trajectory from the beginning.</p>
 <h2 id="parameters">Parameters:</h2>
 <p><code>tof</code> : float</p>
 <p>The time of flight in units specified by the chosen by set_model model.</p>
@@ -308,13 +322,13 @@ It also initializes tr.model['data'] property.</p>
 <p>Any string if model_type = 'r2bp'</p>
 </li>
 <li>
-<p>'earthmoon', 'sunearth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'</p>
+<p>'earth_moon', 'sun_earth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'</p>
 </li>
 <li>
 <p>'earth', 'moon' if model_type = 'nbp'</p>
 </li>
 </ol>
-<p><code>sources_list</code> : list of str</p>
+<p><code>sources_lits</code> : list of str</p>
 <p>Listed sources of perturbations to be taken into account if model_type = 'nbp'.</p>
 <p>The full list of sources:</p>
 <p>'atm'
@@ -343,10 +357,12 @@ It also initializes tr.model['data'] property.</p>
 (Gravitational acceleration of Neptune)</p>
 <p>'moon'
 (Gravitational acceleration of the Moon)</p>
-<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p></div>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If <code>model_type</code> is 'cr3bp', then <code>model_specifics</code> is a dictionary.</p>
+<p>The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.</p></div>
 </dd>
 <dt id="Trajectory.Trajectory.show"><code class="name flex">
-<span>def <span class="ident">show</span></span>(<span>self, variables: str)</span>
+<span>def <span class="ident">show</span></span>(<span>self, variables: str, draw=True)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plots the specified characteristics of the trajectory.</p>
@@ -379,6 +395,9 @@ It also initializes tr.model['data'] property.</p>
 <p>'L' plots L = theta + omega + Omega wrt time</p>
 </li>
 </ol>
+<p><code>draw</code> : bool</p>
+<p>If True (by default), the fig plotly object will be returned and figure will be showed.</p>
+<p>If False, the fig plot object will be returned and the figure will not be showed.</p>
 <h2 id="returns">Returns:</h2>
 <p><code>ax</code> : matplotlib axis object</p>
 <p>The matplotlib axis object for further work.</p></div>

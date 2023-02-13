@@ -111,6 +111,34 @@ fig = kiam.axis_equal(fig)
 fig.show()
 </code></pre></div>
 </dd>
+<dt id="kiam.body_surface"><code class="name flex">
+<span>def <span class="ident">body_surface</span></span>(<span>body: str, radius: float = 1.0, quality: str = 'medium')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return figure object for showing the surface of a celestial body (Earth, Moon).</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>body</code> : str</p>
+<p>The name of the celestial body.</p>
+<p>Options: 'earth', 'moon'.</p>
+<p><code>radius</code> : float</p>
+<p>The radius of the body.</p>
+<p>Default: 1.0.</p>
+<p><code>quality</code> : str</p>
+<p>The quality of the image.</p>
+<p>Options: 'high', 'medium' (default), 'low'.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object..</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>fig = body_surface('earth')
+
+fig.show()
+
+fig = body_surface('moon')
+
+fig.show()
+</code></pre></div>
+</dd>
 <dt id="kiam.box_plot"><code class="name flex">
 <span>def <span class="ident">box_plot</span></span>(<span>*args)</span>
 </code></dt>
@@ -1923,9 +1951,9 @@ mu = 1.215e-02
 
 stm = False
 
-gm4b = 3.289e+05
+gm4b =  3.289005596e+05
 
-a4b = 389.17
+a4b = 389.170375544352
 
 theta0 = 0.0
 
@@ -1974,6 +2002,31 @@ mu = 1e-02
 stm = False
 
 t, y = kiam.propagate_cr3bp(central_body, tspan, x0, mu, stm)
+</code></pre></div>
+</dd>
+<dt id="kiam.propagate_hill"><code class="name flex">
+<span>def <span class="ident">propagate_hill</span></span>(<span>tspan: numpy.ndarray, x0: numpy.ndarray) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate trajectory in Hill's model of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p>Time nodes at which the solution is required</p>
+<p><code>x0</code>: numpy.ndarray, shape (6,)</p>
+<p>Initial state containing position and velocity.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz]</p>
+<h2 id="returns">Returns:</h2>
+<p><code>t</code> : numpy.ndarray, shape(n,)</p>
+<p>Times (nodes) in tspan at which the solution is obtained</p>
+<p><code>y</code> : numpy.ndarray, shape(6, n)</p>
+<p>Array of column trajectory phase states.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>tspan = numpy.linspace(0, 2*numpy.pi, 1000)
+
+x0 = numpy.array([-0.5, 0, 0, 0, 2.0, 0])
+
+t, y = kiam.propagate_hill(tspan, x0)
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_nbp"><code class="name flex">
@@ -2680,6 +2733,29 @@ z = r*sin(theta)
 [0. 0. 1.]
 </code></pre></div>
 </dd>
+<dt id="kiam.sphere_coordinates"><code class="name flex">
+<span>def <span class="ident">sphere_coordinates</span></span>(<span>radius: float, nlat: int, nlon: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get x, y, z coordinates on a sphere.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>radius</code> : float</p>
+<p>The radius of the sphere.</p>
+<p><code>nlat</code> : int</p>
+<p>The number of latitude angles in a grid.</p>
+<p><code>nlon</code> : int</p>
+<p>The number of longitude angles in a grid.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>x</code> : numpy.ndarray, shape(nlat, nlon)</p>
+<p>The x-coordinates.</p>
+<p><code>y</code> : numpy.ndarray, shape(nlat, nlon)</p>
+<p>The y-coordinates.</p>
+<p><code>z</code> : numpy.ndarray, shape(nlat, nlon)</p>
+<p>The z-coordinates.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x, y, z = sphere_coordinates(1.0, 100, 100)
+</code></pre></div>
+</dd>
 <dt id="kiam.tand"><code class="name flex">
 <span>def <span class="ident">tand</span></span>(<span>x: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
 </code></dt>
@@ -2792,6 +2868,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <ul class="">
 <li><code><a title="kiam.astro_const" href="#kiam.astro_const">astro_const</a></code></li>
 <li><code><a title="kiam.axis_equal" href="#kiam.axis_equal">axis_equal</a></code></li>
+<li><code><a title="kiam.body_surface" href="#kiam.body_surface">body_surface</a></code></li>
 <li><code><a title="kiam.box_plot" href="#kiam.box_plot">box_plot</a></code></li>
 <li><code><a title="kiam.cart2latlon" href="#kiam.cart2latlon">cart2latlon</a></code></li>
 <li><code><a title="kiam.cart2sphere" href="#kiam.cart2sphere">cart2sphere</a></code></li>
@@ -2844,6 +2921,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><code><a title="kiam.prepare_units_dict" href="#kiam.prepare_units_dict">prepare_units_dict</a></code></li>
 <li><code><a title="kiam.propagate_br4bp" href="#kiam.propagate_br4bp">propagate_br4bp</a></code></li>
 <li><code><a title="kiam.propagate_cr3bp" href="#kiam.propagate_cr3bp">propagate_cr3bp</a></code></li>
+<li><code><a title="kiam.propagate_hill" href="#kiam.propagate_hill">propagate_hill</a></code></li>
 <li><code><a title="kiam.propagate_nbp" href="#kiam.propagate_nbp">propagate_nbp</a></code></li>
 <li><code><a title="kiam.propagate_r2bp" href="#kiam.propagate_r2bp">propagate_r2bp</a></code></li>
 <li><code><a title="kiam.r2bp" href="#kiam.r2bp">r2bp</a></code></li>
@@ -2866,6 +2944,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><code><a title="kiam.sind" href="#kiam.sind">sind</a></code></li>
 <li><code><a title="kiam.sors2scrs" href="#kiam.sors2scrs">sors2scrs</a></code></li>
 <li><code><a title="kiam.sphere2cart" href="#kiam.sphere2cart">sphere2cart</a></code></li>
+<li><code><a title="kiam.sphere_coordinates" href="#kiam.sphere_coordinates">sphere_coordinates</a></code></li>
 <li><code><a title="kiam.tand" href="#kiam.tand">tand</a></code></li>
 <li><code><a title="kiam.time2jd" href="#kiam.time2jd">time2jd</a></code></li>
 <li><code><a title="kiam.to_float" href="#kiam.to_float">to_float</a></code></li>
