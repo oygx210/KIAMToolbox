@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>Trajectory API documentation</title>
+<meta name="description" content="This Python module is a part of the KIAM Astrodynamics Toolbox developed in
+Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>Trajectory</code></h1>
+</header>
+<section id="section-intro">
+<p>This Python module is a part of the KIAM Astrodynamics Toolbox developed in
+Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia.</p>
+<p>The module provides a useful and convenient a class Trajectory for the design of
+space trajectories. With this class, the users can propagate trajectories
+within the selected model of motion, perform change of variables,
+coordinate systems, and units systems, and visualize the trajectories and
+their characteristics.</p>
+<p>The toolbox is licensed under the MIT License.</p>
+<p>For more information see GitHub page of the project:
+<a href="https://github.com/shmaxg/KIAMToolbox">https://github.com/shmaxg/KIAMToolbox</a></p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="Trajectory.dict2traj"><code class="name flex">
+<span>def <span class="ident">dict2traj</span></span>(<span>d: dict) ‑> <a title="Trajectory.Trajectory" href="#Trajectory.Trajectory">Trajectory</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts dictionary to trajectory object.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>d</code> : dict</p>
+<p>The dictionary containing the attributes of some Trajectory object.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>tr</code> : Trajectory</p>
+<p>The Trajectory object converted from the dictionary.</p></div>
+</dd>
+<dt id="Trajectory.traj2dict"><code class="name flex">
+<span>def <span class="ident">traj2dict</span></span>(<span>tr: <a title="Trajectory.Trajectory" href="#Trajectory.Trajectory">Trajectory</a>) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts trajectory object to dictionary.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tr</code> : Trajectory</p>
+<p>The Trajectory object needed to convert into dictionary.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>d</code> : dict</p>
+<p>The dictionary containing the attributes of the given Trajectory object.</p></div>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="Trajectory.Trajectory"><code class="flex name class">
+<span>class <span class="ident">Trajectory</span></span>
+<span>(</span><span>initial_state: numpy.ndarray, initial_time: float, initial_jd: float, variables: str, system: str, units_name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Initialize the Trajectory object with given initial conditions and properties.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>initial_state</code> : numpy.ndarray, shape (6,), (7,), (42,)</p>
+<p>Initial state of the spacecraft.</p>
+<p>It can be a</p>
+<ol>
+<li>
+<p>position-velocity vector ('rv'), shape (6,)</p>
+</li>
+<li>
+<p>position-velocity-mass vector ('rvm'), shape (7,)</p>
+</li>
+<li>
+<p>position-velocity-stm vector('rv_stm'), shape (42,)</p>
+</li>
+<li>
+<p>equinoctial orbital elements vector ('ee'), shape (6,)</p>
+</li>
+<li>
+<p>equinoctial orbital elements extended by mass vector ('eem'), shape (7,)</p>
+</li>
+<li>
+<p>equinoctial orbital elements extended by stm vector ('ee_stm'), shape (42,)</p>
+</li>
+<li>
+<p>classical orbital elements vector ('oe'), shape (6,)</p>
+</li>
+<li>
+<p>classical orbital elements extended by mass vector ('oem'), shape (7,)</p>
+</li>
+<li>
+<p>classical orbital elements extended by stm vector ('oe_stm'), shape (42,)</p>
+</li>
+</ol>
+<p>stm means state-transition matrix</p>
+<p>The classical orbital elements:</p>
+<p>a (semi-major axis),</p>
+<p>e (eccentricity),</p>
+<p>i (inclination),</p>
+<p>Omega (right ascension of the ascending node),</p>
+<p>omega (argument of pericenter),</p>
+<p>theta (true anomaly)</p>
+<p>The equinoctial orbital elements:</p>
+<p>h, ex, ey, ix, iy, L</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter)</p>
+<p><code>initial_time</code> : float</p>
+<p>Initial time.</p>
+<p><code>initial_jd</code> : float</p>
+<p>Julian date corresponding to initial_time.</p>
+<p><code>variables</code> : str</p>
+<p>Variables in terms of which initial_state is given.</p>
+<p>It can be 'rv', 'rvm', 'rv_stm', 'ee', 'eem', 'ee_stm', 'oe', 'oem', 'oe_stm'.</p>
+<p><code>system</code> : str</p>
+<p>The coordinate system in which initial_state is given.</p>
+<p>It can be</p>
+<p>'scrs', 'mer', 'sors', 'ssrm_em' (the Moon-centered systems)</p>
+<p>'gcrs', 'itrs', 'gsrf_em', 'gsrf_se' (the Earth-centered systems)</p>
+<p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
+<p>'ine_fb', 'rot_fb' (first primary-centered systems in CR3BP)</p>
+<p>'ine_sb', 'rot_sb' (second primary-centered systems in CR3BP)</p>
+<p>'ine_cm', 'rot_cm' (baricenter-centered systems in CR3BP)</p>
+<p><code>units_name</code> : str</p>
+<p>The name of the units in which initial_state is given.</p>
+<p>It can be 'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p>
+<h2 id="properties">Properties:</h2>
+<p><code>finalDate</code> : datetime.datetime</p>
+<p>The date and time of the last phase state in trajectory.</p>
+<p><code>initialDate</code> : datetime.datetime</p>
+<p>The date and time of the first phase state in trajectory.</p>
+<p><code>jds</code> : numpy.ndarray, shape(n,)</p>
+<p>Julian dates corresponding to phase vectors in states property.</p>
+<p><code>model</code> : dict</p>
+<p>The model used for trajectory propagation.</p>
+<p><code>parts</code> : list[int]</p>
+<p>The numbers of nodes between which the trajectory was sequentially propagated.</p>
+<p><code>states</code> : numpy.array, shape(m,n)</p>
+<p>Phase vectors along the trajectory.</p>
+<p><code>system</code> : str</p>
+<p>The current coordinate system.</p>
+<p><code>system_graph</code> : networkx.classes.graph.Graph</p>
+<p>The graph of transormations between coordinate systems.</p>
+<p><code>times</code> : numpy.array(n,)</p>
+<p>Times along the trajectory.</p>
+<p><code>units</code> : dict</p>
+<p>The dictionary of the current units.</p>
+<p><code>units_graph</code> : networkx.classes.graph.Graph</p>
+<p>The graph of transormations between units.</p>
+<p><code>units_name</code> : str</p>
+<p>The name of the current units.</p>
+<p><code>vars</code> : str</p>
+<p>The current variables.</p>
+<p><code>vars_graph</code> : networkx.classes.digraph.DiGraph</p>
+<p>The graph of transormations between variables.</p>
+<h2 id="examples">Examples:</h2>
+<p>Examples can be found in kiam_examples.py.</p></div>
+<h3>Methods</h3>
+<dl>
+<dt id="Trajectory.Trajectory.change_system"><code class="name flex">
+<span>def <span class="ident">change_system</span></span>(<span>self, new_system: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change coordinate system to the specified one.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>new_system</code> : str</p>
+<p>The name of the new coordinate system.</p>
+<p>Options:</p>
+<p>'scrs', 'mer', 'sors', 'ssrm_em' (the Moon-centered systems)</p>
+<p>'gcrs', 'itrs', 'gsrf_em', 'gsrf_se' (the Earth-centered systems)</p>
+<p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
+<p>'ine_fb' (non-rotating frame in CR3BP, BR4BP at first primary)</p>
+<p>'ine_cm' (non-rotating frame in CR3BP, BR4BP at barycenter)</p>
+<p>'ine_sb' (non-rotating frame in CR3BP, BR4BP, Hill at secondary primary)</p>
+<p>'rot_fb' (rotating frame in CR3BP, BR4BP at first primary)</p>
+<p>'rot_cm' (rotating frame in CR3BP, BR4BP at barycenter)</p>
+<p>'rot_sb' (rotating frame in CR3BP, BR4BP, Hill at secondary primary)</p>
+<p>All transformations are possible within given rules:</p>
+<ol>
+<li>
+<p>The variables are 'rv', 'rvm', or 'rv_stm'.</p>
+</li>
+<li>
+<p>Changes with variables 'rv_stm' are possible only in scrs &lt;-&gt; sors and scrs &lt;-&gt; mer translations.</p>
+</li>
+</ol>
+<p>Implemented transformations:</p>
+<p>Model nbp, both systems should be from: systems_ephemeris.</p>
+<p>Model CR3BP, both systems should be from: systems_cr3bp.</p>
+<p>Model BR4BP, both systems should be from: systems_br4bp.</p>
+<p>Model Hill, both systems should be from: systems_hill.</p>
+<p>The routine automatically find the chain of transformations from the current coordinate system to
+the specified coordinate system.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.change_units"><code class="name flex">
+<span>def <span class="ident">change_units</span></span>(<span>self, new_units: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change units to the specified ones.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>new_units</code> : str</p>
+<p>The name of the new units.</p>
+<p>Options:</p>
+<p>'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p>
+<p>All transformations are possible.</p>
+<p>The routine automatically find the chain of transformations from the current units to
+the specified units.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.change_vars"><code class="name flex">
+<span>def <span class="ident">change_vars</span></span>(<span>self, new_vars: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Change variables to the specified ones.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>new_vars</code> : str</p>
+<p>The name of the new variables.</p>
+<p>It can be 'rv', 'rvm', 'rv_stm', 'ee', 'eem', 'ee_stm', 'oe', 'oem', 'oe_stm'.</p>
+<p>All transformations are possible with given rules:</p>
+<ol>
+<li>
+<p>units_name are 'earth' or 'moon'</p>
+</li>
+<li>
+<p>transformations that increases the number of variables are impossible.</p>
+</li>
+</ol>
+<p>E.g. rv -&gt; rvm or rv -&gt; rv_stm transformations are impossible.</p>
+<p>The routine automatically find the chain of transformations from the current variables to
+the specified variables.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.clear"><code class="name flex">
+<span>def <span class="ident">clear</span></span>(<span>self) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clears states, times, julian dates, parts, and resets the final date.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.copy"><code class="name flex">
+<span>def <span class="ident">copy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns independent copy of the trajectory object.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.propagate"><code class="name flex">
+<span>def <span class="ident">propagate</span></span>(<span>self, tof: float, npoints: int = 2) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate the trajectory.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tof</code> : float</p>
+<p>The time of flight in units specified by the chosen by set_model model.</p>
+<p>The time interval will be [t0, t0 + tof].</p>
+<p><code>npoints</code> : int</p>
+<p>The number of nodes in the propagation time interval.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.repropagate"><code class="name flex">
+<span>def <span class="ident">repropagate</span></span>(<span>self, tof: float, npoints: int = 2, start_index: int = 0) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Clears the calculated data in trajectory and propagate the trajectory from the beginning.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tof</code> : float</p>
+<p>The time of flight in units specified by the chosen by set_model model.</p>
+<p>The time interval will be [t0, t0 + tof].</p>
+<p><code>npoints</code> : int</p>
+<p>The number of nodes in the propagation time interval.</p>
+<p><code>start_index</code> : int</p>
+<p>The number of a time node from which the trajectory should be repropagated.</p>
+<p>At the moment, in can be only 0.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.set_model"><code class="name flex">
+<span>def <span class="ident">set_model</span></span>(<span>self, variables: str, model_type, primary: str, sources_list: list) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set the model used for propagating the trajectory.
+It also initializes tr.model['data'] property.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>variables</code> : str</p>
+<p>Variables in terms of which the equations will be chosen.</p>
+<p><code>model_type</code>: str</p>
+<p>The model type of the dynamics.</p>
+<p>Options:</p>
+<ol>
+<li>
+<p>r2bp (restricted two-body problem)</p>
+</li>
+<li>
+<p>cr3bp_fb (circular restricted three-body problem with center at the first primary body)</p>
+</li>
+<li>
+<p>cr3bp_sb (circular restricted three-body problem with center at the secondary primary body)</p>
+</li>
+<li>
+<p>nbp (generic n-body problem)</p>
+</li>
+</ol>
+<p><code>primary</code> : str</p>
+<p>The center body or the primaries wrt which the equations will be chosen.</p>
+<p>Options:</p>
+<ol>
+<li>
+<p>Any string if model_type = 'r2bp'</p>
+</li>
+<li>
+<p>'earth_moon', 'sun_earth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'</p>
+</li>
+<li>
+<p>'earth', 'moon' if model_type = 'nbp'</p>
+</li>
+</ol>
+<p><code>sources_lits</code> : list of str</p>
+<p>Listed sources of perturbations to be taken into account if model_type = 'nbp'.</p>
+<p>The full list of sources:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If <code>model_type</code> is 'cr3bp', then <code>model_specifics</code> is a dictionary.</p>
+<p>The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.</p></div>
+</dd>
+<dt id="Trajectory.Trajectory.show"><code class="name flex">
+<span>def <span class="ident">show</span></span>(<span>self, variables: str, draw=True)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots the specified characteristics of the trajectory.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>variables</code> : str</p>
+<p>Variables that will be plotted.</p>
+<p>Options:</p>
+<ol>
+<li>
+<p>'xy', '3d' if self.vars in ['rv', 'rvm', 'rv_stm']</p>
+<p>'xy' plots the trajectory in x-y axes.</p>
+<p>'3d' plots the trajectory in 3d.</p>
+</li>
+<li>
+<p>'a', 'e', 'inc', 'Om', 'w', 'th' if self.vars in ['oe', 'oem', 'oe_stm']</p>
+<p>'a' plots the semi-major axis wrt time</p>
+<p>'e' plots the eccentricity wrt time</p>
+<p>'inc' plots the inclination wrt time</p>
+<p>'Om' plots the right ascension of the ascending node wrt time</p>
+<p>'w' plots the argument of pericenter wrt time</p>
+<p>'th' plots the true anomaly wrt time</p>
+</li>
+<li>
+<p>'h', 'ex', 'ey', 'ix', 'iy', 'L' if self.vars in ['ee', 'eem', 'ee_stm']</p>
+<p>'h' plots h = sqrt(p/mu) wrt time</p>
+<p>'ex' plots ex = e*cos(Omega+omega) wrt time</p>
+<p>'ey' plots ey = e*sin(Omega+omega) wrt time</p>
+<p>'ix' plots ix = tan(i/2)*cos(Omega) wrt time</p>
+<p>'iy' plots iy = tan(i/2)*sin(Omega) wrt time</p>
+<p>'L' plots L = theta + omega + Omega wrt time</p>
+</li>
+</ol>
+<p><code>draw</code> : bool</p>
+<p>If True (by default), the fig plotly object will be returned and figure will be showed.</p>
+<p>If False, the fig plot object will be returned and the figure will not be showed.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>ax</code> : matplotlib axis object</p>
+<p>The matplotlib axis object for further work.</p></div>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="Trajectory.dict2traj" href="#Trajectory.dict2traj">dict2traj</a></code></li>
+<li><code><a title="Trajectory.traj2dict" href="#Trajectory.traj2dict">traj2dict</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="Trajectory.Trajectory" href="#Trajectory.Trajectory">Trajectory</a></code></h4>
+<ul class="two-column">
+<li><code><a title="Trajectory.Trajectory.change_system" href="#Trajectory.Trajectory.change_system">change_system</a></code></li>
+<li><code><a title="Trajectory.Trajectory.change_units" href="#Trajectory.Trajectory.change_units">change_units</a></code></li>
+<li><code><a title="Trajectory.Trajectory.change_vars" href="#Trajectory.Trajectory.change_vars">change_vars</a></code></li>
+<li><code><a title="Trajectory.Trajectory.clear" href="#Trajectory.Trajectory.clear">clear</a></code></li>
+<li><code><a title="Trajectory.Trajectory.copy" href="#Trajectory.Trajectory.copy">copy</a></code></li>
+<li><code><a title="Trajectory.Trajectory.propagate" href="#Trajectory.Trajectory.propagate">propagate</a></code></li>
+<li><code><a title="Trajectory.Trajectory.repropagate" href="#Trajectory.Trajectory.repropagate">repropagate</a></code></li>
+<li><code><a title="Trajectory.Trajectory.set_model" href="#Trajectory.Trajectory.set_model">set_model</a></code></li>
+<li><code><a title="Trajectory.Trajectory.show" href="#Trajectory.Trajectory.show">show</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

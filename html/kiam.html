@@ -1,0 +1,2962 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>kiam API documentation</title>
+<meta name="description" content="This Python module is a part of the KIAM Astrodynamics Toolbox developed in
+Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS_CHTML" integrity="sha256-kZafAc6mZvK3W3v1pHOcUix30OHQN6pU/NO2oFkqZVw=" crossorigin></script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>kiam</code></h1>
+</header>
+<section id="section-intro">
+<p>This Python module is a part of the KIAM Astrodynamics Toolbox developed in
+Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia.</p>
+<p>The module serves as a safe and convenient interface to Fortran-compiled
+astrodynamical routines and provides instruments for performing translations
+between variables, coordinate systems, and time descriptions, propagating the
+trajectories in various models, and getting fast answers on typical
+questions about the two and n-body problems. It also contains some plotting
+routins and useful matrix linear algebra operations.</p>
+<p>The toolbox is licensed under the MIT License.</p>
+<p>The GitHub page of the project:
+<a href="https://github.com/shmaxg/KIAMToolbox.">https://github.com/shmaxg/KIAMToolbox.</a></p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="kiam.astro_const"><code class="name flex">
+<span>def <span class="ident">astro_const</span></span>(<span>) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get astronomical constants.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>uni_const</code> : dict</p>
+<p>Universal constants containing the speed of light (SoL) in km/s,
+astronomical unit (AU) in km, constant of gravitation (G) in km^3/kg/s^2,
+standard acceleration due to gravity (g0) in m/s^2, degrees in 1 radian (RAD).</p>
+<p><code>star</code> : dict</p>
+<p>Contains a dictionary that constants of the Sun: the gravitational parameter (GM) in km^3/s^2,
+the mean radius (MeanRadius) in km.</p>
+<p><code>planet</code> : dict</p>
+<p>Contains constants of the planets (Mercury, Venus, Earth, Mars, Jupiter,
+Saturn, Uranus, Neptune). The keys of the dictionary are the names of the planets.
+Eack planet[planet_name] is also a dictionary that contains the
+gravitational parameter of the planet (GM) in km^3/s^2,
+the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in km,
+the semi-major axis of the orbit around the Sun (SemimajorAxis) in km. For the Earth
+there are additionaly the obliquity of the ecliptic (Obliquity) in degrees
+and its time derivative (dObliquitydt) in arcsec/cy (cy = century years).</p>
+<p><code>moon</code> : dict</p>
+<p>Contains constants of the moons (currently only of the Moon). The dictionary
+has a single key named Moon and moon['Moon'] is also a dictionary.
+That dictionary contains the gravitational parameter of the Moon (GM) in km^3/s^2,
+the mean raidus (MeanRadius) in km,
+the semi-major axis of the orbit around the Sun (SemimajorAxis) in km.</p>
+<p><code>small_body</code> : dict</p>
+<p>Contains constants of the small celestial bodies (currently only of the Pluto).
+The dictionary has a single key named Pluto and small_body['Pluto'] is also a
+dictionary. That dictionary contains the
+gravitational parameter of the Pluto (GM) in km^3/s^2,
+the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in km,
+the semi-major axis of the orbit around the Sun (SemimajorAxis) in km.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>uni_const, star, planet, moon, small_body = astro_const()  # If you need all the dicts
+
+_, star, planet, _, _ = astro_const()  # If you need only star and planet dicts
+
+star['Sun']['MeanRadius']  # Mean radius of the Sun
+
+planet['Earth']['GM']  # Gravitational parameter of the Earth
+
+planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
+</code></pre></div>
+</dd>
+<dt id="kiam.axis_equal"><code class="name flex">
+<span>def <span class="ident">axis_equal</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets axis to be equal.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.axis_equal(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.body_surface"><code class="name flex">
+<span>def <span class="ident">body_surface</span></span>(<span>body: str, radius: float = 1.0, quality: str = 'medium')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return figure object for showing the surface of a celestial body (Earth, Moon).</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>body</code> : str</p>
+<p>The name of the celestial body.</p>
+<p>Options: 'earth', 'moon'.</p>
+<p><code>radius</code> : float</p>
+<p>The radius of the body.</p>
+<p>Default: 1.0.</p>
+<p><code>quality</code> : str</p>
+<p>The quality of the image.</p>
+<p>Options: 'high', 'medium' (default), 'low'.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object..</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>fig = body_surface('earth')
+
+fig.show()
+
+fig = body_surface('moon')
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.box_plot"><code class="name flex">
+<span>def <span class="ident">box_plot</span></span>(<span>*args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates summary statistics with boxplots.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>*args</code> : Tuple[numpy.ndarray]</p>
+<p>The 1D arrays. For each of them a boxplot is created.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>y0 = numpy.random.randn(50) - 1
+
+y1 = numpy.random.randn(50) + 1
+
+fig = kiam.box_plot(y0, y1)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.cart2latlon"><code class="name flex">
+<span>def <span class="ident">cart2latlon</span></span>(<span>cart: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Cartesian coordinates to latitude and longitude.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>cart</code> : numpy.ndarray, shape (3,), (3, n)</p>
+<p>3D vector or array of column 3D vectors of Cartesian coordinates.</p>
+<p>Vector structure: [x, y, z]</p>
+<h2 id="returns">Returns:</h2>
+<p><code>latlon</code> : numpy.ndarray, shape (2,), (2, n)</p>
+<p>2D Vector or array of column 2D vectors of latitude and longitude pairs.</p>
+<p>Vector structure: [lat, lon], where</p>
+<p>lat in [-pi/2, pi/2],</p>
+<p>lon in [-pi, pi].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; cart = numpy.array([1, 0, 0])
+
+&gt;&gt; latlon = kiam.cart2latlon(cart)
+
+[0. 0.]
+</code></pre></div>
+</dd>
+<dt id="kiam.cart2sphere"><code class="name flex">
+<span>def <span class="ident">cart2sphere</span></span>(<span>cart: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Cartesian coordinates to spherical coordinates.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>cart</code> : numpy.ndarray, shape (3,), (3, n)</p>
+<p>3D vector or 3xn array of column 3D vectors of Cartesian coordinates</p>
+<p>Vector structure: [x, y, z]</p>
+<h2 id="returns">Returns:</h2>
+<p><code>sphere</code> : numpy.ndarray, shape (3,), (3, n)</p>
+<p>3D vector or 3xn array of column 3D vectors of spherical coordinates</p>
+<p>Vector structure: [r, phi, theta], where</p>
+<pre><code>
+phi in [-pi, pi],
+
+theta in [0, pi],
+
+x = r*cos(theta)*cos(phi),
+
+y = r*cos(theta)*sin(phi),
+
+z = r*sin(theta).
+
+</code></pre>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; cart = numpy.array([1, 0, 0])
+
+&gt;&gt; sphere = kiam.cart2sphere(cart)
+
+[1.         0.         1.57079633]
+</code></pre></div>
+</dd>
+<dt id="kiam.cosd"><code class="name flex">
+<span>def <span class="ident">cosd</span></span>(<span>x: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Cosine of a degree argument.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>x</code> : float, numpy.ndarray</p>
+<p>Angle or an array of angles in degrees.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>s</code> : float, numpy.ndarray</p>
+<p>A cosine or array of cosines of angles in degrees.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.cosd(60)
+
+0.5000000000000001
+</code></pre></div>
+</dd>
+<dt id="kiam.cotand"><code class="name flex">
+<span>def <span class="ident">cotand</span></span>(<span>x: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Coangent of a degree argument.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>x</code> : float, numpy.ndarray</p>
+<p>Angle or an array of angles in degrees.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>s</code> : float, numpy.ndarray</p>
+<p>A cotangent or array of cotangents of angles in degrees.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.cotand(45)
+
+1.0000000000000002
+</code></pre></div>
+</dd>
+<dt id="kiam.cr3bp_fb"><code class="name flex">
+<span>def <span class="ident">cr3bp_fb</span></span>(<span>t: float, s: numpy.ndarray, mu: float, stm_req: bool) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the circular restricted three-body problem equations of motion
+wrt the first primary body.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing position and velocity and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm_req = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm_req = True</p>
+<p><code>mu</code> : float</p>
+<p>Mass parameter of the three-body system</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Gravitational acceleration according to the circular restricted
+three-body model of motion wrt the first primary body extended
+(if stm_req = True) by the derivative of the state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fx, fy, fz, fvx, fvy, fvz] if stm_req = False</p>
+<p>[fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t0 = 0.0
+
+s0 = numpy.array([0.5, 0, 0, 0, 1, 0])
+
+mu = 1.2e-02
+
+dsdt = kiam.cr3bp_fb(t0, s0, mu, False)
+
+[ 0.     1.     0.    -1.416 -0.    -0.   ]
+</code></pre></div>
+</dd>
+<dt id="kiam.cr3bp_sb"><code class="name flex">
+<span>def <span class="ident">cr3bp_sb</span></span>(<span>t: float, s: numpy.ndarray, mu: float, stm_req: bool) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the circular restricted three-body problem equations of motion
+wrt the secondary primary body.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing position and velocity and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm_req = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm_req = True</p>
+<p><code>mu</code> : float</p>
+<p>Mass parameter of the three-body system</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Gravitational acceleration according to the circular restricted
+three-body model of motion wrt the secondary primary body extended
+(if stm_req = True) by the derivative of the state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fx, fy, fz, fvx, fvy, fvz] if stm_req = False</p>
+<p>[fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t0 = 0.0
+
+s0 = numpy.array([0.5, 0, 0, 0, 1, 0])
+
+mu = 1.2e-02
+
+dsdt = kiam.cr3bp_sb(t0, s0, mu, False)
+
+[ 0.          1.          0.          3.00088889 -0.         -0.        ]
+</code></pre></div>
+</dd>
+<dt id="kiam.deg2rad"><code class="name flex">
+<span>def <span class="ident">deg2rad</span></span>(<span>deg: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Degrees to radians conversion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>deg</code> : float, numpy.ndarray</p>
+<p>Angle or array of angles in degrees.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>rad</code> : float, numpy.ndarray</p>
+<p>Angle or array of angles in radians.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; deg2rad(180)
+
+3.141592653589793
+</code></pre></div>
+</dd>
+<dt id="kiam.dotainvb"><code class="name flex">
+<span>def <span class="ident">dotainvb</span></span>(<span>a: numpy.ndarray, b: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate <code>a*b^(-1)</code> for matrices <code>a</code> and <code>b</code>.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>a</code> : numpy.ndarray, shape (n, n)</p>
+<p>A square matrix.</p>
+<p><code>b</code> : numpe.ndarray, shape (n, n)</p>
+<p>A square matrix.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>c</code> : numpy.ndarray, shape (n, n)</p>
+<p>The matrix that equals <code>a*b^(-1)</code></p>
+<h2 id="examples">Examples:</h2>
+<pre><code>a = numpy.array([[1, 2], [3, 4]])
+
+b = numpy.array([[1, 2], [3, 4]])
+
+c = kiam.dotainvb(a, b)
+
+[[1. 0.]
+[0. 1.]]
+</code></pre></div>
+</dd>
+<dt id="kiam.ee2rv"><code class="name flex">
+<span>def <span class="ident">ee2rv</span></span>(<span>ee: numpy.ndarray, mu: float, grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Equinoctial orbital elements to position and velocity.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>ee</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column vectors of equinoctial orbital elements:</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter),</p>
+<p>e - eccentricity,</p>
+<p>Omega - right ascension of the ascending node,</p>
+<p>omega - argument of pericenter,</p>
+<p>i - inclination.</p>
+<p><code>mu</code> : float</p>
+<p>Gravitational parameter.</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of position and velocity wrt elemets.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>rv</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D phase vector or array of 6D column vectors containing position and velocity.</p>
+<p>Vector structure: [x, y, z, vx, dy, dz].</p>
+<p><code>drv</code> : numpy.ndarray, shape (6,6), (6,6,n)</p>
+<p>6x6 matrix or 6x6xn array of partial derivatives of rv wrt ee (drv/dee).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>ee = numpy.array([1, 0, 0, 0, 0, 0])
+
+rv = kiam.ee2rv(ee, 1.0, False)
+
+rv, drv = kiam.ee2rv(ee, 1.0, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.eye2vec"><code class="name flex">
+<span>def <span class="ident">eye2vec</span></span>(<span>n: int) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Vector form of an identity matrix.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>n</code> : int</p>
+<p>The number of rows and columns in the identity matrix.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>a</code> : numpy.ndarray, shape (n**2,)</p>
+<p>Vector form of the identity matrix.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; a = kiam.eye2vec(3)
+
+[1. 0. 0. 0. 1. 0. 0. 0. 1.]
+</code></pre></div>
+</dd>
+<dt id="kiam.gcrs2hcrs"><code class="name flex">
+<span>def <span class="ident">gcrs2hcrs</span></span>(<span>xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from GCRS c/s to HCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xgcrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the GCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xgcrs</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xhcrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the HCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (6D -&gt; 6D):
+
+ku = kiam.units('sun', 'earth')
+
+xgcrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+Example 2 (6x1 -&gt; 6x1):
+
+ku = kiam.units('sun', 'earth')
+
+xgcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+</code></pre></div>
+</dd>
+<dt id="kiam.gcrs2itrs"><code class="name flex">
+<span>def <span class="ident">gcrs2itrs</span></span>(<span>xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vector from GCRS c/s to ITRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xgcrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the GCRS coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to column(s) in xgcrs</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the ITRS vector wrt the GCRS vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xitrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the ITRS coordinate system</p>
+<p><code>dxitrs</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>3x3 or 6x6 matrix or 3x3xn or 6x6xn array of partial derivatives of xitrs wrt xgcrs (dxitrs/dxgcrs).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+xgcrs = numpy.array([1, 0, 0])
+
+xitrs = kiam.gcrs2itrs(xgcrs, jd, False)
+
+xitrs, dxitrs = kiam.gcrs2itrs(xgcrs, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.gcrs2scrs"><code class="name flex">
+<span>def <span class="ident">gcrs2scrs</span></span>(<span>xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from GCRS c/s to SCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xgcrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the GCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz]</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xgcrs</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the SCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (6D -&gt; 6D):
+
+ku = kiam.units('earth', 'moon')
+
+xgcrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+Example 2 (6x1 -&gt; 6x1)
+
+ku = kiam.units('earth', 'moon')
+
+xgcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+</code></pre></div>
+</dd>
+<dt id="kiam.get_altitude_km"><code class="name flex">
+<span>def <span class="ident">get_altitude_km</span></span>(<span>period_hours: float, body: str) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate the altitude of a circular orbit with a given period
+around a specified celestial body.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>period</code> : float</p>
+<p>The circular orbit period in hours.</p>
+<p><code>body</code>: str</p>
+<p>The name of the celesial body.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>altitude_km</code> : float</p>
+<p>The altitude above the surface of the body in km.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; altitude_km = kiam.get_altitude_km(1.5, 'earth')
+
+281.5472668353086
+</code></pre></div>
+</dd>
+<dt id="kiam.get_circular_velocity_km_s"><code class="name flex">
+<span>def <span class="ident">get_circular_velocity_km_s</span></span>(<span>altitude_km: float, body: str) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate the circular velocity at a given altitude
+around a specified celestial body.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>altitude_km</code> : float</p>
+<p>The altitude above the surface of the body in km.</p>
+<p><code>body</code> : str</p>
+<p>The name of the celesial body.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>velocity</code> : float</p>
+<p>The circular velocity at the given altitude.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; velocity_km_s = kiam.get_circular_velocity_km_s(200.0, 'earth')
+
+7.7884829462208724
+</code></pre></div>
+</dd>
+<dt id="kiam.get_dv_hohmann"><code class="name flex">
+<span>def <span class="ident">get_dv_hohmann</span></span>(<span>r1_nondim: float, r2_nondim: float) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate delta-v in a Hohmann transfer.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>r1_nondim</code> : float</p>
+<p>Nondimensional distance to the center of mass of the central body at the start.</p>
+<p><code>r2_nondim</code> : float</p>
+<p>Nondimensional distance to the center of mass of the central body at the end.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>dv</code> : float</p>
+<p>Nondimensional delta-v in the Hohmann transfer connecting r1_nondim and r2_nondim.
+It is assumed that the gravitational parameter equals 1.0.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; dv = kiam.get_dv_hohmann(1.0, 2.0)
+
+0.024944026382329704
+</code></pre></div>
+</dd>
+<dt id="kiam.get_order"><code class="name flex">
+<span>def <span class="ident">get_order</span></span>(<span>altitude_thousands_km: float, approx_level: str = 'soft') ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The minimum order and degree of the complex lunar gravitational field
+at a given altitude according to the Trofimov&ndash;Shirobokov model.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>altitude_thousands_km</code> : float</p>
+<p>The altitude above the lunar surface in km.</p>
+<p><code>approx_level</code> : str</p>
+<p>The level of approximation, can be 'soft' or 'hard'.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>order</code> : int</p>
+<p>The order and degree of the complex lunar gravitational field.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; order = kiam.get_order(2.0, approx_level='soft')
+
+8.0
+</code></pre></div>
+</dd>
+<dt id="kiam.get_period_hours"><code class="name flex">
+<span>def <span class="ident">get_period_hours</span></span>(<span>altitude_km: float, body: str) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate the circular orbit period with a given altitude
+around a specified celestial body.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>altitude_km</code> : float</p>
+<p>The altitude above the surface of the body in km.</p>
+<p><code>body</code> : str</p>
+<p>The name of the celesial body.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>period</code> : float</p>
+<p>The circular orbit period in hours.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; period_hours = kiam.get_period_hours(200.0, 'earth')
+
+1.4725041134211172
+</code></pre></div>
+</dd>
+<dt id="kiam.get_tof_hohmann"><code class="name flex">
+<span>def <span class="ident">get_tof_hohmann</span></span>(<span>r1_nondim: float, r2_nondim: float) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate the time of flight in a Hohmann transfer.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>r1_nondim</code> : float</p>
+<p>Nondimensional distance to the center of mass of the central body at the start.</p>
+<p><code>r2_nondim</code> : float</p>
+<p>Nondimensional distance to the center of mass of the central body at the end.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>tof</code> : float</p>
+<p>Nondimensional time of flight in the Hohmann transfer connecting
+r1_nondim and r2_nondim. It is assumed that the gravitational parameter
+equals 1.0.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; tof = kiam.get_tof_hohmann(1.0, 2.0)
+
+5.771474235728388
+</code></pre></div>
+</dd>
+<dt id="kiam.grid_off"><code class="name flex">
+<span>def <span class="ident">grid_off</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the grid.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.grid_off(fig)
+
+fig.show()
+
+fig = kiam.grid_on(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.grid_on"><code class="name flex">
+<span>def <span class="ident">grid_on</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Shows the grid.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.grid_off(fig)
+
+fig.show()
+
+fig = kiam.grid_on(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.hcrs2gcrs"><code class="name flex">
+<span>def <span class="ident">hcrs2gcrs</span></span>(<span>xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from HCRS c/s to GCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xhcrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the HCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xhcrs</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xgcrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the GCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (6D -&gt; 6D)
+
+ku = kiam.units('sun', 'earth')
+
+xhcrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+Example 2 (6x1 -&gt; 6x1)
+
+ku = kiam.units('sun', 'earth')
+
+xhcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
+</code></pre></div>
+</dd>
+<dt id="kiam.ine2rot"><code class="name flex">
+<span>def <span class="ident">ine2rot</span></span>(<span>xine: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float, numpy.ndarray]) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from INE c/s to ROT c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xine</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the INE coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<p><code>t</code> : float, numpy.ndarray, shape (1,), (n,)</p>
+<p>Time(s) corresponding to column(s) of xine</p>
+<p><code>t0</code> : float, numpy.ndarray, shape (1,), (n,)</p>
+<p>Time(s) of INE and ROT c/s coincidence for each column of xine.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xrot</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the ROT coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xine = numpy.array([1, 0, 0, 0, 1, 0])
+
+t = 1.0
+
+t0 = 0.0
+
+xrot = kiam.ine2rot(xine, t, t0)
+</code></pre></div>
+</dd>
+<dt id="kiam.ine2rot_eph"><code class="name flex">
+<span>def <span class="ident">ine2rot_eph</span></span>(<span>xine: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body: str, secondary_body: str, dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from INEEPH c/s to ROTEPH c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xine</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the INEEPH coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to column(s) in xine</p>
+<p><code>first_body</code> : str</p>
+<p>Name of the first primary body</p>
+<p>Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+'jupiter', 'saturn', 'uranus', 'neptune'</p>
+<p><code>secondary_body</code> : str</p>
+<p>Name of the secondary primary body</p>
+<p>Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+'jupiter', 'saturn', 'uranus', 'neptune'</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xrot</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the ROTEPH coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xine = numpy.array([1, 0, 0, 0, 1, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+ku = kiam.units('earth', 'moon')
+
+xrot = kiam.ine2rot_eph(xine, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+</code></pre></div>
+</dd>
+<dt id="kiam.invadotb"><code class="name flex">
+<span>def <span class="ident">invadotb</span></span>(<span>a: numpy.ndarray, b: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculate <code>a^(-1)*b</code> for matrices <code>a</code> and <code>b</code>.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>a</code> : numpy.ndarray, shape (n, n)</p>
+<p>A square matrix.</p>
+<p><code>b</code> : numpe.ndarray, shape (n, n)</p>
+<p>A square matrix.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>c</code> : numpy.ndarray, shape (n, n)</p>
+<p>The matrix that equals <code>a^(-1)*b</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>a = numpy.array([[1, 2], [3, 4]])
+
+b = numpy.array([[1, 2], [3, 4]])
+
+c = kiam.invadotb(a, b)
+
+[[1.00000000e+00 0.00000000e+00]
+[8.32667268e-17 1.00000000e+00]]
+</code></pre></div>
+</dd>
+<dt id="kiam.is_visible"><code class="name flex">
+<span>def <span class="ident">is_visible</span></span>(<span>r_sat: numpy.ndarray, lat_deg: Union[int, float, numpy.ndarray], long_deg: Union[int, float, numpy.ndarray], body_radius: float, threshold_deg: Union[int, float, numpy.ndarray]) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get visibility statuses (0 or 1) of a vector from a point on a sphere surface.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>r_sat</code> : numpy.ndarray, shape (3,), (3,n)</p>
+<p>Radius-vector(s) around a sphere surface</p>
+<p><code>lat_deg</code> : int, float, numpy.ndarray, shape (m,)</p>
+<p>Latitude of a point(s) on a surface in degrees</p>
+<p><code>long_deg</code> : int, float, numpy.ndarray, shape (m,)</p>
+<p>Longitude of a point(s) on a surface in degrees</p>
+<p><code>body_radius</code> : float</p>
+<p>Body radius</p>
+<p><code>threshold_deg</code> : int, float, numpy.ndarray, shape (n,)</p>
+<p>Minimum angle below which the vector is not visible.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>status</code> : numpy.ndarray, shape (n,m)</p>
+<p>Visibility statuses of the r_sat vectors from lat_deg/long_deg points.</p>
+<p>n - number of vectors in r_sat</p>
+<p>m - number of points on the surface</p>
+<p><code>elev_deg</code> : numpy.ndarray, shape (n,m)</p>
+<p>Elevation angles in degrees</p>
+<p>n - number of vectors in r_sat</p>
+<p>m - number of points on the surface</p>
+<p><code>azim_deg</code> : numpy.ndarray, shape (n,m)</p>
+<p>Azimuth angles in degrees</p>
+<p>n - number of vectors in r_sat</p>
+<p>m - number of points on the surface</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>r_sat = numpy.array([2, 0, 0])
+
+lat_deg = 0.0
+
+long_deg = 0.0
+
+body_radius = 1.0
+
+threshold_deg = 5.0
+
+status, elev_deg, azim_deg = kiam.is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
+</code></pre></div>
+</dd>
+<dt id="kiam.itrs2gcrs"><code class="name flex">
+<span>def <span class="ident">itrs2gcrs</span></span>(<span>xitrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vector from ITRS c/s to GCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xitrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the ITRS coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to column(s) of xitrs</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the GCRS vector wrt the ITRS vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xgcrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the GCRS coordinate system</p>
+<p><code>dxgcrs</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>3x3 or 6x6 matrix or 3x3xn or 6x6xn array of partial derivatives of xgcrs wrt xitrs (dxgcrs/dxitrs).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+xitrs = numpy.array([1, 0, 0])
+
+xgcrs = kiam.itrs2gcrs(xitrs, jd, False)
+
+xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.jd2time"><code class="name flex">
+<span>def <span class="ident">jd2time</span></span>(<span>jd: float) ‑> datetime.datetime</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Julian date to usual date and time.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>jd</code> : float</p>
+<p>Julian date</p>
+<h2 id="returns">Returns:</h2>
+<p><code>time</code> : datetime.datetime</p>
+<p>Date and time object of type datetime.datetime</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; jd2time(2459905.5)
+
+2022-11-22 00:00:00
+</code></pre></div>
+</dd>
+<dt id="kiam.juliandate"><code class="name flex">
+<span>def <span class="ident">juliandate</span></span>(<span>year: int, month: int, day: int, hour: int, minute: int, second: int) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Usual date to Julian date.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>year</code> : int</p>
+<p>Year</p>
+<p><code>month</code> : int</p>
+<p>Month</p>
+<p><code>day</code> : int</p>
+<p>Day</p>
+<p><code>hour</code> : int</p>
+<p>Hour</p>
+<p><code>minute</code> : int</p>
+<p>Minute</p>
+<p><code>second</code> : int</p>
+<p>Second</p>
+<h2 id="returns">Returns:</h2>
+<p><code>jd</code> : float</p>
+<p>Julian date</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; juliandate(2022, 11, 22, 0, 0, 0)
+
+2459905.5
+</code></pre></div>
+</dd>
+<dt id="kiam.latlon2cart"><code class="name flex">
+<span>def <span class="ident">latlon2cart</span></span>(<span>latlon: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Latitude and longitude to Cartesian coordinates.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>latlon</code> : numpy.ndarray, shape (2,), (2, n)</p>
+<p>2D Vector or array of column 2D vectors of latitude and longitude pairs.</p>
+<p>Vector structure: [lat, lon], where</p>
+<p>lat in [-pi/2, pi/2],</p>
+<p>lon in [-pi, pi]</p>
+<h2 id="returns">Returns:</h2>
+<p><code>cart</code> : numpy.ndarray, shape (3,), (3, n)</p>
+<p>3D vector or array of column 3D vectors of Cartesian coordinates.</p>
+<p>Vector structure: [x, y, z].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; latlon = numpy.array([0, 0])
+
+&gt;&gt; cart = kiam.latlon2cart(latlon)
+
+[1. 0. 0.]
+</code></pre></div>
+</dd>
+<dt id="kiam.legend_off"><code class="name flex">
+<span>def <span class="ident">legend_off</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Removes the legend.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.legend_off(fig)
+
+fig.show()
+
+fig = kiam.legend_on(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.legend_on"><code class="name flex">
+<span>def <span class="ident">legend_on</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Shows the legend.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.legend_off(fig)
+
+fig.show()
+
+fig = kiam.legend_on(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.load"><code class="name flex">
+<span>def <span class="ident">load</span></span>(<span>filename: str) ‑> Any</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Loads a variable from a specified file.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>filename</code> : str</p>
+<p>A path to the file.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>var</code> : Any</p>
+<p>A variable contained in the file.</p>
+<h2 id="examples">Examples:</h2>
+<p>a = kiam.load('variable_a')</p></div>
+</dd>
+<dt id="kiam.lvlh2mer"><code class="name flex">
+<span>def <span class="ident">lvlh2mer</span></span>(<span>xlvlh: numpy.ndarray, lat: float, lon: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vector(s) from LVLH c/s to MER c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xlvlh</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the LVLH coordinate system</p>
+<p><code>lat</code> : float</p>
+<p>Latitude that specifies the LVLH c/s in radians</p>
+<p><code>lon</code> : float</p>
+<p>Longitude that specifies the LVLH c/s in radians</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xmer</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xlvlh = numpy.array([1, 2, 3])
+
+lat = 0.0
+
+lon = 1.0
+
+xmer = kiam.lvlh2mer(xlvlh, lat, lon)
+</code></pre></div>
+</dd>
+<dt id="kiam.mat2vec"><code class="name flex">
+<span>def <span class="ident">mat2vec</span></span>(<span>a: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Square matrix to vector form translation.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>a</code> : numpy.ndarray, shape (n, n)</p>
+<p>A square matrix.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>v</code> : numpy.ndarray, shape (n**2,)</p>
+<p>Vector form of the matrix.</p>
+<p>Vector structure (Fortran/MATLAB order): <code>[a11, a21, a31, &hellip; ]</code></p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; a = numpy.array([[1, 2], [3, 4]])
+
+&gt;&gt; v = kiam.mat2vec(a)
+
+[1 3 2 4]
+</code></pre></div>
+</dd>
+<dt id="kiam.mer2lvlh"><code class="name flex">
+<span>def <span class="ident">mer2lvlh</span></span>(<span>xmer: numpy.ndarray, lat: float, lon: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vector(s) from MER c/s to LVLH c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xmer</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system</p>
+<p><code>lat</code> : float</p>
+<p>Latitude that specifies the LVLH c/s in radians</p>
+<p><code>lon</code> : float</p>
+<p>Longitude that specifies the LVLH c/s in radians</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xlvlh</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the LVLH coordinate system</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xmer = numpy.array([1, 2, 3])
+
+lat = 0.0
+
+lon = 1.0
+
+xlvlh = kiam.mer2lvlh(xmer, lat, lon)
+</code></pre></div>
+</dd>
+<dt id="kiam.mer2scrs"><code class="name flex">
+<span>def <span class="ident">mer2scrs</span></span>(<span>xmer: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vectors from MER c/s to SCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xmer</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to vector or columns in xmer</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the SCRS vector wrt the MER vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system</p>
+<p><code>dxscrs</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>Array of matrices of partial derivatives of xscrs wrt xmer (dxscrs/dxmer).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xmer = numpy.array([1, 0, 0])
+
+jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+xscrs = kiam.mer2scrs(xmer, jd, False)
+
+dxscrs = kiam.mer2scrs(xmer, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.nbp_ee_earth"><code class="name flex">
+<span>def <span class="ident">nbp_ee_earth</span></span>(<span>t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the Earth in terms of
+the equinoctial orbital elements.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing equinoctial elements and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[h, ex, ey, ix, iy, L] if stm_req = False,</p>
+<p>[h, ex, ey, ix, iy, L, m11, m21, m31, &hellip;] if stm_req = True,</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter),</p>
+<p>e - eccentricity,</p>
+<p>Omega - right ascension of the ascending node,</p>
+<p>omega - argument of pericenter,</p>
+<p>i - inclination</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<p><code>sources</code> : dict</p>
+<p>Dictionary that contains the perturbations that should be accounted.</p>
+<p>The dictionary keys:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If sources[key] = True, the corresponding perturbation will be accounted.</p>
+<p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
+<p>The sources dictionary with all False values can be created by
+the kiam.prepare_sources_dict() function.</p>
+<p><code>data</code> : dict</p>
+<p>A dictionary that contains auxilary data.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>The data should be submitted even if the corresponding perturbations
+are not accounted.</p>
+<p><code>units_data</code> : dict</p>
+<p>A dictionary that contains the units.</p>
+<p>The dictionary keys:</p>
+<p>'DistUnit' (The unit of distance in km)</p>
+<p>'VelUnit'
+(The unit of velocity in km/s)</p>
+<p>'TimeUnit' (The unit of time in days)</p>
+<p>'AccUnit'
+(The unit of acceleration in m/s^2)</p>
+<p>'RSun'
+(The radius of the Sun in the units of distance)</p>
+<p>'REarth'
+(The radius of the Earth in the units of distance)</p>
+<p>'RMoon'
+(The radius of the Moon in the units of distance)</p>
+<p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
+<p>The gravitational parameter in the specified units should be 1.0.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state time dericatives according to the specified n-body problem equations
+of motion extended (if stm_req = True) by the derivative of the
+state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fh, fex, fey, fix, fiy, fL] if stm_req = False</p>
+<p>[fh, fex, fey, fix, fiy, fL, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t = 0.0
+
+s = numpy.array([1, 0, 0, 0, 0, 0])
+
+stm_req = False
+
+sources = kiam.prepare_sources_dict()
+
+data = kiam.prepare_data_dict()
+
+data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
+
+data['area'] = 1.0
+
+data['mass'] = 100.0
+
+units_data = kiam.prepare_units_dict('earth')
+
+dsdt = kiam.nbp_ee_earth(t, s, stm_req, sources, data, units_data)
+
+[0. 0. 0. 0. 0. 1.]
+</code></pre></div>
+</dd>
+<dt id="kiam.nbp_ee_moon"><code class="name flex">
+<span>def <span class="ident">nbp_ee_moon</span></span>(<span>t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the Moon in terms of
+the equinoctial orbital elements.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing equinoctial elements and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[h, ex, ey, ix, iy, L] if stm_req = False,</p>
+<p>[h, ex, ey, ix, iy, L, m11, m21, m31, &hellip;] if stm_req = True,</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter),</p>
+<p>e - eccentricity,</p>
+<p>Omega - right ascension of the ascending node,</p>
+<p>omega - argument of pericenter,</p>
+<p>i - inclination</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<p><code>sources</code> : dict</p>
+<p>Dictionary that contains the perturbations that should be accounted.
+The dictionary keys:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If sources[key] = True, the corresponding perturbation will be accounted.</p>
+<p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
+<p>The sources dictionary with all False values can be created by
+the kiam.prepare_sources_dict() function.</p>
+<p><code>data</code> : dict</p>
+<p>A dictionary that contains auxilary data.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>The data should be submitted even if the corresponding perturbations
+are not accounted.</p>
+<p><code>units_data</code> : dict</p>
+<p>A dictionary that contains the units.</p>
+<p>The dictionary keys:</p>
+<p>'DistUnit' (The unit of distance in km)</p>
+<p>'VelUnit'
+(The unit of velocity in km/s)</p>
+<p>'TimeUnit' (The unit of time in days)</p>
+<p>'AccUnit'
+(The unit of acceleration in m/s^2)</p>
+<p>'RSun'
+(The radius of the Sun in the units of distance)</p>
+<p>'REarth'
+(The radius of the Earth in the units of distance)</p>
+<p>'RMoon'
+(The radius of the Moon in the units of distance)</p>
+<p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
+<p>The gravitational parameter in the specified units should be 1.0.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state time dericatives according to the specified n-body problem equations
+of motion extended (if stm_req = True) by the derivative of the
+state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fh, fex, fey, fix, fiy, fL] if stm_req = False</p>
+<p>[fh, fex, fey, fix, fiy, fL, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t = 0.0
+
+s = numpy.array([1, 0, 0, 0, 0, 0])
+
+stm_req = False
+
+sources = kiam.prepare_sources_dict()
+
+data = kiam.prepare_data_dict()
+
+data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
+
+data['area'] = 1.0
+
+data['mass'] = 100.0
+
+units_data = kiam.prepare_units_dict('moon')
+
+dsdt = kiam.nbp_ee_moon(t, s, stm_req, sources, data, units_data)
+
+[0. 0. 0. 0. 0. 1.]
+</code></pre></div>
+</dd>
+<dt id="kiam.nbp_rv_earth"><code class="name flex">
+<span>def <span class="ident">nbp_rv_earth</span></span>(<span>t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the Earth in terms of
+the position and velocity variables.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing position and velocity and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm_req = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm_req = True</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<p><code>sources</code> : dict</p>
+<p>Dictionary that contains the perturbations that should be accounted.</p>
+<p>The dictionary keys:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If sources[key] = True, the corresponding perturbation will be accounted.</p>
+<p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
+<p>The sources dictionary with all False values can be created by
+the kiam.prepare_sources_dict() function.</p>
+<p><code>data</code> : dict</p>
+<p>A dictionary that contains auxilary data.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>The data should be submitted even if the corresponding perturbations
+are not accounted.</p>
+<p><code>units_data</code> : dict</p>
+<p>A dictionary that contains the units.</p>
+<p>The dictionary keys:</p>
+<p>'DistUnit' (The unit of distance in km)</p>
+<p>'VelUnit'
+(The unit of velocity in km/s)</p>
+<p>'TimeUnit' (The unit of time in days)</p>
+<p>'AccUnit'
+(The unit of acceleration in m/s^2)</p>
+<p>'RSun'
+(The radius of the Sun in the units of distance)</p>
+<p>'REarth'
+(The radius of the Earth in the units of distance)</p>
+<p>'RMoon'
+(The radius of the Moon in the units of distance)</p>
+<p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
+<p>The gravitational parameter in the specified units should be 1.0.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Gravitational acceleration according to the specified n-body problem equations
+of motion extended (if stm_req = True) by the derivative of the
+state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fx, fy, fz, fvx, fvy, fvz] if stm_req = False</p>
+<p>[fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t = 0.0
+
+s = numpy.array([1, 0, 0, 0, 1, 0])
+
+stm_req = False
+
+sources = kiam.prepare_sources_dict()
+
+data = kiam.prepare_data_dict()
+
+data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
+
+data['area'] = 1.0
+
+data['mass'] = 100.0
+
+units_data = kiam.prepare_units_dict('earth')
+
+dsdt = kiam.nbp_rv_earth(t, s, stm_req, sources, data, units_data)
+
+[ 0.  1.  0. -1. -0. -0.]
+</code></pre></div>
+</dd>
+<dt id="kiam.nbp_rv_moon"><code class="name flex">
+<span>def <span class="ident">nbp_rv_moon</span></span>(<span>t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the Moon in terms of
+the position and velocity variables.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing position and velocity and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm_req = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm_req = True</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<p><code>sources</code> : dict</p>
+<p>Dictionary that contains the perturbations that should be accounted.</p>
+<p>The dictionary keys:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If sources[key] = True, the corresponding perturbation will be accounted.</p>
+<p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
+<p>The sources dictionary with all False values can be created by
+the kiam.prepare_sources_dict() function.</p>
+<p><code>data</code> : dict</p>
+<p>A dictionary that contains auxilary data.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>The data should be submitted even if the corresponding perturbations
+are not accounted.</p>
+<p><code>units_data</code> : dict</p>
+<p>A dictionary that contains the units.</p>
+<p>The dictionary keys:</p>
+<p>'DistUnit' (The unit of distance in km)</p>
+<p>'VelUnit'
+(The unit of velocity in km/s)</p>
+<p>'TimeUnit' (The unit of time in days)</p>
+<p>'AccUnit'
+(The unit of acceleration in m/s^2)</p>
+<p>'RSun'
+(The radius of the Sun in the units of distance)</p>
+<p>'REarth'
+(The radius of the Earth in the units of distance)</p>
+<p>'RMoon'
+(The radius of the Moon in the units of distance)</p>
+<p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
+<p>The gravitational parameter in the specified units should be 1.0.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Gravitational acceleration according to the specified n-body problem equations
+of motion extended (if stm_req = True) by the derivative of the
+state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fx, fy, fz, fvx, fvy, fvz] if stm_req = False</p>
+<p>[fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t = 0.0
+
+s = numpy.array([1, 0, 0, 0, 1, 0])
+
+stm_req = False
+
+sources = kiam.prepare_sources_dict()
+
+data = kiam.prepare_data_dict()
+
+data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
+
+data['area'] = 1.0
+
+data['mass'] = 100.0
+
+units_data = kiam.prepare_units_dict('moon')
+
+dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
+
+[ 0.  1.  0. -1. -0. -0.]
+</code></pre></div>
+</dd>
+<dt id="kiam.oe2rv"><code class="name flex">
+<span>def <span class="ident">oe2rv</span></span>(<span>oe: numpy.ndarray, mu: float, grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Classical orbital elements to position and velocity.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>oe</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column vectors of classical orbital elements:</p>
+<p>a (semi-major axis),</p>
+<p>e (eccentricity),</p>
+<p>i (inclination),</p>
+<p>Omega (right ascension of the ascending node),</p>
+<p>omega (argument of pericenter),</p>
+<p>theta (true anomaly).</p>
+<p><code>mu</code> : float</p>
+<p>Gravitational parameter.</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of position and velocity wrt elements.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>rv</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D phase vector or array of 6D column vectors containing position and velocity.</p>
+<p>Vector structure: [x, y, z, vx, dy, dz].</p>
+<p><code>drv</code> : numpy.ndarray, shape (6,6), (6,6,n)</p>
+<p>6x6 matrix or 6x6xn array of partial derivatives of rv wrt oe (drv/doe).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>oe = numpy.array([1, 0.1, 1.0, 0.0, 0.0, 0.0])
+
+rv = kiam.oe2rv(oe, 1.0, False)
+
+rv, drv = kiam.oe2rv(oe, 1.0, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.planet_state"><code class="name flex">
+<span>def <span class="ident">planet_state</span></span>(<span>jd: float, center: str, target: str) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gives position and velocity of the planet at specified julian date
+wrt to the specified center (planet).</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>jd</code> : float</p>
+<p>Julian date</p>
+<p><code>center</code> : str</p>
+<p>Name of the center planet</p>
+<p><code>target</code> : str</p>
+<p>Name of the target planet</p>
+<h2 id="returns">Returns:</h2>
+<p><code>state</code> : numpy.ndarray, shape(6,)</p>
+<p>State of the target planet wrt the center planet.</p>
+<p>Position in km, velocity in km/s.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>
+&gt;&gt; planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
+
+[ 3.76623766e+05  7.07472988e+04  1.01213236e+04
+    -1.36269070e-01 8.97864551e-01  4.72492325e-01]
+</code></pre></div>
+</dd>
+<dt id="kiam.plot"><code class="name flex">
+<span>def <span class="ident">plot</span></span>(<span>x: numpy.ndarray, y: numpy.ndarray, fig: plotly.graph_objs._figure.Figure = None, xlabel: str = 'x', ylabel: str = 'y', name: str = '')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a 2D line plot.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>x</code> : numpy.ndarray, shape (n,)</p>
+<p>The x-axis nodes.</p>
+<p><code>y</code> : numpt.ndarray, shape (n,)</p>
+<p>The y-axis data.</p>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object. If provided (not None), then the line plot
+will be added to the existing figure in <code>fig</code>.</p>
+<p><code>xlabel</code> : str</p>
+<p>The x-axis label.</p>
+<p><code>ylabel</code> : str</p>
+<p>The y-axis label</p>
+<p><code>name</code> : str</p>
+<p>The name of the plot to be indicated in the legend.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The (updated) Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (minimal):
+
+x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig.show()
+
+Example 2:
+
+x = numpy.array([1, 2, 3, 4, 5])
+
+y1 = numpy.array([2, 3, 0, 1, 2])
+
+y2 = numpy.array([3, 4, 1, 2, 3])
+
+fig = kiam.plot(x, y1, name='blue')
+
+fig = kiam.plot(x, y2, fig, name='red')  # add to the existing figure
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.plot3"><code class="name flex">
+<span>def <span class="ident">plot3</span></span>(<span>x: numpy.ndarray, y: numpy.ndarray, z: numpy.ndarray, fig: plotly.graph_objs._figure.Figure = None, xlabel: str = 'x', ylabel: str = 'y', zlabel: str = 'z', name: str = '')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Creates a 3D line plot.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>x</code> : numpy.ndarray, shape (n,)</p>
+<p>The x-axis data.</p>
+<p><code>y</code> : numpt.ndarray, shape (n,)</p>
+<p>The y-axis data.</p>
+<p><code>z</code> : numpt.ndarray, shape (n,)</p>
+<p>The z-axis data.</p>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object. If provided (not None), then the line plot
+will be added to the existing figure in <code>fig</code>.</p>
+<p><code>xlabel</code> : str</p>
+<p>The x-axis label.</p>
+<p><code>ylabel</code> : str</p>
+<p>The y-axis label</p>
+<p><code>zlabel</code> : str</p>
+<p>The z-axis label</p>
+<p><code>name</code> : str</p>
+<p>The name of the plot to be indicated in the legend.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The (updated) Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (minimal):
+
+x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+z = numpy.array([3, 4, 1, 2, 3])
+
+fig = kiam.plot3(x, y, z)
+
+fig.show()
+
+Example 2:
+
+x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+z1 = numpy.array([3, 4, 1, 2, 3])
+
+z2 = numpy.array([4, 5, 2, 3, 4])
+
+fig = kiam.plot3(x, y, z1, name='blue')
+
+fig = kiam.plot3(x, y, z2, fig, name='red')
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.polar_plot"><code class="name flex">
+<span>def <span class="ident">polar_plot</span></span>(<span>r: numpy.ndarray, theta_deg: numpy.ndarray, mode: str = 'lines')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Plots a line in polar coordinates.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>r</code> : numpy.ndarray, shape (n,)</p>
+<p>The radiuses.</p>
+<p><code>theta_deg</code> : numpy.ndarray, shape (n,)</p>
+<p>The angles in degrees.</p>
+<p><code>mode</code> : str</p>
+<p>The line display mode.</p>
+<p>Options: 'lines' (default), 'markers', 'lines+markers'</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>r = numpy.array([0.5, 1, 2, 2.5, 3, 4])
+
+theta = numpy.array([35, 70, 120, 155, 205, 240])
+
+fig = kiam.polar_plot(r, theta)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.prepare_data_dict"><code class="name flex">
+<span>def <span class="ident">prepare_data_dict</span></span>(<span>) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Auxilary function that returns a dictionary of data.</p>
+<h2 id="returns">Returns:</h2>
+<p>data : dict</p>
+<p>The data structure used in right-hand side of the equations of motion.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>All the values are assigned to zero.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.prepare_data_dict()
+
+{'jd_zero': 0.0, 'order': 0, 'area': 0.0, 'mass': 0.0}
+</code></pre></div>
+</dd>
+<dt id="kiam.prepare_sources_dict"><code class="name flex">
+<span>def <span class="ident">prepare_sources_dict</span></span>(<span>) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Auxilary function that returns a dictionary of perturbations.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>sources</code> : dict</p>
+<p>The dictionary keys:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.prepare_sources_dict()
+
+{'sun': False, 'mercury': False, 'venus': False, 'earth': False, 'moon': False, 'mars': False, 'jupiter': False, 'saturn': False, 'uranus': False, 'neptune': False, 'srp': False, 'cmplxmoon': False, 'atm': False, 'j2': False}
+</code></pre></div>
+</dd>
+<dt id="kiam.prepare_units_dict"><code class="name flex">
+<span>def <span class="ident">prepare_units_dict</span></span>(<span>units_name: str) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Auxilary function that returns a dictionary of units.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>units_name</code> : str</p>
+<p>A name of the units that should be used.</p>
+<p>Options:</p>
+<p>'dim': a dictionary with unity values will be returned</p>
+<p>'earth': a dictionary of the earth units will be returned</p>
+<p>'moon': a dictionary of the moon units will be returned</p>
+<h2 id="returns">Returns:</h2>
+<p><code>units_dict</code> : dict</p>
+<p>A dictionary that containes the following keys:</p>
+<p>'DistUnit': the unit of distance, km</p>
+<p>'VelUnit': the unit of velocity, km/s</p>
+<p>'TimeUnit': the unit of time, days</p>
+<p>'AccUnit': the units of acceleration, m/s^2</p>
+<p>'RSun': the mean radius of the Sun in DistUnit units</p>
+<p>'REarth': the mean radius of the Earth in DistUnit units</p>
+<p>'RMoon': the mean radius of the Moon in DistUnit units</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.prepare_units_dict('earth')
+
+{'DistUnit': 6371.0084, 'VelUnit': 7.909787126714006, 'TimeUnit': 0.009322440916154166, 'AccUnit': 9.820224438870717, 'RSun': 109.19778413728038, 'REarth': 1.0, 'RMoon': 0.27270408244949107}
+
+</code></pre></div>
+</dd>
+<dt id="kiam.propagate_br4bp"><code class="name flex">
+<span>def <span class="ident">propagate_br4bp</span></span>(<span>central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, mu: float, gm4b, a4b: float, theta0: float, stm: bool) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate trajectory in the bi-circular restricted four-body model of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>central_body</code> : str</p>
+<p>First or secondary primary body or baricenter as the origin of the coordinate system</p>
+<p>Options: 'first', 'secondary', 'center'</p>
+<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p>Time nodes at which the solution is required</p>
+<p><code>x0</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Initial state containing:</p>
+<p>position and velocity (if stm = False),</p>
+<p>position and velocoty extended by vectorized state-transition matrix (if stm = True),</p>
+<p>Vectory structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm = True</p>
+<p><code>mu</code> : float</p>
+<p>Mass parameter of the three-body system</p>
+<p><code>gm4b</code> : float</p>
+<p>Scaled gravitational parameter of the fourth (perturbing) body</p>
+<p><code>a4b</code> : float</p>
+<p>Distance from the center of mass of the primary bodies to the fourth body
+in units where the distance between the primaries equals 1.</p>
+<p><code>theta0</code> : float</p>
+<p>Initial value of the synodic phase - the angle between the direction to
+the fourth body from the center of mass of the primaries and the line
+connecting the primaties.</p>
+<p><code>stm</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>t</code> : numpy.ndarray, shape(n,)</p>
+<p>Times (nodes) in tspan at which the solution is obtained.</p>
+<p><code>y</code> : numpy.ndarray, shape(6, n)</p>
+<p>Array of column trajectory phase states.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm = False.</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm = True.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>central_body = 'first'
+
+tspan = np.linspace(0, 10, 1000)
+
+x0 = np.array([0.5, 0, 0, 0, 0.5, 0])
+
+mu = 1.215e-02
+
+stm = False
+
+gm4b =  3.289005596e+05
+
+a4b = 389.170375544352
+
+theta0 = 0.0
+
+t, y = kiam.propagate_br4bp(central_body, tspan, x0, mu, gm4b, a4b, theta0, stm)
+</code></pre></div>
+</dd>
+<dt id="kiam.propagate_cr3bp"><code class="name flex">
+<span>def <span class="ident">propagate_cr3bp</span></span>(<span>central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, mu: float, stm: bool) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate trajectory in the circular restricted three-body model of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>central_body</code> : str</p>
+<p>First or secondary primary body or barycenter as the origin of the coordinate system</p>
+<p>Options: 'first', 'secondary', 'center'</p>
+<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p>Time nodes at which the solution is required</p>
+<p><code>x0</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Initial state containing:</p>
+<p>position and velocity (if stm = False),</p>
+<p>position and velocoty extended by vectorized state-transition matrix (if stm = True),</p>
+<p>Vectory structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm = True</p>
+<p><code>mu</code> : float</p>
+<p>Mass parameter of the three-body system</p>
+<p><code>stm</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<h2 id="returns">Returns:</h2>
+<p><code>t</code> : numpy.ndarray, shape(n,)</p>
+<p>Times (nodes) in tspan at which the solution is obtained</p>
+<p><code>y</code> : numpy.ndarray, shape(6, n)</p>
+<p>Array of column trajectory phase states.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>central_body = 'first'
+
+tspan = numpy.linspace(0, 10, 1000)
+
+x0 = numpy.array([0.5, 0, 0, 0, 0.5, 0])
+
+mu = 1e-02
+
+stm = False
+
+t, y = kiam.propagate_cr3bp(central_body, tspan, x0, mu, stm)
+</code></pre></div>
+</dd>
+<dt id="kiam.propagate_hill"><code class="name flex">
+<span>def <span class="ident">propagate_hill</span></span>(<span>tspan: numpy.ndarray, x0: numpy.ndarray) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate trajectory in Hill's model of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p>Time nodes at which the solution is required</p>
+<p><code>x0</code>: numpy.ndarray, shape (6,)</p>
+<p>Initial state containing position and velocity.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz]</p>
+<h2 id="returns">Returns:</h2>
+<p><code>t</code> : numpy.ndarray, shape(n,)</p>
+<p>Times (nodes) in tspan at which the solution is obtained</p>
+<p><code>y</code> : numpy.ndarray, shape(6, n)</p>
+<p>Array of column trajectory phase states.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>tspan = numpy.linspace(0, 2*numpy.pi, 1000)
+
+x0 = numpy.array([-0.5, 0, 0, 0, 2.0, 0])
+
+t, y = kiam.propagate_hill(tspan, x0)
+</code></pre></div>
+</dd>
+<dt id="kiam.propagate_nbp"><code class="name flex">
+<span>def <span class="ident">propagate_nbp</span></span>(<span>central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, sources_dict: dict, dat_dict: dict, stm: bool, variables: str) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate trajectory in the n-body model of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>central_body</code>: str</p>
+<p>Name of the central body</p>
+<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p>Time nodes at which the solution is required</p>
+<p><code>x0</code>: numpy.ndarray, shape (6,), (42,)</p>
+<p>Initial state containing:</p>
+<p>position and velocity (if variables = 'rv', stm = False),</p>
+<p>position and velocoty extended by vectorized state-transition matrix (if variables = 'rv_stm', stm = True),</p>
+<p>equinoctial orbital elements (if variables = 'ee', stm = False),</p>
+<p>equinoctial orbital elements extended by vectorized state-transition matrix (if variables = 'ee_stm', stm = True),</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if variables = 'rv' and stm = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if variables = 'rv_stm' and stm = True</p>
+<p>[h, ex, ey, ix, iy, L] if variables = 'ee' and stm = False</p>
+<p>[h, ex, ey, ix, iy, L, m11, m21, m31, &hellip;] if variables = 'ee_stm' and stm = True</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter),</p>
+<p>e - eccentricity,</p>
+<p>Omega - right ascension of the ascending node,</p>
+<p>omega - argument of pericenter,</p>
+<p>i - inclination</p>
+<p><code>sources_dict</code>: dict</p>
+<p>Dictionary that contains the perturbations that should be accounted.</p>
+<p>The dictionary keys:</p>
+<p>'atm'
+(Earth's atmosphere)</p>
+<p>'j2'
+(Earth's J2)</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>'moon'
+(Gravitational acceleration of the Moon)</p>
+<p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
+<p>If sources[key] = True, the corresponding perturbation will be accounted.</p>
+<p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
+<p>The sources dictionary with all False values can be created by
+the kiam.prepare_sources_dict() function.</p>
+<p><code>dat_dict</code>: dict</p>
+<p>A dictionary that contains auxilary data.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>The data should be submitted even if the corresponding perturbations
+are not accounted.</p>
+<p><code>stm</code>: bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<p><code>variables</code>: str</p>
+<p>Type of variables used to propagate the trajectory.</p>
+<p>If stm = False, then variables should be 'rv' or 'ee'.</p>
+<p>If stm = True, then variables should be 'rv_stm' or 'ee_stm'.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>t</code> : numpy.ndarray, shape(n,)</p>
+<p>Times (nodes) in tspan at which the solution is obtained</p>
+<p><code>y</code> : numpy.ndarray, shape(6, n), shape(42, n)</p>
+<p>Array of column trajectory phase states extended (if stm = True) by
+vectorized state-transition matrices.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm = False and variables = 'rv'</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip; ] if stm = True and variables = 'rv_stm'</p>
+<p>[h, ex, ey, ix, iy, L] if stm = False and variables = 'ee'</p>
+<p>[h, ex, ey, ix, iy, L, m11, m21, m31, &hellip; ] if stm = True and variables = 'ee_stm'</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter),</p>
+<p>e - eccentricity,</p>
+<p>Omega - right ascension of the ascending node,</p>
+<p>omega - argument of pericenter,</p>
+<p>i - inclination</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>central_body = 'earth'
+
+tspan = numpy.linspace(0, 100, 10000)
+
+x0 = numpy.array([1, 0, 0, 0, 1, 0])
+
+sources_dict = kiam.prepare_sources_dict()
+
+dat_dict = kiam.prepare_data_dict()
+
+stm = False
+
+variables = 'rv'
+
+t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variables)
+</code></pre></div>
+</dd>
+<dt id="kiam.propagate_r2bp"><code class="name flex">
+<span>def <span class="ident">propagate_r2bp</span></span>(<span>tspan: numpy.ndarray, x0: numpy.ndarray) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Propagate trajectory in the two-body model of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p>Time nodes at which the solution is required</p>
+<p><code>x0</code>: numpy.ndarray, shape (6,)</p>
+<p>Initial state containing position and velocity.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz]</p>
+<h2 id="returns">Returns:</h2>
+<p><code>t</code> : numpy.ndarray, shape(n,)</p>
+<p>Times (nodes) in tspan at which the solution is obtained</p>
+<p><code>y</code> : numpy.ndarray, shape(6, n)</p>
+<p>Array of column trajectory phase states.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>tspan = numpy.linspace(0, 100, 10000)
+
+x0 = numpy.array([1, 0, 0, 0, 1, 0])
+
+t, y = kiam.propagate_r2bp(tspan, x0)
+</code></pre></div>
+</dd>
+<dt id="kiam.r2bp"><code class="name flex">
+<span>def <span class="ident">r2bp</span></span>(<span>t: float, s: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the restricted two-body problem equations of motion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,)</p>
+<p>Phase state vector containing position and velocity.</p>
+<p>Vector structure [x, y, z, vx, vy, vz].</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,)</p>
+<p>Gravity acceleration according to the two-body model.</p>
+<p>Vector structure [fx, fy, fz, fvx, fvy, fvz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t0 = 0.0
+
+s0 = numpy.array([1, 0, 0, 0, 1, 0])
+
+kiam.r2bp(t0, s0)
+
+[ 0.  1.  0. -1. -0. -0.]
+</code></pre></div>
+</dd>
+<dt id="kiam.rad2deg"><code class="name flex">
+<span>def <span class="ident">rad2deg</span></span>(<span>rad: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Radians to degrees conversion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>rad</code> : float, numpy.ndarray</p>
+<p>Angle or array of angles in radians.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>deg</code> : float, numpy.ndarray</p>
+<p>Angle or array of angles in degrees.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; rad2deg(3.141592)
+
+179.99996255206332
+</code></pre></div>
+</dd>
+<dt id="kiam.rot2ine"><code class="name flex">
+<span>def <span class="ident">rot2ine</span></span>(<span>xrot: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float, numpy.ndarray]) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from ROT c/s to INE c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xrot</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the ROT coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<p><code>t</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Time(s) corresponding to column(s) of xrot</p>
+<p><code>t0</code> : float, numpy.ndarray, shape (1,), (n,)</p>
+<p>Time(s) of of INE and ROT c/s coincidence for each column of xrot.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xine</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the INE coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xrot = numpy.array([1, 0, 0, 0, 0, 0])
+
+t = 1.0
+
+t0 = 0.0
+
+xine = kiam.rot2ine(xrot, t, t0)
+</code></pre></div>
+</dd>
+<dt id="kiam.rot2ine_eph"><code class="name flex">
+<span>def <span class="ident">rot2ine_eph</span></span>(<span>xrot: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body: str, secondary_body: str, dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from ROTEPH c/s to INEEPH c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xrot</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector array or 6D column phase vectors in the ROTEPH coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to column(s) in xrot</p>
+<p><code>first_body</code> : str</p>
+<p>Name of the first primary body</p>
+<p>Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+'jupiter', 'saturn', 'uranus', 'neptune'</p>
+<p><code>secondary_body</code> : str</p>
+<p>Name of the secondary primary body</p>
+<p>Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars',
+'jupiter', 'saturn', 'uranus', 'neptune'</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xine</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the INEEPH coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xrot = numpy.array([1, 0, 0, 0, 1, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+ku = kiam.units('earth', 'moon')
+
+xine = kiam.ine2rot_eph(xrot, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+</code></pre></div>
+</dd>
+<dt id="kiam.rv2ee"><code class="name flex">
+<span>def <span class="ident">rv2ee</span></span>(<span>rv: numpy.ndarray, mu: float, grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Position and velocity to equinoctial orbital elements.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>rv</code> : numpy.ndarray, shape (6,), (6,)</p>
+<p>6D phase vector or array of 6D column vectors containing position and velocity.</p>
+<p>Vector structure: [x, y, z, vx, dy, dz]</p>
+<p><code>mu</code> : float</p>
+<p>Gravitational parameter</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of elements wrt position and velocity</p>
+<h2 id="returns">Returns:</h2>
+<p><code>ee</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column vectors of equinoctial orbital elements:</p>
+<p>h = sqrt(p/mu),</p>
+<p>ex = e*cos(Omega+omega),</p>
+<p>ey = e*sin(Omega+omega),</p>
+<p>ix = tan(i/2)*cos(Omega),</p>
+<p>iy = tan(i/2)*sin(Omega),</p>
+<p>L = theta + omega + Omega,</p>
+<p>where</p>
+<p>mu - gravitational parameter,</p>
+<p>p - semi-latus rectum (focal parameter),</p>
+<p>e - eccentricity,</p>
+<p>Omega - right ascension of the ascending node,</p>
+<p>omega - argument of pericenter,</p>
+<p>i - inclination.</p>
+<p><code>dee</code> : numpy.ndarray, shape (6,6), (6,6,n)</p>
+<p>6x6 matrix or 6x6xn array of partial derivatives of ee wrt rv (dee/drv).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>rv = numpy.array([1, 0, 0, 0, 1, 0])
+
+ee = kiam.rv2ee(rv, 1.0, False)
+
+ee, dee = kiam.rv2ee(rv, 1.0, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.rv2oe"><code class="name flex">
+<span>def <span class="ident">rv2oe</span></span>(<span>rv: numpy.ndarray, mu: float, grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Position and velocity to classical orbital elements.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>rv</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D phase vector or array of column 6D phase vectors containing position and velocity.</p>
+<p>Vector structure: <code>[x, y, z, vx, dy, dz]</code>.</p>
+<p><code>mu</code> : float</p>
+<p>Gravitational parameter.</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of elements wrt position and velocity.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>oe</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column vectors of classical orbital elements:</p>
+<p>a (semi-major axis),</p>
+<p>e (eccentricity),</p>
+<p>i (inclination),</p>
+<p>Omega (right ascension of the ascending node),</p>
+<p>omega (argument of pericenter),</p>
+<p>theta (true anomaly)</p>
+<p><code>doe</code> : numpy.ndarray, shape (6,6), (6,6,n)</p>
+<p>6x6 matrix or 6x6xn array of partial derivatives of oe wrt rv (doe/drv).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>rv = numpy.array([1, 0, 0, 0.1, 1, 0.1])
+
+oe = kiam.rv2oe(rv, 1.0, False)
+
+oe, doe = kiam.rv2oe(rv, 1.0, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>variable: Any, filename: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves a variable into a specified file.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>variable</code> : Any</p>
+<p>Variable to be saved.</p>
+<p>For limitations on variables see the pickle package
+<a href="https://docs.python.org/3/library/pickle.html">https://docs.python.org/3/library/pickle.html</a></p>
+<p><code>filename</code> : str</p>
+<p>A path to the file.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>a = numpy.random.rand(10, 10)
+
+kiam.save(a, 'variable_a')
+</code></pre></div>
+</dd>
+<dt id="kiam.save_figure"><code class="name flex">
+<span>def <span class="ident">save_figure</span></span>(<span>fig: plotly.graph_objs._figure.Figure, filename: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves the figure as an interactive html file.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p><code>filename</code> : str</p>
+<p>The file name (or file path) with extension to which the figure should be saved.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+kiam.save_figure(fig, 'myfig.html')
+</code></pre></div>
+</dd>
+<dt id="kiam.save_image"><code class="name flex">
+<span>def <span class="ident">save_image</span></span>(<span>fig: plotly.graph_objs._figure.Figure, filename: str, scale: int = 2)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Saves the figure as a static image (PNG, PDF, etc).</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p><code>filename</code> : str</p>
+<p>The file name (or file path) with extension to which the figure should be saved.</p>
+<p><code>scale</code> : int</p>
+<p>The scale parameter controls dpi. Default is 2.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+kiam.save_image(fig, 'myfig.png')
+</code></pre></div>
+</dd>
+<dt id="kiam.scrs2gcrs"><code class="name flex">
+<span>def <span class="ident">scrs2gcrs</span></span>(<span>xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from SCRS c/s to GCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the SCRS coordinate system</p>
+<p>Vector structure: [x, y, z, vx, vy, vz]</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xscrs</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xgcrs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the GCRS coordinate system.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (6D -&gt; 6D):
+
+ku = kiam.units('earth', 'moon')
+
+xscrs = numpy.array([1, 0, 0, 0, 1, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+Example 2 (6x1 -&gt; 6x1):
+
+ku = kiam.units('earth', 'moon')
+
+xscrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
+</code></pre></div>
+</dd>
+<dt id="kiam.scrs2mer"><code class="name flex">
+<span>def <span class="ident">scrs2mer</span></span>(<span>xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vectors from SCRS c/s to MER c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to vector or columns in xscrs</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the MER vector wrt the SCRS vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xmer</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the MER coordinate system.</p>
+<p><code>dxmer</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>Matrix or array of matrices of partial derivatives of xmer wrt xscrs (dxmer/dxscrs).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xscrs = numpy.array([1, 0, 0])
+
+jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+xmer = kiam.scrs2mer(xscrs, jd, False)
+
+dxmer = kiam.scrs2mer(xscrs, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.scrs2pa"><code class="name flex">
+<span>def <span class="ident">scrs2pa</span></span>(<span>xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vector from SCRS c/s to PA c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian date(s) corresponding to column(s) in xscrs</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the PA vector wrt the SCRS vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xpa</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the PA coordinate system</p>
+<p><code>dxpa</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>3x3 or 6x6 matrix or 3x3xn or 6x6xn array of partial derivatives of xpa wrt xscrs (dxpa/dxscrs).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
+
+xscrs = numpy.array([1, 0, 0])
+
+xpa = kiam.scrs2pa(xscrs, jd, False)
+
+xpa, dxpa = kiam.scrs2pa(xscrs, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.scrs2sors"><code class="name flex">
+<span>def <span class="ident">scrs2sors</span></span>(<span>xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vectors from SCRS c/s to SORS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xscrs</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the SORS vector wrt the SCRS vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xsors</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SORS coordinate system</p>
+<p><code>dxsors</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>Matrix or array of matrices of partial derivatives of xsors wrt xscrs (dxsors/dxscrs).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xscrs = numpy.array([1, 0, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xsors = kiam.scrs2sors(xscrs, jd, False)
+
+xsors, dxsors = kiam.scrs2sors(xscrs, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.set_default_grid"><code class="name flex">
+<span>def <span class="ident">set_default_grid</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the default grid.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.grid_off(fig)
+
+fig.show()
+
+fig = kiam.set_default_grid(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.set_xlabel"><code class="name flex">
+<span>def <span class="ident">set_xlabel</span></span>(<span>fig: plotly.graph_objs._figure.Figure, xlabel: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a custom x-axis label.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<p><code>xlabel</code> : str</p>
+<p>The new x-axis label.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure datatypes supported.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.set_xlabel(fig, 'x variable')
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.set_ylabel"><code class="name flex">
+<span>def <span class="ident">set_ylabel</span></span>(<span>fig: plotly.graph_objs._figure.Figure, ylabel: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a custom y-axis label.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<p><code>ylabel</code> : str</p>
+<p>The new y-axis label.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y1)
+
+fig = kiam.set_ylabel(fig, 'y variable')
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.set_zlabel"><code class="name flex">
+<span>def <span class="ident">set_zlabel</span></span>(<span>fig: plotly.graph_objs._figure.Figure, zlabel: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a custom y-axis label.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<p>Only Scatter3d figure types are supported.</p>
+<p><code>zlabel</code> : str</p>
+<p>The new z-axis label.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+z = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot3(x, y, z)
+
+fig = kiam.set_zlabel(fig, 'z variable')
+
+fig.show()
+</code></pre></div>
+</dd>
+<dt id="kiam.sind"><code class="name flex">
+<span>def <span class="ident">sind</span></span>(<span>x: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sine of a degree argument.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>x</code> : float, numpy.ndarray</p>
+<p>Angle or an array of angles in degrees.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>s</code> : float, numpy.ndarray</p>
+<p>A sine or array of sines of angles in degrees.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.sind(30)
+
+0.49999999999999994
+</code></pre></div>
+</dd>
+<dt id="kiam.sors2scrs"><code class="name flex">
+<span>def <span class="ident">sors2scrs</span></span>(<span>xsors: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) ‑> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate vectors from SORS c/s to SCRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>xsors</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SORS coordinate system</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xsors</p>
+<p><code>grad_req</code> : bool</p>
+<p>Flag to calculate the derivatives of the SCRS vector wrt the SORS vector</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xscrs</code> : numpy.ndarray, shape (3,), (6,), (3,n), (6,n)</p>
+<p>3D vector, 6D vector or array of 3D or 6D column vectors in the SCRS coordinate system</p>
+<p><code>dxscrs</code> : numpy.ndarray, shape (3,3), (6,6), (3,3,n), (6,6,n)</p>
+<p>Matrix or array of matrices of partial derivatives of xscrs wrt xsors (dxscrs/dxsors).</p>
+<p>Returns only if <code>grad_req = True</code>.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>xsors = numpy.array([1, 0, 0])
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xscrs = kiam.sors2scrs(xsors, jd, False)
+
+xscrs, dxscrs = kiam.sors2scrs(xsors, jd, True)
+</code></pre></div>
+</dd>
+<dt id="kiam.sphere2cart"><code class="name flex">
+<span>def <span class="ident">sphere2cart</span></span>(<span>sphere: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Spherical coordinates to Cartesian coordinates.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>sphere</code> : numpy.ndarray, shape (3,), (3, n)</p>
+<p>3D vector or 3xn array of column 3D vectors of spherical coordinates</p>
+<p>Vector structure: [r, phi, theta], where</p>
+<pre><code>
+phi in [-pi, pi],
+
+theta in [0, pi],
+
+x = r*cos(theta)*cos(phi),
+
+y = r*cos(theta)*sin(phi),
+
+z = r*sin(theta)
+
+</code></pre>
+<h2 id="returns">Returns:</h2>
+<p><code>cart</code> : numpy.ndarray, shape (3,), (3, n)</p>
+<p>3D vector or 3xn array of column 3D vectors of Cartesian coordinates.</p>
+<p>Vector structure: [x, y, z].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; sphere = numpy.array([1, 0, 0])
+
+&gt;&gt; cart = kiam.sphere2cart(sphere)
+
+[0. 0. 1.]
+</code></pre></div>
+</dd>
+<dt id="kiam.sphere_coordinates"><code class="name flex">
+<span>def <span class="ident">sphere_coordinates</span></span>(<span>radius: float, nlat: int, nlon: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get x, y, z coordinates on a sphere.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>radius</code> : float</p>
+<p>The radius of the sphere.</p>
+<p><code>nlat</code> : int</p>
+<p>The number of latitude angles in a grid.</p>
+<p><code>nlon</code> : int</p>
+<p>The number of longitude angles in a grid.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>x</code> : numpy.ndarray, shape(nlat, nlon)</p>
+<p>The x-coordinates.</p>
+<p><code>y</code> : numpy.ndarray, shape(nlat, nlon)</p>
+<p>The y-coordinates.</p>
+<p><code>z</code> : numpy.ndarray, shape(nlat, nlon)</p>
+<p>The z-coordinates.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x, y, z = sphere_coordinates(1.0, 100, 100)
+</code></pre></div>
+</dd>
+<dt id="kiam.tand"><code class="name flex">
+<span>def <span class="ident">tand</span></span>(<span>x: Union[float, numpy.ndarray]) ‑> Union[float, numpy.ndarray]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Tangent of a degree argument.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>x</code> : float, numpy.ndarray</p>
+<p>Angle or an array of angles in degrees.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>s</code> : float, numpy.ndarray</p>
+<p>A tangent or array of tangents of angles in degrees.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.tand(45)
+
+0.9999999999999999
+</code></pre></div>
+</dd>
+<dt id="kiam.time2jd"><code class="name flex">
+<span>def <span class="ident">time2jd</span></span>(<span>time: datetime.datetime) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Usual date and time to Julian date.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>time</code> : datetime.datetime</p>
+<p>Date and time object of type datetime.datetime</p>
+<h2 id="returns">Returns:</h2>
+<p><code>jd</code> : float</p>
+<p>Julian date</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; time2jd(datetime.datetime(2022, 11, 22, 0, 0, 0, 0))
+
+2459905.5
+</code></pre></div>
+</dd>
+<dt id="kiam.to_float"><code class="name flex">
+<span>def <span class="ident">to_float</span></span>(<span>*args: Any) ‑> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Convert all arguments to the float64 type.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>*args</code></p>
+<p>Arguments separated by comma to convert to float64.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>float_args</code> : tuple</p>
+<p>Tuple of numpy arrays with components converted to <code>float64</code> arguments.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; kiam.to_float([1, 2], 3, [4, 5, 6])
+
+(array([1., 2.]), array(3.), array([4., 5., 6.]))
+</code></pre></div>
+</dd>
+<dt id="kiam.units"><code class="name flex">
+<span>def <span class="ident">units</span></span>(<span>*args: str) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get units of distance, velocity, and time.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>*args</code></p>
+<p>Name or a pair of names of a celestial bodies</p>
+<p>Options for a single argument: 'earth', 'moon', 'sun', 'mercury', 'venus',
+'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'</p>
+<p>Options for two arguments: ('earth', 'moon'), ('sun', 'earth')</p>
+<h2 id="returns">Returns:</h2>
+<p><code>units_dict</code> : dict</p>
+<p>A dictionary containing the units of distance, velocity, and time.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>un = kiam.units('earth')
+
+DU = un['DistUnit']  # Unit of distance for the earth system of units
+
+un = kiam.units('earth', 'moon')
+
+VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
+</code></pre></div>
+</dd>
+<dt id="kiam.vec2mat"><code class="name flex">
+<span>def <span class="ident">vec2mat</span></span>(<span>v: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Vector to square matrix translation.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>v</code> : numpy.ndarray, shape (n**2,)</p>
+<p>A vector.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>a</code> : numpy.ndarray, shape (n, n)</p>
+<p>A square matrix.</p>
+<p>Matrix structure (Fortran/MATLAB order): <code>[[v1, v2, ..., vn], [v_(n+1), ...]].T</code></p>
+<h2 id="examples">Examples:</h2>
+<pre><code>&gt;&gt; v = numpy.array([1, 2, 3, 4])
+
+&gt;&gt; m = kiam.vec2mat(v)
+
+[[1 3]
+
+[2 4]]
+</code></pre></div>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="kiam.astro_const" href="#kiam.astro_const">astro_const</a></code></li>
+<li><code><a title="kiam.axis_equal" href="#kiam.axis_equal">axis_equal</a></code></li>
+<li><code><a title="kiam.body_surface" href="#kiam.body_surface">body_surface</a></code></li>
+<li><code><a title="kiam.box_plot" href="#kiam.box_plot">box_plot</a></code></li>
+<li><code><a title="kiam.cart2latlon" href="#kiam.cart2latlon">cart2latlon</a></code></li>
+<li><code><a title="kiam.cart2sphere" href="#kiam.cart2sphere">cart2sphere</a></code></li>
+<li><code><a title="kiam.cosd" href="#kiam.cosd">cosd</a></code></li>
+<li><code><a title="kiam.cotand" href="#kiam.cotand">cotand</a></code></li>
+<li><code><a title="kiam.cr3bp_fb" href="#kiam.cr3bp_fb">cr3bp_fb</a></code></li>
+<li><code><a title="kiam.cr3bp_sb" href="#kiam.cr3bp_sb">cr3bp_sb</a></code></li>
+<li><code><a title="kiam.deg2rad" href="#kiam.deg2rad">deg2rad</a></code></li>
+<li><code><a title="kiam.dotainvb" href="#kiam.dotainvb">dotainvb</a></code></li>
+<li><code><a title="kiam.ee2rv" href="#kiam.ee2rv">ee2rv</a></code></li>
+<li><code><a title="kiam.eye2vec" href="#kiam.eye2vec">eye2vec</a></code></li>
+<li><code><a title="kiam.gcrs2hcrs" href="#kiam.gcrs2hcrs">gcrs2hcrs</a></code></li>
+<li><code><a title="kiam.gcrs2itrs" href="#kiam.gcrs2itrs">gcrs2itrs</a></code></li>
+<li><code><a title="kiam.gcrs2scrs" href="#kiam.gcrs2scrs">gcrs2scrs</a></code></li>
+<li><code><a title="kiam.get_altitude_km" href="#kiam.get_altitude_km">get_altitude_km</a></code></li>
+<li><code><a title="kiam.get_circular_velocity_km_s" href="#kiam.get_circular_velocity_km_s">get_circular_velocity_km_s</a></code></li>
+<li><code><a title="kiam.get_dv_hohmann" href="#kiam.get_dv_hohmann">get_dv_hohmann</a></code></li>
+<li><code><a title="kiam.get_order" href="#kiam.get_order">get_order</a></code></li>
+<li><code><a title="kiam.get_period_hours" href="#kiam.get_period_hours">get_period_hours</a></code></li>
+<li><code><a title="kiam.get_tof_hohmann" href="#kiam.get_tof_hohmann">get_tof_hohmann</a></code></li>
+<li><code><a title="kiam.grid_off" href="#kiam.grid_off">grid_off</a></code></li>
+<li><code><a title="kiam.grid_on" href="#kiam.grid_on">grid_on</a></code></li>
+<li><code><a title="kiam.hcrs2gcrs" href="#kiam.hcrs2gcrs">hcrs2gcrs</a></code></li>
+<li><code><a title="kiam.ine2rot" href="#kiam.ine2rot">ine2rot</a></code></li>
+<li><code><a title="kiam.ine2rot_eph" href="#kiam.ine2rot_eph">ine2rot_eph</a></code></li>
+<li><code><a title="kiam.invadotb" href="#kiam.invadotb">invadotb</a></code></li>
+<li><code><a title="kiam.is_visible" href="#kiam.is_visible">is_visible</a></code></li>
+<li><code><a title="kiam.itrs2gcrs" href="#kiam.itrs2gcrs">itrs2gcrs</a></code></li>
+<li><code><a title="kiam.jd2time" href="#kiam.jd2time">jd2time</a></code></li>
+<li><code><a title="kiam.juliandate" href="#kiam.juliandate">juliandate</a></code></li>
+<li><code><a title="kiam.latlon2cart" href="#kiam.latlon2cart">latlon2cart</a></code></li>
+<li><code><a title="kiam.legend_off" href="#kiam.legend_off">legend_off</a></code></li>
+<li><code><a title="kiam.legend_on" href="#kiam.legend_on">legend_on</a></code></li>
+<li><code><a title="kiam.load" href="#kiam.load">load</a></code></li>
+<li><code><a title="kiam.lvlh2mer" href="#kiam.lvlh2mer">lvlh2mer</a></code></li>
+<li><code><a title="kiam.mat2vec" href="#kiam.mat2vec">mat2vec</a></code></li>
+<li><code><a title="kiam.mer2lvlh" href="#kiam.mer2lvlh">mer2lvlh</a></code></li>
+<li><code><a title="kiam.mer2scrs" href="#kiam.mer2scrs">mer2scrs</a></code></li>
+<li><code><a title="kiam.nbp_ee_earth" href="#kiam.nbp_ee_earth">nbp_ee_earth</a></code></li>
+<li><code><a title="kiam.nbp_ee_moon" href="#kiam.nbp_ee_moon">nbp_ee_moon</a></code></li>
+<li><code><a title="kiam.nbp_rv_earth" href="#kiam.nbp_rv_earth">nbp_rv_earth</a></code></li>
+<li><code><a title="kiam.nbp_rv_moon" href="#kiam.nbp_rv_moon">nbp_rv_moon</a></code></li>
+<li><code><a title="kiam.oe2rv" href="#kiam.oe2rv">oe2rv</a></code></li>
+<li><code><a title="kiam.planet_state" href="#kiam.planet_state">planet_state</a></code></li>
+<li><code><a title="kiam.plot" href="#kiam.plot">plot</a></code></li>
+<li><code><a title="kiam.plot3" href="#kiam.plot3">plot3</a></code></li>
+<li><code><a title="kiam.polar_plot" href="#kiam.polar_plot">polar_plot</a></code></li>
+<li><code><a title="kiam.prepare_data_dict" href="#kiam.prepare_data_dict">prepare_data_dict</a></code></li>
+<li><code><a title="kiam.prepare_sources_dict" href="#kiam.prepare_sources_dict">prepare_sources_dict</a></code></li>
+<li><code><a title="kiam.prepare_units_dict" href="#kiam.prepare_units_dict">prepare_units_dict</a></code></li>
+<li><code><a title="kiam.propagate_br4bp" href="#kiam.propagate_br4bp">propagate_br4bp</a></code></li>
+<li><code><a title="kiam.propagate_cr3bp" href="#kiam.propagate_cr3bp">propagate_cr3bp</a></code></li>
+<li><code><a title="kiam.propagate_hill" href="#kiam.propagate_hill">propagate_hill</a></code></li>
+<li><code><a title="kiam.propagate_nbp" href="#kiam.propagate_nbp">propagate_nbp</a></code></li>
+<li><code><a title="kiam.propagate_r2bp" href="#kiam.propagate_r2bp">propagate_r2bp</a></code></li>
+<li><code><a title="kiam.r2bp" href="#kiam.r2bp">r2bp</a></code></li>
+<li><code><a title="kiam.rad2deg" href="#kiam.rad2deg">rad2deg</a></code></li>
+<li><code><a title="kiam.rot2ine" href="#kiam.rot2ine">rot2ine</a></code></li>
+<li><code><a title="kiam.rot2ine_eph" href="#kiam.rot2ine_eph">rot2ine_eph</a></code></li>
+<li><code><a title="kiam.rv2ee" href="#kiam.rv2ee">rv2ee</a></code></li>
+<li><code><a title="kiam.rv2oe" href="#kiam.rv2oe">rv2oe</a></code></li>
+<li><code><a title="kiam.save" href="#kiam.save">save</a></code></li>
+<li><code><a title="kiam.save_figure" href="#kiam.save_figure">save_figure</a></code></li>
+<li><code><a title="kiam.save_image" href="#kiam.save_image">save_image</a></code></li>
+<li><code><a title="kiam.scrs2gcrs" href="#kiam.scrs2gcrs">scrs2gcrs</a></code></li>
+<li><code><a title="kiam.scrs2mer" href="#kiam.scrs2mer">scrs2mer</a></code></li>
+<li><code><a title="kiam.scrs2pa" href="#kiam.scrs2pa">scrs2pa</a></code></li>
+<li><code><a title="kiam.scrs2sors" href="#kiam.scrs2sors">scrs2sors</a></code></li>
+<li><code><a title="kiam.set_default_grid" href="#kiam.set_default_grid">set_default_grid</a></code></li>
+<li><code><a title="kiam.set_xlabel" href="#kiam.set_xlabel">set_xlabel</a></code></li>
+<li><code><a title="kiam.set_ylabel" href="#kiam.set_ylabel">set_ylabel</a></code></li>
+<li><code><a title="kiam.set_zlabel" href="#kiam.set_zlabel">set_zlabel</a></code></li>
+<li><code><a title="kiam.sind" href="#kiam.sind">sind</a></code></li>
+<li><code><a title="kiam.sors2scrs" href="#kiam.sors2scrs">sors2scrs</a></code></li>
+<li><code><a title="kiam.sphere2cart" href="#kiam.sphere2cart">sphere2cart</a></code></li>
+<li><code><a title="kiam.sphere_coordinates" href="#kiam.sphere_coordinates">sphere_coordinates</a></code></li>
+<li><code><a title="kiam.tand" href="#kiam.tand">tand</a></code></li>
+<li><code><a title="kiam.time2jd" href="#kiam.time2jd">time2jd</a></code></li>
+<li><code><a title="kiam.to_float" href="#kiam.to_float">to_float</a></code></li>
+<li><code><a title="kiam.units" href="#kiam.units">units</a></code></li>
+<li><code><a title="kiam.vec2mat" href="#kiam.vec2mat">vec2mat</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
