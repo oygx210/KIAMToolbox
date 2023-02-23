@@ -36,9 +36,13 @@ The `examples` directory contains some typical examples of using the toolbox.
 
 ## System requirements
 
-Windows 10, python 3.9.
+Windows, macOS, Ubuntu.
+
+Python 3.9 only.
 
 See `requirements.txt` for the dependencies.
+
+On macOS and Ubuntu please install gfortran: `sudo apt install gfortran`.
 
 ## Information and terms of use
 
