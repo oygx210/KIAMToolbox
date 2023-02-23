@@ -4,6 +4,12 @@ KIAM Astrodynamics Toolbox is an astrodynamical toolbox written in Fortran and P
 The toolbox contains astronomical constants, physical parameters of celestial bodies, right-hand side of equations of motion in various models, methods for solving ODEs, routines for transformation variables, coordinate systems, and units.
 The toolbox also contains a high-level class for trajectory models.
 
+## Installation
+
+`pip install kiam_astro` is the recommended way for installing the toolbox.
+
+One can also download the toolbox using the Releases section on the right.
+
 ## Versions
 
 Current version: 1.5.
