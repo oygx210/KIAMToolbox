@@ -87,30 +87,6 @@ planet['Earth']['GM']  # Gravitational parameter of the Earth
 planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
 </code></pre></div>
 </dd>
-<dt id="kiam.axis_equal"><code class="name flex">
-<span>def <span class="ident">axis_equal</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Sets axis to be equal.</p>
-<h2 id="parameters">Parameters:</h2>
-<p><code>fig</code> : plotly.graph_objects.Figure</p>
-<p>The Plotly figure object.</p>
-<h2 id="returns">Returns:</h2>
-<p><code>fig</code> : plotly.graph_objects.Figure</p>
-<p>The updated Plotly figure object.</p>
-<p>Only Scatter and Scatter3d figure types are supported.</p>
-<h2 id="examples">Examples:</h2>
-<pre><code>x = numpy.array([1, 2, 3, 4, 5])
-
-y = numpy.array([2, 3, 0, 1, 2])
-
-fig = kiam.plot(x, y)
-
-fig = kiam.axis_equal(fig)
-
-fig.show()
-</code></pre></div>
-</dd>
 <dt id="kiam.body_surface"><code class="name flex">
 <span>def <span class="ident">body_surface</span></span>(<span>body: str, radius: float = 1.0, quality: str = 'medium')</span>
 </code></dt>
@@ -1679,7 +1655,7 @@ wrt to the specified center (planet).</p>
 </code></pre></div>
 </dd>
 <dt id="kiam.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>x: numpy.ndarray, y: numpy.ndarray, fig: plotly.graph_objs._figure.Figure = None, xlabel: str = 'x', ylabel: str = 'y', name: str = '')</span>
+<span>def <span class="ident">plot</span></span>(<span>x: numpy.ndarray, y: numpy.ndarray, fig: plotly.graph_objs._figure.Figure = None, xlabel: str = 'x', ylabel: str = 'y', name: str = '', axis_equal: bool = False, grid: str = 'on')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Creates a 2D line plot.</p>
@@ -1697,6 +1673,14 @@ will be added to the existing figure in <code>fig</code>.</p>
 <p>The y-axis label</p>
 <p><code>name</code> : str</p>
 <p>The name of the plot to be indicated in the legend.</p>
+<p>'axis_equal' : bool</p>
+<p>Sets axis to be equal. False by default.</p>
+<p>'grid' : str</p>
+<p>Grid option setting.</p>
+<p>Options:</p>
+<p>None, 'plotly' &ndash; grid used by default by plotly (not used in papers normally)</p>
+<p>'on' &ndash; white background, black dashed grid</p>
+<p>'off' &ndash; disables the grid</p>
 <h2 id="returns">Returns:</h2>
 <p><code>fig</code> : plotly.graph_objects.Figure</p>
 <p>The (updated) Plotly figure object.</p>
@@ -1727,7 +1711,7 @@ fig.show()
 </code></pre></div>
 </dd>
 <dt id="kiam.plot3"><code class="name flex">
-<span>def <span class="ident">plot3</span></span>(<span>x: numpy.ndarray, y: numpy.ndarray, z: numpy.ndarray, fig: plotly.graph_objs._figure.Figure = None, xlabel: str = 'x', ylabel: str = 'y', zlabel: str = 'z', name: str = '')</span>
+<span>def <span class="ident">plot3</span></span>(<span>x: numpy.ndarray, y: numpy.ndarray, z: numpy.ndarray, fig: plotly.graph_objs._figure.Figure = None, xlabel: str = 'x', ylabel: str = 'y', zlabel: str = 'z', name: str = '', axis_equal: bool = False, grid: str = 'on')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Creates a 3D line plot.</p>
@@ -1749,6 +1733,14 @@ will be added to the existing figure in <code>fig</code>.</p>
 <p>The z-axis label</p>
 <p><code>name</code> : str</p>
 <p>The name of the plot to be indicated in the legend.</p>
+<p>'axis_equal' : bool</p>
+<p>Sets axis to be equal. False by default.</p>
+<p>'grid' : str</p>
+<p>Grid option setting.</p>
+<p>Options:</p>
+<p>None, 'plotly' &ndash; grid used by default by plotly (not used in papers normally)</p>
+<p>'on' &ndash; white background, black dashed grid</p>
+<p>'off' &ndash; disables the grid</p>
 <h2 id="returns">Returns:</h2>
 <p><code>fig</code> : plotly.graph_objects.Figure</p>
 <p>The (updated) Plotly figure object.</p>
@@ -2546,6 +2538,30 @@ xsors = kiam.scrs2sors(xscrs, jd, False)
 xsors, dxsors = kiam.scrs2sors(xscrs, jd, True)
 </code></pre></div>
 </dd>
+<dt id="kiam.set_axis_equal"><code class="name flex">
+<span>def <span class="ident">set_axis_equal</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets axis to be equal.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The Plotly figure object.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>fig</code> : plotly.graph_objects.Figure</p>
+<p>The updated Plotly figure object.</p>
+<p>Only Scatter and Scatter3d figure types are supported.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>x = numpy.array([1, 2, 3, 4, 5])
+
+y = numpy.array([2, 3, 0, 1, 2])
+
+fig = kiam.plot(x, y)
+
+fig = kiam.axis_equal(fig)
+
+fig.show()
+</code></pre></div>
+</dd>
 <dt id="kiam.set_default_grid"><code class="name flex">
 <span>def <span class="ident">set_default_grid</span></span>(<span>fig: plotly.graph_objs._figure.Figure)</span>
 </code></dt>
@@ -2867,7 +2883,6 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="kiam.astro_const" href="#kiam.astro_const">astro_const</a></code></li>
-<li><code><a title="kiam.axis_equal" href="#kiam.axis_equal">axis_equal</a></code></li>
 <li><code><a title="kiam.body_surface" href="#kiam.body_surface">body_surface</a></code></li>
 <li><code><a title="kiam.box_plot" href="#kiam.box_plot">box_plot</a></code></li>
 <li><code><a title="kiam.cart2latlon" href="#kiam.cart2latlon">cart2latlon</a></code></li>
@@ -2937,6 +2952,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><code><a title="kiam.scrs2mer" href="#kiam.scrs2mer">scrs2mer</a></code></li>
 <li><code><a title="kiam.scrs2pa" href="#kiam.scrs2pa">scrs2pa</a></code></li>
 <li><code><a title="kiam.scrs2sors" href="#kiam.scrs2sors">scrs2sors</a></code></li>
+<li><code><a title="kiam.set_axis_equal" href="#kiam.set_axis_equal">set_axis_equal</a></code></li>
 <li><code><a title="kiam.set_default_grid" href="#kiam.set_default_grid">set_default_grid</a></code></li>
 <li><code><a title="kiam.set_xlabel" href="#kiam.set_xlabel">set_xlabel</a></code></li>
 <li><code><a title="kiam.set_ylabel" href="#kiam.set_ylabel">set_ylabel</a></code></li>

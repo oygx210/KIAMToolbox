@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>Trajectory API documentation</title>
+<title>trajectory API documentation</title>
 <meta name="description" content="This Python module is a part of the KIAM Astrodynamics Toolbox developed in
 Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
@@ -18,7 +18,7 @@ Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia …" />
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>Trajectory</code></h1>
+<h1 class="title">Module <code>trajectory</code></h1>
 </header>
 <section id="section-intro">
 <p>This Python module is a part of the KIAM Astrodynamics Toolbox developed in
@@ -39,8 +39,8 @@ their characteristics.</p>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="Trajectory.dict2traj"><code class="name flex">
-<span>def <span class="ident">dict2traj</span></span>(<span>d: dict) ‑> <a title="Trajectory.Trajectory" href="#Trajectory.Trajectory">Trajectory</a></span>
+<dt id="trajectory.dict2traj"><code class="name flex">
+<span>def <span class="ident">dict2traj</span></span>(<span>d: dict) ‑> <a title="trajectory.Trajectory" href="#trajectory.Trajectory">Trajectory</a></span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts dictionary to trajectory object.</p>
@@ -51,8 +51,8 @@ their characteristics.</p>
 <p><code>tr</code> : Trajectory</p>
 <p>The Trajectory object converted from the dictionary.</p></div>
 </dd>
-<dt id="Trajectory.traj2dict"><code class="name flex">
-<span>def <span class="ident">traj2dict</span></span>(<span>tr: <a title="Trajectory.Trajectory" href="#Trajectory.Trajectory">Trajectory</a>) ‑> dict</span>
+<dt id="trajectory.traj2dict"><code class="name flex">
+<span>def <span class="ident">traj2dict</span></span>(<span>tr: <a title="trajectory.Trajectory" href="#trajectory.Trajectory">Trajectory</a>) ‑> dict</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Converts trajectory object to dictionary.</p>
@@ -68,7 +68,7 @@ their characteristics.</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="Trajectory.Trajectory"><code class="flex name class">
+<dt id="trajectory.Trajectory"><code class="flex name class">
 <span>class <span class="ident">Trajectory</span></span>
 <span>(</span><span>initial_state: numpy.ndarray, initial_time: float, initial_jd: float, variables: str, system: str, units_name: str)</span>
 </code></dt>
@@ -175,10 +175,10 @@ their characteristics.</p>
 <p><code>vars_graph</code> : networkx.classes.digraph.DiGraph</p>
 <p>The graph of transormations between variables.</p>
 <h2 id="examples">Examples:</h2>
-<p>Examples can be found in kiam_examples.py.</p></div>
+<p>Examples can be found in all_examples.py.</p></div>
 <h3>Methods</h3>
 <dl>
-<dt id="Trajectory.Trajectory.change_system"><code class="name flex">
+<dt id="trajectory.Trajectory.change_system"><code class="name flex">
 <span>def <span class="ident">change_system</span></span>(<span>self, new_system: str) ‑> None</span>
 </code></dt>
 <dd>
@@ -213,7 +213,7 @@ their characteristics.</p>
 <p>The routine automatically find the chain of transformations from the current coordinate system to
 the specified coordinate system.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.change_units"><code class="name flex">
+<dt id="trajectory.Trajectory.change_units"><code class="name flex">
 <span>def <span class="ident">change_units</span></span>(<span>self, new_units: str) ‑> None</span>
 </code></dt>
 <dd>
@@ -227,7 +227,7 @@ the specified coordinate system.</p></div>
 <p>The routine automatically find the chain of transformations from the current units to
 the specified units.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.change_vars"><code class="name flex">
+<dt id="trajectory.Trajectory.change_vars"><code class="name flex">
 <span>def <span class="ident">change_vars</span></span>(<span>self, new_vars: str) ‑> None</span>
 </code></dt>
 <dd>
@@ -249,19 +249,19 @@ the specified units.</p></div>
 <p>The routine automatically find the chain of transformations from the current variables to
 the specified variables.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.clear"><code class="name flex">
+<dt id="trajectory.Trajectory.clear"><code class="name flex">
 <span>def <span class="ident">clear</span></span>(<span>self) ‑> None</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Clears states, times, julian dates, parts, and resets the final date.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.copy"><code class="name flex">
+<dt id="trajectory.Trajectory.copy"><code class="name flex">
 <span>def <span class="ident">copy</span></span>(<span>self)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Returns independent copy of the trajectory object.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.propagate"><code class="name flex">
+<dt id="trajectory.Trajectory.propagate"><code class="name flex">
 <span>def <span class="ident">propagate</span></span>(<span>self, tof: float, npoints: int = 2) ‑> None</span>
 </code></dt>
 <dd>
@@ -273,7 +273,7 @@ the specified variables.</p></div>
 <p><code>npoints</code> : int</p>
 <p>The number of nodes in the propagation time interval.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.repropagate"><code class="name flex">
+<dt id="trajectory.Trajectory.repropagate"><code class="name flex">
 <span>def <span class="ident">repropagate</span></span>(<span>self, tof: float, npoints: int = 2, start_index: int = 0) ‑> None</span>
 </code></dt>
 <dd>
@@ -288,7 +288,7 @@ the specified variables.</p></div>
 <p>The number of a time node from which the trajectory should be repropagated.</p>
 <p>At the moment, in can be only 0.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.set_model"><code class="name flex">
+<dt id="trajectory.Trajectory.set_model"><code class="name flex">
 <span>def <span class="ident">set_model</span></span>(<span>self, variables: str, model_type, primary: str, sources_list: list) ‑> None</span>
 </code></dt>
 <dd>
@@ -361,7 +361,7 @@ It also initializes tr.model['data'] property.</p>
 <p>If <code>model_type</code> is 'cr3bp', then <code>model_specifics</code> is a dictionary.</p>
 <p>The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.</p></div>
 </dd>
-<dt id="Trajectory.Trajectory.show"><code class="name flex">
+<dt id="trajectory.Trajectory.show"><code class="name flex">
 <span>def <span class="ident">show</span></span>(<span>self, variables: str, draw=True)</span>
 </code></dt>
 <dd>
@@ -415,24 +415,24 @@ It also initializes tr.model['data'] property.</p>
 <ul id="index">
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="Trajectory.dict2traj" href="#Trajectory.dict2traj">dict2traj</a></code></li>
-<li><code><a title="Trajectory.traj2dict" href="#Trajectory.traj2dict">traj2dict</a></code></li>
+<li><code><a title="trajectory.dict2traj" href="#trajectory.dict2traj">dict2traj</a></code></li>
+<li><code><a title="trajectory.traj2dict" href="#trajectory.traj2dict">traj2dict</a></code></li>
 </ul>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="Trajectory.Trajectory" href="#Trajectory.Trajectory">Trajectory</a></code></h4>
+<h4><code><a title="trajectory.Trajectory" href="#trajectory.Trajectory">Trajectory</a></code></h4>
 <ul class="two-column">
-<li><code><a title="Trajectory.Trajectory.change_system" href="#Trajectory.Trajectory.change_system">change_system</a></code></li>
-<li><code><a title="Trajectory.Trajectory.change_units" href="#Trajectory.Trajectory.change_units">change_units</a></code></li>
-<li><code><a title="Trajectory.Trajectory.change_vars" href="#Trajectory.Trajectory.change_vars">change_vars</a></code></li>
-<li><code><a title="Trajectory.Trajectory.clear" href="#Trajectory.Trajectory.clear">clear</a></code></li>
-<li><code><a title="Trajectory.Trajectory.copy" href="#Trajectory.Trajectory.copy">copy</a></code></li>
-<li><code><a title="Trajectory.Trajectory.propagate" href="#Trajectory.Trajectory.propagate">propagate</a></code></li>
-<li><code><a title="Trajectory.Trajectory.repropagate" href="#Trajectory.Trajectory.repropagate">repropagate</a></code></li>
-<li><code><a title="Trajectory.Trajectory.set_model" href="#Trajectory.Trajectory.set_model">set_model</a></code></li>
-<li><code><a title="Trajectory.Trajectory.show" href="#Trajectory.Trajectory.show">show</a></code></li>
+<li><code><a title="trajectory.Trajectory.change_system" href="#trajectory.Trajectory.change_system">change_system</a></code></li>
+<li><code><a title="trajectory.Trajectory.change_units" href="#trajectory.Trajectory.change_units">change_units</a></code></li>
+<li><code><a title="trajectory.Trajectory.change_vars" href="#trajectory.Trajectory.change_vars">change_vars</a></code></li>
+<li><code><a title="trajectory.Trajectory.clear" href="#trajectory.Trajectory.clear">clear</a></code></li>
+<li><code><a title="trajectory.Trajectory.copy" href="#trajectory.Trajectory.copy">copy</a></code></li>
+<li><code><a title="trajectory.Trajectory.propagate" href="#trajectory.Trajectory.propagate">propagate</a></code></li>
+<li><code><a title="trajectory.Trajectory.repropagate" href="#trajectory.Trajectory.repropagate">repropagate</a></code></li>
+<li><code><a title="trajectory.Trajectory.set_model" href="#trajectory.Trajectory.set_model">set_model</a></code></li>
+<li><code><a title="trajectory.Trajectory.show" href="#trajectory.Trajectory.show">show</a></code></li>
 </ul>
 </li>
 </ul>

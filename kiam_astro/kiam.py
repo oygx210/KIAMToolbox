@@ -5319,9 +5319,8 @@ def _dat_dict_to_vec(dat_dict: dict) -> numpy.ndarray:
 class _package_folder_contex:
     """
     FOR THE TOOLBOX DEVELOPERS ONLY.
-    This contex is used within the "with" statement when calling to routines that use an ephemeris file.
-    The contex switches the directory to the one that contains the ephemeris file
-    and then switches the directory back to the initial working directory.
+    This contex is used within the "with" statement when calling to routines that use files in the package folder.
+    The contex switches the package directory and then switches the original directory.
     """
 
     def __init__(self):
