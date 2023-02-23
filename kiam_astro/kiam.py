@@ -1138,7 +1138,8 @@ def body_surface(body: str, radius: float = 1.0, quality: str = 'medium'):
     if quality.lower() not in ['low', 'medium', 'high']:
         raise 'Quality should be "low", "medium", or "high".'
     if body.lower() == 'earth':
-        image = Image.open('./images/Earth2.jpg').convert('L')
+        with _package_folder_contex():
+            image = Image.open('./images/Earth2.jpg').convert('L')
         colorscale = [[0.0, 'rgb(30, 59, 117)'],
                       [0.1, 'rgb(46, 68, 21)'],
                       [0.2, 'rgb(74, 96, 28)'],
@@ -1150,7 +1151,8 @@ def body_surface(body: str, radius: float = 1.0, quality: str = 'medium'):
                       [0.9, 'rgb(237, 214, 183)'],
                       [1.0, 'rgb(255, 255, 255)']]
     elif body.lower() == 'moon':
-        image = Image.open('./images/Moon1.jpg').convert('L')
+        with _package_folder_contex():
+            image = Image.open('./images/Moon1.jpg').convert('L')
         colorscale = 'gray'
     else:
         raise 'Unknown body. Only earth and moon are currently supported.'
@@ -1357,7 +1359,7 @@ def planet_state(jd: float, center: str, target: str) -> numpy.ndarray:
         -1.36269070e-01 8.97864551e-01  4.72492325e-01]
     ```
     """
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         state = FKIAMToolbox.ephemeris.planetstate(jd, target, center)
     return state
 
@@ -1925,12 +1927,12 @@ def itrs2gcrs(xitrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         raise 'Number of columns in xitrs should equal number of elements in jd.'
 
     if xitrs.shape == (3,):
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             out = FKIAMToolbox.transformations.kitrs2gcrs(xitrs, jd)
         return _return_if_grad_req(out, grad_req)
 
     if xitrs.shape == (6,):
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             xitrs = numpy.reshape(xitrs, (6, 1))
             FKIAMToolbox.transformations.xitrs_mat = xitrs
             FKIAMToolbox.transformations.jd_mat = jd
@@ -1939,7 +1941,7 @@ def itrs2gcrs(xitrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         return _return_if_grad_req(out, grad_req)
 
     if len(xitrs.shape) == 2 and xitrs.shape[0] in [3, 6]:
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             FKIAMToolbox.transformations.xitrs_mat = xitrs
             FKIAMToolbox.transformations.jd_mat = jd
             FKIAMToolbox.transformations.kitrs2gcrs_mat()
@@ -1998,12 +2000,12 @@ def gcrs2itrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         raise 'Number of columns in xgcrs should equal number of elements in jd.'
 
     if xgcrs.shape == (3,):
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             out = FKIAMToolbox.transformations.kgcrs2itrs(xgcrs, jd)
         return _return_if_grad_req(out, grad_req)
 
     if xgcrs.shape == (6,):
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             xgcrs = numpy.reshape(xgcrs, (6, 1))
             FKIAMToolbox.transformations.xgcrs_mat = xgcrs
             FKIAMToolbox.transformations.jd_mat = jd
@@ -2012,7 +2014,7 @@ def gcrs2itrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         return _return_if_grad_req(out, grad_req)
 
     if len(xgcrs.shape) == 2 and xgcrs.shape[0] in [3, 6]:
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             FKIAMToolbox.transformations.xgcrs_mat = xgcrs
             FKIAMToolbox.transformations.jd_mat = jd
             FKIAMToolbox.transformations.kgcrs2itrs_mat()
@@ -2071,12 +2073,12 @@ def scrs2pa(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
         raise 'Number of columns in xscrs should equal number of elements in jd.'
 
     if xscrs.shape == (3,):
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             out = FKIAMToolbox.transformations.kscrs2pa(xscrs, jd)
         return _return_if_grad_req(out, grad_req)
 
     if xscrs.shape == (6,):
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             xscrs = numpy.reshape(xscrs, (6, 1))
             FKIAMToolbox.transformations.xscrs_mat = xscrs
             FKIAMToolbox.transformations.jd_mat = jd
@@ -2085,7 +2087,7 @@ def scrs2pa(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
             return _return_if_grad_req(out, grad_req)
 
     if len(xscrs.shape) == 2 and xscrs.shape[0] in [3, 6]:
-        with _ephemeris_folder_contex():
+        with _package_folder_contex():
             FKIAMToolbox.transformations.xscrs_mat = xscrs
             FKIAMToolbox.transformations.jd_mat = jd
             FKIAMToolbox.transformations.kscrs2pa_mat()
@@ -2148,7 +2150,7 @@ def scrs2mer(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bo
     if xscrs.shape[1] != jd.shape[0]:
         raise 'number of columns in xscrs should equal number of elements in jd.'
     xmer = numpy.empty((dim, ncols))
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         if grad_req:
             dxmer = numpy.empty((dim, dim, ncols))
             for i in range(int(numpy.ceil(ncols / chunk))):
@@ -2221,7 +2223,7 @@ def mer2scrs(xmer: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
     if xmer.shape[1] != jd.shape[0]:
         raise 'number of columns in xmer should equal number of elements in jd.'
     xscrs = numpy.empty((dim, ncols))
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         if grad_req:
             dxscrs = numpy.empty((dim, dim, ncols))
             for i in range(int(numpy.ceil(ncols / chunk))):
@@ -2305,7 +2307,7 @@ def scrs2gcrs(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         raise 'xscrs should be a 6D vector or 6xn array of vectors.'
     if xscrs.shape[1] != jd.shape[0]:
         raise 'number of columns in xscrs should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xgcrs = FKIAMToolbox.transformations.kscrs2gcrs(xscrs, jd, dist_unit, vel_unit)
     if len(initial_xscrs_shape) == 1:
         return xgcrs[:, 0]
@@ -2377,7 +2379,7 @@ def gcrs2scrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         raise 'xgcrs should be a 6D vector or 6xn array of vectors.'
     if xgcrs.shape[1] != jd.shape[0]:
         raise 'number of columns in xgcrs should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xscrs = FKIAMToolbox.transformations.kgcrs2scrs(xgcrs, jd, dist_unit, vel_unit)
     if len(initial_xgcrs_shape) == 1:
         return xscrs[:, 0]
@@ -2449,7 +2451,7 @@ def hcrs2gcrs(xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         raise 'xhcrs should be a 6D vector or 6xn array of vectors.'
     if xhcrs.shape[1] != jd.shape[0]:
         raise 'number of columns in xhcrs should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xgcrs = FKIAMToolbox.transformations.khcrs2gcrs(xhcrs, jd, dist_unit, vel_unit)
     if len(initial_xhcrs_shape) == 1:
         return xgcrs[:, 0]
@@ -2521,7 +2523,7 @@ def gcrs2hcrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         raise 'xgcrs should be a 6D vector or 6xn array of vectors.'
     if xgcrs.shape[1] != jd.shape[0]:
         raise 'number of columns in xgcrs should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xhcrs = FKIAMToolbox.transformations.kgcrs2hcrs(xgcrs, jd, dist_unit, vel_unit)
     if len(initial_xgcrs_shape) == 1:
         return xhcrs[:, 0]
@@ -2579,7 +2581,7 @@ def scrs2sors(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         raise 'xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
     if xscrs.shape[1] != jd.shape[0]:
         raise 'number of columns in xscrs should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xsors, dxsors = FKIAMToolbox.transformations.kscrs2sors(xscrs, jd)
     if grad_req:
         if len(initial_xscrs_shape) == 1:
@@ -2643,7 +2645,7 @@ def sors2scrs(xsors: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         raise 'xsors should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
     if xsors.shape[1] != jd.shape[0]:
         raise 'number of columns in xsors should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xscrs, dxscrs = FKIAMToolbox.transformations.ksors2scrs(xsors, jd)
     if grad_req:
         if len(initial_xsors_shape) == 1:
@@ -2845,7 +2847,7 @@ def ine2rot_eph(xine: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
         raise 'xine should be a 6D vector or 6xn array of vectors.'
     if xine.shape[1] != jd.shape[0]:
         raise 'number of columns in xine should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xrot = FKIAMToolbox.transformations.kine2roteph(xine, jd, first_body, secondary_body, dist_unit, vel_unit)
     if len(initial_xine_shape) == 1:
         return xrot[:, 0]
@@ -2919,7 +2921,7 @@ def rot2ine_eph(xrot: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
         raise 'xrot should be a 6D vector or 6xn array of vectors.'
     if xrot.shape[1] != jd.shape[0]:
         raise 'number of columns in xrot should equal number of elements in jd.'
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         xine = FKIAMToolbox.transformations.krot2ineeph(xrot, jd, first_body, secondary_body, dist_unit, vel_unit)
     if len(initial_xrot_shape) == 1:
         return xine[:, 0]
@@ -2965,7 +2967,7 @@ def mer2lvlh(xmer: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
     if xmer.shape[0] not in [3, 6]:
         raise 'xmer should be a 3D or 6D vector or array of column 3D or 6D vectors'
 
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
 
         if xmer.shape == (3,):
             return FKIAMToolbox.transformations.kmer2lvlh(xmer, lat, lon)
@@ -3019,7 +3021,7 @@ def lvlh2mer(xlvlh: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
     if xlvlh.shape[0] not in [3, 6]:
         raise 'xlvlh should be a 3D or 6D vector or array of column 3D or 6D vectors'
 
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
 
         if xlvlh.shape == (3,):
             return FKIAMToolbox.transformations.klvlh2mer(xlvlh, lat, lon)
@@ -3538,7 +3540,7 @@ def nbp_rv_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data:
     ```
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         return FKIAMToolbox.equationsmodule.knbp_rv_earth(t, s)
 def nbp_rv_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) -> numpy.ndarray:
     """
@@ -3690,7 +3692,7 @@ def nbp_rv_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
 
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         return FKIAMToolbox.equationsmodule.knbp_rv_moon(t, s)
 def nbp_ee_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) -> numpy.ndarray:
     """
@@ -3868,7 +3870,7 @@ def nbp_ee_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data:
 
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         return FKIAMToolbox.equationsmodule.knbp_ee_earth(t, s)
 def nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) -> numpy.ndarray:
     """
@@ -4046,7 +4048,7 @@ def nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
 
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         return FKIAMToolbox.equationsmodule.knbp_ee_moon(t, s)
 def prepare_sources_dict() -> dict:
     """
@@ -4418,7 +4420,7 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
         variables = 'ee'
     sources_vec = _sources_dict_to_vec(sources_dict)
     dat_vec = _dat_dict_to_vec(dat_dict)
-    with _ephemeris_folder_contex():
+    with _package_folder_contex():
         t, y = FKIAMToolbox.propagationmodule.propagate_nbp(central_body.lower(), tspan, x0, sources_vec, dat_vec,
                                                             stm, variables, neq)
     return t, y
@@ -5314,7 +5316,7 @@ def _dat_dict_to_vec(dat_dict: dict) -> numpy.ndarray:
     dat_vec[2] = dat_dict['mass']
     dat_vec[3] = dat_dict['order']
     return dat_vec
-class _ephemeris_folder_contex:
+class _package_folder_contex:
     """
     FOR THE TOOLBOX DEVELOPERS ONLY.
     This contex is used within the "with" statement when calling to routines that use an ephemeris file.
