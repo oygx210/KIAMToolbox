@@ -1,51 +1,51 @@
-# KIAM Astrodynamics Toolbox
+# About
 
-KIAM Astrodynamics Toolbox - это библиотека, написанная на языках Fortran и Python в Институте прикладной математики им. М.В. Келдыша.
-Библиотека содержит астрономические постоянные, параметры небесных тел, правые части уравнений движения в различных моделях, методы интегрирования обыкновенных дифференциальных уравнений, функции преобразования переменных, систем координат и единиц измерения, а также высокоуровневый класс для проектирования траекторий.
+KIAM Astrodynamics Toolbox is an astrodynamical toolbox written in Fortran and Python in Keldysh Institute of Applied Mathematics, Moscow, Russia.
+The toolbox contains astronomical constants, physical parameters of celestial bodies, right-hand side of equations of motion in various models, methods for solving ODEs, routines for transformation variables, coordinate systems, and units.
+The toolbox also contains a high-level class for trajectory models.
 
-## О версиях
+## Versions
 
-Текущая версия: 1.4.
+Current version: 1.5.
 
-Следующая версия 1.5 выйдет 13.02.2023.
+The next version 2.0 will be released on 27.02.2023.
 
-## Содержимое библиотеки
+## The toolbox files
 
-Спустя какое-то время здесь появится справка по использованию библиотеки. Пока что примеры можно посмотреть в файле kiam_examples.py.
-Коротко опишу содержимое файлов:
+The main toolbox files are in the `kiam_astro` directory:
 
-- `FKIAMToolbox.cp39-win_amd64` – файл со скомпилированными с использованием F2PY на языке Fortran астродинамическими функциями. Предполагается, что пользователи не будут его изменять и импортировать в своих файлах.
+- `kiam.py ` is the main file containing the interface functions for accessing the fortran-compiled modules listed below.
 
-- `kiam.py` – основной файл, содержащий функции-интерфейсы для обращения к файлу выше, именно с ним предполагается основная работа пользователей. Таким образом, обращение к низкоуровневым функциям осуществляется через kiam.py, а не напрямую к FKIAMToolbox.cp39-win_amd64.
+- `FKIAMToolbox.cp39-win_amd64.pyd`, `FKIAMToolbox.cpython-39-darwin.so`, `FKIAMToolbox.cpython-39-x86_64-linux-gnu.so` are python modules containing compiled Fortran routines. It is assumed that users will not import or use these files directly.
 
-- `kiam_examples.py` – файл, который содержит несколько примеров использования библиотеки.
+- `trajectory.py ` is a high–level class for designing trajectories, it facilitates the propagation of trajectories, transformation of coordinate systems, variables, and units.
 
-- `Trajectory.py` – высокоуровневый класс для проектирования траекторий, он облегчает распространение траекторий, перевод между системами координат и замены переменных.
+- `JPLEPH` is a file with ephemerides of celestial bodies, used by functions in fortran-compiled modules, developed by NASA JPL. This file contains ephemeris D430, which can also be downloaded independently from the site https://ssd.jpl.nasa.gov /.
 
-- `JPLEPH` – файл с эфемеридами небесных тел, используется функциями из FKIAMToolbox.cp39-win_amd64, разработанные в NASA JPL. Это файл содержит эфемериды D430, которые можно также скачать самостоятельно с сайта https://ssd.jpl.nasa.gov/.
+- `dll files` are auxiliary files for the Fortran–Python interface from Intel(r) Visual Fortran Compiler, which can also be downloaded separately.
 
-- `dll-файлы` – вспомогательные файлы для работы Fortran-Python-интерфейса из Intel(r) Visual Fortran Compiler, которые также можно скачать отдельно.
+- `images` contains images used by the toolbox, e.g., the Earth's and Moon's surfaces.
 
-## Системные требования
+The `examples` directory contains some typical examples of using the toolbox.
 
-ОС Windows 10.
+## System requirements
 
-См. также файл `requirements.txt`, в котором перечислены пакеты-зависимости и их версии.
+Windows 10, python 3.9.
 
-## Информация и условия использования
+See `requirements.txt` for the dependencies.
 
-Справка по модулю kiam.py: https://shmaxg.github.io/KIAMToolbox/html/kiam.html
+## Information and terms of use
 
-Справка по модулю Trajectory: https://shmaxg.github.io/KIAMToolbox/html/Trajectory.html
+Reference on `kiam.py`: https://shmaxg.github.io/KIAMToolbox/html/kiam.html
 
-Библиотека активно разрабатывается и улучшается, в ближайший год-два возможно существенное изменение каких-то ее частей.
+Reference on `trajectory.py`: https://shmaxg.github.io/KIAMToolbox/html/Trajectory.html
 
-Библиотека свободна для использования (используется MIT License), единственное просьба - упоминать ее использование в благодарностях в научных трудах, например так:
+The library is being actively developed and improved, and some parts of it may change significantly in the next year or two.
 
-"Библиотека KIAM Astrodynamics Toolbox, Широбоков М.Г., MIT license, см. https://github.com/shmaxg/KIAMToolbox"
+The library is free for use (MIT License is used), the only request is to mention its use in acknowledgements in scientific papers, for example like this:
 
 "Package KIAM Astrodynamics Toolbox by Maksim Shirobokov, MIT license, see https://github.com/shmaxg/KIAMToolbox for details"
 
-В дальнейшем здесь появится ссылка на статью, описывающая библиотеку, на которую также можно ссылаться.
+In the future, a link to an article describing the toolbox will appear here, which can also be referenced.
 
-По различным вопросам можно обращаться к основному автору библиотеки Широбокову Максиму Геннадьевичу: shirobokov@keldysh.ru.
+For various questions, you can contact the main author of the library, Maksim Shirobokov: shirobokov@keldysh.ru.
