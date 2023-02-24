@@ -50,6 +50,8 @@ Reference on `kiam.py`: https://shmaxg.github.io/KIAMToolbox/html/kiam.html
 
 Reference on `trajectory.py`: https://shmaxg.github.io/KIAMToolbox/html/Trajectory.html
 
+See also the wiki page of the project on GitHub: https://github.com/shmaxg/KIAMToolbox/wiki
+
 The library is being actively developed and improved, and some parts of it may change significantly in the next year or two.
 
 The library is free for use (MIT License is used), the only request is to mention its use in acknowledgements in scientific papers, for example like this:
