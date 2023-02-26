@@ -3059,6 +3059,12 @@ def units(*args: str) -> dict:
 
     A dictionary containing the units of distance, velocity, and time.
 
+    DistUnit -- the unit of distance, km
+
+    VelUnit -- the unit of velocity, km/s
+
+    TimeUnit -- the unit of time, days
+
     Examples:
     ---------
     ```
