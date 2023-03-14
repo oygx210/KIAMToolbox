@@ -155,7 +155,11 @@ their characteristics.</p>
 <p><code>model</code> : dict</p>
 <p>The model used for trajectory propagation.</p>
 <p><code>parts</code> : list[int]</p>
-<p>The numbers of nodes between which the trajectory was sequentially propagated.</p>
+<p>The nodes between which the trajectory was sequentially propagated:</p>
+<p><code>tr.states[:, tr.parts[0]:tr.parts[1]+1]</code> &ndash; first part</p>
+<p><code>tr.states[:, tr.parts[1]:tr.parts[2]+1]</code> &ndash; second part</p>
+<p><code>tr.states[:, tr.parts[2]:tr.parts[3]+1]</code> &ndash; third part</p>
+<p>etc.</p>
 <p><code>states</code> : numpy.array, shape(m,n)</p>
 <p>Phase vectors along the trajectory.</p>
 <p><code>system</code> : str</p>
@@ -190,6 +194,13 @@ their characteristics.</p>
 <p>'scrs', 'mer', 'sors', 'ssrm_em' (the Moon-centered systems)</p>
 <p>'gcrs', 'itrs', 'gsrf_em', 'gsrf_se' (the Earth-centered systems)</p>
 <p>'hcrs', 'hsrf_se' (the Sun-centered systems)</p>
+<p>'mercrs', 'mersrf_smer' (the Mercury-centered systems)</p>
+<p>'vcrs', 'vsrf_sv' (the Venus-centered systems)</p>
+<p>'mcrs', 'msrf_sm' (the Mars-centered systems)</p>
+<p>'jcrs', 'jsrf_sj' (the Jupiter-centered systems)</p>
+<p>'satcrs', 'satsrf_ssat' (the Saturn-centered systems)</p>
+<p>'ucrs', 'usrf_su' (the Uranus-centered systems)</p>
+<p>'ncrs', 'nsrf_sn' (the Neptune-centered systems)</p>
 <p>'ine_fb' (non-rotating frame in CR3BP, BR4BP at first primary)</p>
 <p>'ine_cm' (non-rotating frame in CR3BP, BR4BP at barycenter)</p>
 <p>'ine_sb' (non-rotating frame in CR3BP, BR4BP, Hill at secondary primary)</p>
@@ -256,10 +267,16 @@ the specified variables.</p></div>
 <div class="desc"><p>Clears states, times, julian dates, parts, and resets the final date.</p></div>
 </dd>
 <dt id="trajectory.Trajectory.copy"><code class="name flex">
-<span>def <span class="ident">copy</span></span>(<span>self)</span>
+<span>def <span class="ident">copy</span></span>(<span>self, forced: bool = False)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns independent copy of the trajectory object.</p></div>
+<div class="desc"><p>Returns independent copy of the trajectory object.</p>
+<h2 id="parameters">Parameters:</h2>
+<p>forced : bool</p>
+<p>If False (default), raise exception if model['control'] is not None. Do not make copy.</p>
+<p>If True (default), erase funtion handle in model['control'] and make copy.</p>
+<h2 id="returns">Returns:</h2>
+<p>If successfull, the deep copy of the Trajectory object is returned.</p></div>
 </dd>
 <dt id="trajectory.Trajectory.propagate"><code class="name flex">
 <span>def <span class="ident">propagate</span></span>(<span>self, tof: float, npoints: int = 2) ‑> None</span>
@@ -372,9 +389,10 @@ It also initializes tr.model['data'] property.</p>
 <p>Options:</p>
 <ol>
 <li>
-<p>'xy', '3d' if self.vars in ['rv', 'rvm', 'rv_stm']</p>
+<p>'xy', '3d', 'r' if self.vars in ['rv', 'rvm', 'rv_stm']</p>
 <p>'xy' plots the trajectory in x-y axes.</p>
 <p>'3d' plots the trajectory in 3d.</p>
+<p>'r' plots the distance to the origin of the coordinate system.</p>
 </li>
 <li>
 <p>'a', 'e', 'inc', 'Om', 'w', 'th' if self.vars in ['oe', 'oem', 'oe_stm']</p>

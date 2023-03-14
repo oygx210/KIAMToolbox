@@ -87,6 +87,51 @@ planet['Earth']['GM']  # Gravitational parameter of the Earth
 planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
 </code></pre></div>
 </dd>
+<dt id="kiam.b1crs2b2crs"><code class="name flex">
+<span>def <span class="ident">b1crs2b2crs</span></span>(<span>body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Translate phase vectors from one CRS c/s to other CRS c/s.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>body1</code> : str</p>
+<p>The name of the first body.</p>
+<p><code>body2</code> : str</p>
+<p>The name of the second (target) body.</p>
+<p><code>xb1crs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the CRS coordinate system of body1.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz]</p>
+<p><code>jd</code> : float, numpy.ndarray, shape (n,)</p>
+<p>Julian dates corresponding to columns in xb1crs</p>
+<p><code>dist_unit</code> : float</p>
+<p>The unit of distance in km</p>
+<p><code>vel_unit</code> : float</p>
+<p>The unit of velocity in km/s</p>
+<h2 id="returns">Returns:</h2>
+<p><code>xb2crs</code> : numpy.ndarray, shape (6,), (6,n)</p>
+<p>6D vector or array of 6D column phase vectors in the CRS coordinate system of body2.</p>
+<p>Vector structure: [x, y, z, vx, vy, vz].</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>Example 1 (6D -&gt; 6D):
+
+ku = kiam.units('sun', 'mars')
+
+xb1crs = numpy.array([1, 0, 0, 0, 1, 0])  # wrt the Sun
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
+
+Example 2 (6x1 -&gt; 6x1)
+
+ku = kiam.units('sun', 'mars')
+
+xb1crs = numpy.array([[1, 0, 0, 0, 1, 0]]).T  # wrt the Sun
+
+jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
+</code></pre></div>
+</dd>
 <dt id="kiam.body_surface"><code class="name flex">
 <span>def <span class="ident">body_surface</span></span>(<span>body: str, radius: float = 1.0, quality: str = 'medium')</span>
 </code></dt>
@@ -1372,6 +1417,114 @@ dsdt = kiam.nbp_ee_moon(t, s, stm_req, sources, data, units_data)
 [0. 0. 0. 0. 0. 1.]
 </code></pre></div>
 </dd>
+<dt id="kiam.nbp_rv_body"><code class="name flex">
+<span>def <span class="ident">nbp_rv_body</span></span>(<span>body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the specified body (except Earth and Moon) in terms of
+the position and velocity variables.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>body</code> : str</p>
+<p>The body wrt that the right-hand side of the equations of motion is calculated.</p>
+<p>Options: <code>Sun</code>, <code>Mercury</code>, <code>Venus</code>, <code>Mars</code>, <code>Jupiter</code>, <code>Saturn</code>, <code>Uranus</code>, <code>Neptune</code></p>
+<p><code>t</code> : float</p>
+<p>Time</p>
+<p><code>s</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Phase state vector containing position and velocity and (if stm_req = True)
+vectorized state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[x, y, z, vx, vy, vz] if stm_req = False</p>
+<p>[x, y, z, vx, vy, vz, m11, m21, m31, &hellip;] if stm_req = True</p>
+<p><code>stm_req</code> : bool</p>
+<p>Flag to calculate the derivative of the state-transition matrix</p>
+<p><code>sources</code> : dict</p>
+<p>Dictionary that contains the perturbations that should be accounted.</p>
+<p>The dictionary keys:</p>
+<p>'srp'
+(Solar radiation pressure)</p>
+<p>'sun'
+(Gravitational acceleration of the Sun)</p>
+<p>'mercury'
+(Gravitational acceleration of Mercury)</p>
+<p>'venus'
+(Gravitational acceleration of Venus)</p>
+<p>'earth'
+(Gravitational acceleration of the Earth)</p>
+<p>'mars'
+(Gravitational acceleration of Mars)</p>
+<p>'jupiter'
+(Gravitational acceleration of Jupiter)</p>
+<p>'saturn'
+(Gravitational acceleration of Saturn)</p>
+<p>'uranus'
+(Gravitational acceleration of Uranus)</p>
+<p>'neptune'
+(Gravitational acceleration of Neptune)</p>
+<p>If sources[key] = True, the corresponding perturbation will be accounted.</p>
+<p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
+<p>The sources dictionary with all False values can be created by
+the kiam.prepare_sources_dict() function.</p>
+<p><code>data</code> : dict</p>
+<p>A dictionary that contains auxilary data.</p>
+<p>The dictionary keys:</p>
+<p>'jd_zero' (Julian date that corresponds to t = 0)</p>
+<p>'order'
+(Order of the lunar complex gravitational field)</p>
+<p>'area'
+(Area of the spacecraft to account in atmospheric drag and SRP, m^2)</p>
+<p>'mass'
+(Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
+<p>The data should be submitted even if the corresponding perturbations
+are not accounted.</p>
+<p><code>units_data</code> : dict</p>
+<p>A dictionary that contains the units.</p>
+<p>The dictionary keys:</p>
+<p>'DistUnit' (The unit of distance in km)</p>
+<p>'VelUnit'
+(The unit of velocity in km/s)</p>
+<p>'TimeUnit' (The unit of time in days)</p>
+<p>'AccUnit'
+(The unit of acceleration in m/s^2)</p>
+<p>'RSun'
+(The radius of the Sun in the units of distance)</p>
+<p>'REarth'
+(The radius of the Earth in the units of distance)</p>
+<p>'RMoon'
+(The radius of the Moon in the units of distance)</p>
+<p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
+<p>The gravitational parameter in the specified units should be 1.0.</p>
+<h2 id="returns">Returns:</h2>
+<p><code>f</code> : numpy.ndarray, shape (6,), (42,)</p>
+<p>Gravitational acceleration according to the specified n-body problem equations
+of motion extended (if stm_req = True) by the derivative of the
+state-transition matrix.</p>
+<p>Vector structure:</p>
+<p>[fx, fy, fz, fvx, fvy, fvz] if stm_req = False</p>
+<p>[fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, &hellip; ] if stm_req = True</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>t = 0.0
+
+s = numpy.array([1, 0, 0, 0, 1, 0])
+
+stm_req = False
+
+sources = kiam.prepare_sources_dict()
+
+data = kiam.prepare_data_dict()
+
+data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
+
+data['area'] = 1.0
+
+data['mass'] = 100.0
+
+units_data = kiam.prepare_units_dict('moon')
+
+dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
+
+[ 0.  1.  0. -1. -0. -0.]
+</code></pre></div>
+</dd>
 <dt id="kiam.nbp_rv_earth"><code class="name flex">
 <span>def <span class="ident">nbp_rv_earth</span></span>(<span>t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
 </code></dt>
@@ -2022,7 +2175,7 @@ t, y = kiam.propagate_hill(tspan, x0)
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_nbp"><code class="name flex">
-<span>def <span class="ident">propagate_nbp</span></span>(<span>central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, sources_dict: dict, dat_dict: dict, stm: bool, variables: str) ‑> tuple</span>
+<span>def <span class="ident">propagate_nbp</span></span>(<span>central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, sources_dict: dict, dat_dict: dict, units_dict: dict, stm: bool, variables: str, control_function: Callable = None) ‑> tuple</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Propagate trajectory in the n-body model of motion.</p>
@@ -2089,7 +2242,7 @@ t, y = kiam.propagate_hill(tspan, x0)
 <p>If sources[key] = False, the corresponding perturbation will not be accounted.</p>
 <p>The sources dictionary with all False values can be created by
 the kiam.prepare_sources_dict() function.</p>
-<p><code>dat_dict</code>: dict</p>
+<p><code>dat_dict</code> : dict</p>
 <p>A dictionary that contains auxilary data.</p>
 <p>The dictionary keys:</p>
 <p>'jd_zero' (Julian date that corresponds to t = 0)</p>
@@ -2101,12 +2254,20 @@ the kiam.prepare_sources_dict() function.</p>
 (Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
 <p>The data should be submitted even if the corresponding perturbations
 are not accounted.</p>
+<p>'units_dict' : dict</p>
+<p>A dictionary that contains the units of distance, velocity, time, acceleration, and the gravitational parameters of the bodies.</p>
+<p>This variable can be generated by kiam.prepare_units_dict function.</p>
 <p><code>stm</code>: bool</p>
 <p>Flag to calculate the derivative of the state-transition matrix</p>
 <p><code>variables</code>: str</p>
 <p>Type of variables used to propagate the trajectory.</p>
 <p>If stm = False, then variables should be 'rv' or 'ee'.</p>
 <p>If stm = True, then variables should be 'rv_stm' or 'ee_stm'.</p>
+<p><code>control_function</code> : Callable</p>
+<p>The control function that returns force vector, specific impulse and (if stm is True) force vector time derivative,</p>
+<p>force vector state derivative, specific impulce time derivative, specific impulse state derivative. The control function</p>
+<p>should take two arguments: the time and the phase state that corresponds to <code>variables</code>.</p>
+<p>None by default.</p>
 <h2 id="returns">Returns:</h2>
 <p><code>t</code> : numpy.ndarray, shape(n,)</p>
 <p>Times (nodes) in tspan at which the solution is obtained</p>
@@ -2142,11 +2303,13 @@ sources_dict = kiam.prepare_sources_dict()
 
 dat_dict = kiam.prepare_data_dict()
 
+units_dict = kiam.prepare_units_dict('earth')
+
 stm = False
 
 variables = 'rv'
 
-t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variables)
+t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, units_dict, stm, variables)
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_r2bp"><code class="name flex">
@@ -2827,7 +2990,7 @@ z = r*sin(theta)
 <span>def <span class="ident">units</span></span>(<span>*args: str) ‑> dict</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Get units of distance, velocity, and time.</p>
+<div class="desc"><p>Get units of distance, velocity, time, and gravitational parameters.</p>
 <h2 id="parameters">Parameters:</h2>
 <p><code>*args</code></p>
 <p>Name or a pair of names of a celestial bodies</p>
@@ -2837,9 +3000,21 @@ z = r*sin(theta)
 <h2 id="returns">Returns:</h2>
 <p><code>units_dict</code> : dict</p>
 <p>A dictionary containing the units of distance, velocity, and time.</p>
-<p>DistUnit &ndash; the unit of distance, km</p>
-<p>VelUnit &ndash; the unit of velocity, km/s</p>
-<p>TimeUnit &ndash; the unit of time, days</p>
+<p><code>'DistUnit'</code> &ndash; the unit of distance, km</p>
+<p><code>'VelUnit'</code> &ndash; the unit of velocity, km/s</p>
+<p><code>'TimeUnit'</code> &ndash; the unit of time, days</p>
+<p><code>'AccUnit'</code> &ndash; the unit of acceleration, m/s^2</p>
+<p><code>'SunGM'</code> &ndash; the nondimensional gravitational parameter of the Sun</p>
+<p><code>'MercuryGM'</code> &ndash; the nondimensional gravitational parameter of Mercury</p>
+<p><code>'VenusGM'</code> &ndash; the nondimensional gravitational parameter of Venus</p>
+<p><code>'EarthGM'</code> &ndash; the nondimensional gravitational parameter of the Earth</p>
+<p><code>'MoonGM'</code> &ndash; the nondimensional gravitational parameter of the Moon</p>
+<p><code>'EarthMoonGM'</code> &ndash; the nondimensional gravitational parameter of the Earth+Moon system</p>
+<p><code>'MarsGM'</code> &ndash; the nondimensional gravitational parameter of Mars</p>
+<p><code>'JupiterGM'</code> &ndash; the nondimensional gravitational parameter of Jupiter</p>
+<p><code>'SaturnGM'</code> &ndash; the nondimensional gravitational parameter of Saturn</p>
+<p><code>'UranusGM'</code> &ndash; the nondimensional gravitational parameter of Uranus</p>
+<p><code>'NeptuneGM'</code> &ndash; the nondimensional gravitational parameter of Neptune</p>
 <h2 id="examples">Examples:</h2>
 <pre><code>un = kiam.units('earth')
 
@@ -2886,6 +3061,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="kiam.astro_const" href="#kiam.astro_const">astro_const</a></code></li>
+<li><code><a title="kiam.b1crs2b2crs" href="#kiam.b1crs2b2crs">b1crs2b2crs</a></code></li>
 <li><code><a title="kiam.body_surface" href="#kiam.body_surface">body_surface</a></code></li>
 <li><code><a title="kiam.box_plot" href="#kiam.box_plot">box_plot</a></code></li>
 <li><code><a title="kiam.cart2latlon" href="#kiam.cart2latlon">cart2latlon</a></code></li>
@@ -2927,6 +3103,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><code><a title="kiam.mer2scrs" href="#kiam.mer2scrs">mer2scrs</a></code></li>
 <li><code><a title="kiam.nbp_ee_earth" href="#kiam.nbp_ee_earth">nbp_ee_earth</a></code></li>
 <li><code><a title="kiam.nbp_ee_moon" href="#kiam.nbp_ee_moon">nbp_ee_moon</a></code></li>
+<li><code><a title="kiam.nbp_rv_body" href="#kiam.nbp_rv_body">nbp_rv_body</a></code></li>
 <li><code><a title="kiam.nbp_rv_earth" href="#kiam.nbp_rv_earth">nbp_rv_earth</a></code></li>
 <li><code><a title="kiam.nbp_rv_moon" href="#kiam.nbp_rv_moon">nbp_rv_moon</a></code></li>
 <li><code><a title="kiam.oe2rv" href="#kiam.oe2rv">oe2rv</a></code></li>

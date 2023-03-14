@@ -28,7 +28,7 @@ import numpy
 import plotly
 import plotly.graph_objects as go
 import pickle
-from typing import Union, Any
+from typing import Union, Any, Callable
 from PIL import Image
 
 
@@ -2911,6 +2911,10 @@ def rot2ine_eph(xrot: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
     xine = kiam.ine2rot_eph(xrot, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
     ```
     """
+    first_body = first_body.capitalize()
+    secondary_body = secondary_body.capitalize()
+    if first_body == secondary_body:
+        raise 'Bodies should be different.'
     initial_xrot_shape = xrot.shape
     if len(initial_xrot_shape) == 1:
         xrot = numpy.reshape(xrot, (xrot.shape[0], 1))
@@ -3036,11 +3040,91 @@ def lvlh2mer(xlvlh: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
             FKIAMToolbox.transformations.xlvlh_mat = xlvlh
             FKIAMToolbox.transformations.klvlh2mer_mat(lat, lon)
             return FKIAMToolbox.transformations.xmer_mat
+def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) -> numpy.ndarray:
+    """
+    Translate phase vectors from one CRS c/s to other CRS c/s.
+
+    Parameters:
+    -----------
+    `body1` : str
+
+    The name of the first body.
+
+    `body2` : str
+
+    The name of the second (target) body.
+
+    `xb1crs` : numpy.ndarray, shape (6,), (6,n)
+
+    6D vector or array of 6D column phase vectors in the CRS coordinate system of body1.
+
+    Vector structure: [x, y, z, vx, vy, vz]
+
+    `jd` : float, numpy.ndarray, shape (n,)
+
+    Julian dates corresponding to columns in xb1crs
+
+    `dist_unit` : float
+
+    The unit of distance in km
+
+    `vel_unit` : float
+
+    The unit of velocity in km/s
+
+    Returns:
+    --------
+    `xb2crs` : numpy.ndarray, shape (6,), (6,n)
+
+    6D vector or array of 6D column phase vectors in the CRS coordinate system of body2.
+
+    Vector structure: [x, y, z, vx, vy, vz].
+
+    Examples:
+    ---------
+    ```
+    Example 1 (6D -> 6D):
+
+    ku = kiam.units('sun', 'mars')
+
+    xb1crs = numpy.array([1, 0, 0, 0, 1, 0])  # wrt the Sun
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
+
+    Example 2 (6x1 -> 6x1)
+
+    ku = kiam.units('sun', 'mars')
+
+    xb1crs = numpy.array([[1, 0, 0, 0, 1, 0]]).T  # wrt the Sun
+
+    jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
+
+    xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
+    ```
+    """
+    initial_xb1crs_shape = xb1crs.shape
+    if len(initial_xb1crs_shape) == 1:
+        xb1crs = numpy.reshape(xb1crs, (xb1crs.shape[0], 1))
+    if type(jd) == float or jd.shape == ():
+        jd = numpy.reshape(jd, (1,))
+    dim = xb1crs.shape[0]
+    if dim != 6:
+        raise 'xb1crs should be a 6D vector or 6xn array of vectors.'
+    if xb1crs.shape[1] != jd.shape[0]:
+        raise 'number of columns in xb1crs should equal number of elements in jd.'
+    with _package_folder_contex():
+        xb2crs = FKIAMToolbox.transformations.kb1crs2b2crs(body1.capitalize(), body2.capitalize(), xb1crs, jd, dist_unit, vel_unit)
+    if len(initial_xb1crs_shape) == 1:
+        return xb2crs[:, 0]
+    else:
+        return xb2crs
 
 # Units and constants (documented with examples)
 def units(*args: str) -> dict:
     """
-    Get units of distance, velocity, and time.
+    Get units of distance, velocity, time, and gravitational parameters.
 
     Parameters:
     -----------
@@ -3059,11 +3143,35 @@ def units(*args: str) -> dict:
 
     A dictionary containing the units of distance, velocity, and time.
 
-    DistUnit -- the unit of distance, km
+    `'DistUnit'` -- the unit of distance, km
 
-    VelUnit -- the unit of velocity, km/s
+    `'VelUnit'` -- the unit of velocity, km/s
 
-    TimeUnit -- the unit of time, days
+    `'TimeUnit'` -- the unit of time, days
+
+    `'AccUnit'` -- the unit of acceleration, m/s^2
+
+    `'SunGM'` -- the nondimensional gravitational parameter of the Sun
+
+    `'MercuryGM'` -- the nondimensional gravitational parameter of Mercury
+
+    `'VenusGM'` -- the nondimensional gravitational parameter of Venus
+
+    `'EarthGM'` -- the nondimensional gravitational parameter of the Earth
+
+    `'MoonGM'` -- the nondimensional gravitational parameter of the Moon
+
+    `'EarthMoonGM'` -- the nondimensional gravitational parameter of the Earth+Moon system
+
+    `'MarsGM'` -- the nondimensional gravitational parameter of Mars
+
+    `'JupiterGM'` -- the nondimensional gravitational parameter of Jupiter
+
+    `'SaturnGM'` -- the nondimensional gravitational parameter of Saturn
+
+    `'UranusGM'` -- the nondimensional gravitational parameter of Uranus
+
+    `'NeptuneGM'` -- the nondimensional gravitational parameter of Neptune
 
     Examples:
     ---------
@@ -3095,6 +3203,17 @@ def units(*args: str) -> dict:
         units_info['AccUnit'] = output[5]
     else:
         raise Exception('Wrong number of arguments in units.')
+    units_info['SunGM'] = FKIAMToolbox.constantsandunits.sun_gm / units_info['GM']
+    units_info['MercuryGM'] = FKIAMToolbox.constantsandunits.mercury_gm / units_info['GM']
+    units_info['VenusGM'] = FKIAMToolbox.constantsandunits.venus_gm / units_info['GM']
+    units_info['EarthGM'] = FKIAMToolbox.constantsandunits.earth_gm / units_info['GM']
+    units_info['MoonGM'] = FKIAMToolbox.constantsandunits.moon_gm / units_info['GM']
+    units_info['EarthMoonGM'] = units_info['EarthGM'] + units_info['MoonGM']
+    units_info['MarsGM'] = FKIAMToolbox.constantsandunits.mars_gm / units_info['GM']
+    units_info['JupiterGM'] = FKIAMToolbox.constantsandunits.jupiter_gm / units_info['GM']
+    units_info['SaturnGM'] = FKIAMToolbox.constantsandunits.saturn_gm / units_info['GM']
+    units_info['UranusGM'] = FKIAMToolbox.constantsandunits.uranus_gm / units_info['GM']
+    units_info['NeptuneGM'] = FKIAMToolbox.constantsandunits.neptune_gm / units_info['GM']
     return units_info
 def astro_const() -> tuple[dict, dict, dict, dict, dict]:
     """
@@ -4056,6 +4175,156 @@ def nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
     _set_nbp_parameters(stm_req, sources, data, units_data)
     with _package_folder_contex():
         return FKIAMToolbox.equationsmodule.knbp_ee_moon(t, s)
+def nbp_rv_body(body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) -> numpy.ndarray:
+    """
+    Right-hand side of the n-body problem equations of motion wrt the specified body (except Earth and Moon) in terms of
+    the position and velocity variables.
+
+    Parameters:
+    -----------
+    `body` : str
+
+    The body wrt that the right-hand side of the equations of motion is calculated.
+
+    Options: `Sun`, `Mercury`, `Venus`, `Mars`, `Jupiter`, `Saturn`, `Uranus`, `Neptune`
+
+    `t` : float
+
+    Time
+
+    `s` : numpy.ndarray, shape (6,), (42,)
+
+    Phase state vector containing position and velocity and (if stm_req = True)
+    vectorized state-transition matrix.
+
+    Vector structure:
+
+    [x, y, z, vx, vy, vz] if stm_req = False
+
+    [x, y, z, vx, vy, vz, m11, m21, m31, ...] if stm_req = True
+
+    `stm_req` : bool
+
+    Flag to calculate the derivative of the state-transition matrix
+
+    `sources` : dict
+
+    Dictionary that contains the perturbations that should be accounted.
+
+    The dictionary keys:
+
+    'srp'       (Solar radiation pressure)
+
+    'sun'       (Gravitational acceleration of the Sun)
+
+    'mercury'   (Gravitational acceleration of Mercury)
+
+    'venus'     (Gravitational acceleration of Venus)
+
+    'earth'     (Gravitational acceleration of the Earth)
+
+    'mars'      (Gravitational acceleration of Mars)
+
+    'jupiter'   (Gravitational acceleration of Jupiter)
+
+    'saturn'    (Gravitational acceleration of Saturn)
+
+    'uranus'    (Gravitational acceleration of Uranus)
+
+    'neptune'   (Gravitational acceleration of Neptune)
+
+    If sources[key] = True, the corresponding perturbation will be accounted.
+
+    If sources[key] = False, the corresponding perturbation will not be accounted.
+
+    The sources dictionary with all False values can be created by
+    the kiam.prepare_sources_dict() function.
+
+    `data` : dict
+
+    A dictionary that contains auxilary data.
+
+    The dictionary keys:
+
+    'jd_zero' (Julian date that corresponds to t = 0)
+
+    'order'   (Order of the lunar complex gravitational field)
+
+    'area'    (Area of the spacecraft to account in atmospheric drag and SRP, m^2)
+
+    'mass'    (Mass of the spacecraft to account in atmospheric drag and SRP, kg)
+
+    The data should be submitted even if the corresponding perturbations
+    are not accounted.
+
+    `units_data` : dict
+
+    A dictionary that contains the units.
+
+    The dictionary keys:
+
+    'DistUnit' (The unit of distance in km)
+
+    'VelUnit'  (The unit of velocity in km/s)
+
+    'TimeUnit' (The unit of time in days)
+
+    'AccUnit'  (The unit of acceleration in m/s^2)
+
+    'RSun'     (The radius of the Sun in the units of distance)
+
+    'REarth'   (The radius of the Earth in the units of distance)
+
+    'RMoon'    (The radius of the Moon in the units of distance)
+
+    The units dictionary can be created by the kiam.prepare_units_dict() function.
+
+    The gravitational parameter in the specified units should be 1.0.
+
+    Returns:
+    --------
+    `f` : numpy.ndarray, shape (6,), (42,)
+
+    Gravitational acceleration according to the specified n-body problem equations
+    of motion extended (if stm_req = True) by the derivative of the
+    state-transition matrix.
+
+    Vector structure:
+
+    [fx, fy, fz, fvx, fvy, fvz] if stm_req = False
+
+    [fx, fy, fz, fvx, fvy, fvz, fm11, fm21, fm31, ... ] if stm_req = True
+
+    Examples:
+    ---------
+    ```
+    t = 0.0
+
+    s = numpy.array([1, 0, 0, 0, 1, 0])
+
+    stm_req = False
+
+    sources = kiam.prepare_sources_dict()
+
+    data = kiam.prepare_data_dict()
+
+    data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
+
+    data['area'] = 1.0
+
+    data['mass'] = 100.0
+
+    units_data = kiam.prepare_units_dict('moon')
+
+    dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
+
+    [ 0.  1.  0. -1. -0. -0.]
+    ```
+
+    """
+    _set_nbp_parameters(stm_req, sources, data, units_data)
+    with _package_folder_contex():
+        return FKIAMToolbox.equationsmodule.knbp_rv_body(t, s)
 def prepare_sources_dict() -> dict:
     """
     Auxilary function that returns a dictionary of perturbations.
@@ -4204,7 +4473,7 @@ def prepare_units_dict(units_name: str) -> dict:
     if units_name == 'dim':
         return units_data
 
-    if units_name in ['earth', 'moon']:
+    if units_name in ['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']:
         ku = units(units_name)
         units_data['DistUnit'] = ku['DistUnit']
         units_data['VelUnit'] = ku['VelUnit']
@@ -4213,12 +4482,22 @@ def prepare_units_dict(units_name: str) -> dict:
         units_data['RSun'] = RSun_km / ku['DistUnit']
         units_data['REarth'] = REarth_km / ku['DistUnit']
         units_data['RMoon'] = RMoon_km / ku['DistUnit']
+        units_data['SunGM'] = ku['SunGM']
+        units_data['MercuryGM'] = ku['MercuryGM']
+        units_data['VenusGM'] = ku['VenusGM']
+        units_data['EarthGM'] = ku['EarthGM']
+        units_data['MoonGM'] = ku['MoonGM']
+        units_data['MarsGM'] = ku['MarsGM']
+        units_data['JupiterGM'] = ku['JupiterGM']
+        units_data['SaturnGM'] = ku['SaturnGM']
+        units_data['UranusGM'] = ku['UranusGM']
+        units_data['NeptuneGM'] = ku['NeptuneGM']
         return units_data
 
     raise 'Unknown units_name.'
 
 # Propagation routines (documented with examples)
-def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, sources_dict: dict, dat_dict: dict, stm: bool, variables: str) -> tuple[numpy.ndarray, numpy.ndarray]:
+def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, sources_dict: dict, dat_dict: dict, units_dict: dict, stm: bool, variables: str, control_function: Callable = None) -> tuple[numpy.ndarray, numpy.ndarray]:
     """
     Propagate trajectory in the n-body model of motion.
 
@@ -4322,7 +4601,7 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
     The sources dictionary with all False values can be created by
     the kiam.prepare_sources_dict() function.
 
-    `dat_dict`: dict
+    `dat_dict` : dict
 
     A dictionary that contains auxilary data.
 
@@ -4339,6 +4618,12 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
     The data should be submitted even if the corresponding perturbations
     are not accounted.
 
+    'units_dict' : dict
+
+    A dictionary that contains the units of distance, velocity, time, acceleration, and the gravitational parameters of the bodies.
+
+    This variable can be generated by kiam.prepare_units_dict function.
+
     `stm`: bool
 
     Flag to calculate the derivative of the state-transition matrix
@@ -4350,6 +4635,16 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
     If stm = False, then variables should be 'rv' or 'ee'.
 
     If stm = True, then variables should be 'rv_stm' or 'ee_stm'.
+
+    `control_function` : Callable
+
+    The control function that returns force vector, specific impulse and (if stm is True) force vector time derivative,
+
+    force vector state derivative, specific impulce time derivative, specific impulse state derivative. The control function
+
+    should take two arguments: the time and the phase state that corresponds to `variables`.
+
+    None by default.
 
     Returns:
     --------
@@ -4411,25 +4706,60 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
 
     dat_dict = kiam.prepare_data_dict()
 
+    units_dict = kiam.prepare_units_dict('earth')
+
     stm = False
 
     variables = 'rv'
 
-    t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, stm, variables)
+    t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, units_dict, stm, variables)
     ```
     """
     tspan, x0 = to_float(tspan, x0)
-    neq = 42 if stm else 6
+    neq = x0.shape[0]
     if variables == 'rv_stm':
         variables = 'rv'
     elif variables == 'ee_stm':
         variables = 'ee'
-    sources_vec = _sources_dict_to_vec(sources_dict)
-    dat_vec = _dat_dict_to_vec(dat_dict)
-    with _package_folder_contex():
-        t, y = FKIAMToolbox.propagationmodule.propagate_nbp(central_body.lower(), tspan, x0, sources_vec, dat_vec,
-                                                            stm, variables, neq)
-    return t, y
+    _set_nbp_parameters(stm, sources_dict, dat_dict, units_dict)
+
+    if control_function is None:
+
+        if variables == 'rvm':
+
+            raise Exception('If not control_function is specified, use rv variables instead of rvm.')
+
+        with _package_folder_contex():
+            T, Y = FKIAMToolbox.propagationmodule.propagate_nbp(central_body.capitalize(), tspan, x0, variables, neq)
+
+    else:
+
+        if variables != 'rvm':
+
+            raise Exception('Propagation with control_function is implemented only for rvm variables.')
+
+        if not stm:
+
+            def control(t, x):  # может быть сделать external на уровне module, а не function?
+                force_vector, specific_impulse = control_function(t, x)  # control_function(t, x)
+                FKIAMToolbox.equationsmodule.force_vector = force_vector
+                FKIAMToolbox.equationsmodule.specific_impulse = specific_impulse
+
+        else:
+
+            def control(t, x):  # может быть сделать external на уровне module, а не function?
+                force_vector, specific_impulse, dFdt, dFdx, dIdt, dIdx = control_function(t, x)  # control_function(t, x)
+                FKIAMToolbox.equationsmodule.force_vector = force_vector
+                FKIAMToolbox.equationsmodule.specific_impulse = specific_impulse
+                FKIAMToolbox.equationsmodule.force_vector_time_derivative = dFdt
+                FKIAMToolbox.equationsmodule.force_vector_state_derivative = dFdx
+                FKIAMToolbox.equationsmodule.specific_impulse_time_derivative = dIdt
+                FKIAMToolbox.equationsmodule.specific_impulse_state_derivative = dIdx
+
+        with _package_folder_contex():
+            T, Y = FKIAMToolbox.propagationmodule.propagate_nbp_control(central_body.capitalize(), tspan, x0, variables, neq, control)
+
+    return T, Y
 def propagate_r2bp(tspan: numpy.ndarray, x0: numpy.ndarray) -> tuple[numpy.ndarray, numpy.ndarray]:
     """
     Propagate trajectory in the two-body model of motion.
@@ -5178,6 +5508,20 @@ def _set_nbp_parameters(stm_req: bool, sources: dict, data: dict, units_data: di
     FKIAMToolbox.equationsmodule.rsun = units_data['RSun']
     FKIAMToolbox.equationsmodule.rearth = units_data['REarth']
     FKIAMToolbox.equationsmodule.rmoon = units_data['RMoon']
+
+    FKIAMToolbox.equationsmodule.musun = units_data['SunGM']
+    FKIAMToolbox.equationsmodule.mumercury = units_data['MercuryGM']
+    FKIAMToolbox.equationsmodule.muvenus = units_data['VenusGM']
+    FKIAMToolbox.equationsmodule.muearth = units_data['EarthGM']
+    FKIAMToolbox.equationsmodule.momoon = units_data['MoonGM']
+    FKIAMToolbox.equationsmodule.mumars = units_data['MarsGM']
+    FKIAMToolbox.equationsmodule.mujupiter = units_data['JupiterGM']
+    FKIAMToolbox.equationsmodule.musaturn = units_data['SaturnGM']
+    FKIAMToolbox.equationsmodule.muuranus = units_data['UranusGM']
+    FKIAMToolbox.equationsmodule.muneptune = units_data['NeptuneGM']
+
+    FKIAMToolbox.equationsmodule.g0 = 9.80665 / units_data['AccUnit']
+
 def _return_if_grad_req(out: tuple[numpy.ndarray, numpy.ndarray], grad_req: bool) -> Union[tuple[numpy.ndarray, numpy.ndarray], numpy.ndarray]:
     """
     FOR THE TOOLBOX DEVELOPERS ONLY.
