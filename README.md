@@ -14,7 +14,7 @@ One can also download the toolbox using the Releases section on the right.
 
 Current version: 2.0
 
-The next version 2.1 will be released on Mar 20, 2023.
+The next version 3.0 will be released on Mar 20, 2023.
 
 ## The toolbox files
 
