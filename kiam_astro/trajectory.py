@@ -670,6 +670,8 @@ class Trajectory:
 
             'r' plots the distance to the origin of the coordinate system.
 
+            'm' plots the mass of the spacecraft (if self.vars == 'rvm').
+
         2. 'a', 'e', 'inc', 'Om', 'w', 'th' if self.vars in ['oe', 'oem', 'oe_stm']
 
             'a' plots the semi-major axis wrt time
@@ -684,6 +686,8 @@ class Trajectory:
 
             'th' plots the true anomaly wrt time
 
+            'm' plots the mass of the spacecraft (if self.vars == 'oem').
+
         3. 'h', 'ex', 'ey', 'ix', 'iy', 'L' if self.vars in ['ee', 'eem', 'ee_stm']
 
             'h' plots h = sqrt(p/mu) wrt time
@@ -697,6 +701,8 @@ class Trajectory:
             'iy' plots iy = tan(i/2)*sin(Omega) wrt time
 
             'L' plots L = theta + omega + Omega wrt time
+
+            'm' plots the mass of the spacecraft (if self.vars == 'eem').
 
         `draw` : bool
 
@@ -757,6 +763,8 @@ class Trajectory:
                 else:
                     rlabel = 'r, nondimensional'
                 fig = kiam.plot(self.times, norm(self.states[0:3, :], axis=0), xlabel=tlabel, ylabel=rlabel)
+            elif self.vars == 'rvm' and variables == 'm':
+                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel='Mass, kg')
             else:
                 raise 'Unknown variables to show.'
         elif self.vars in ['oe', 'oem', 'oe_stm']:
@@ -785,6 +793,8 @@ class Trajectory:
             elif variables == 'th':
                 ylabel = 'True anomaly, degrees'
                 fig = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+            elif self.vars == 'rvm' and variables == 'm':
+                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel='Mass, kg')
             else:
                 raise 'Unknown classical orbital element. Elements: a, e, inc, Om, w, th.'
         elif self.vars in ['ee', 'eem', 'ee_stm']:
@@ -811,6 +821,8 @@ class Trajectory:
             elif variables == 'L':
                 ylabel = 'True longitude, degrees'
                 fig = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
+            elif self.vars == 'rvm' and variables == 'm':
+                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel='Mass, kg')
             else:
                 raise 'Unknown equinoctial orbital element. Elements: h, ex, ey, ix, iy, L.'
         else:

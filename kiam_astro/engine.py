@@ -38,12 +38,12 @@ class SPT50(Engine):
         self.engine_type = 'electric'
 
         self.propellant = 'Xe'
-        self.discharge_voltage = 180  # V
+        self.discharge_voltage = 180.0  # V
         self.discharge_current = 1.25  # A
-        self.discharge_power = 225  # W
+        self.discharge_power = 225.0  # W
 
         self.force = 14.0e-03  # N
-        self.specific_impulse = 860  # s
+        self.specific_impulse = 860.0  # s
         self.power_to_thrust_ratio = 16.1e+03  # W/N
         self.min_lifetime_h = 1217/24  # days
         self.min_lifetime_cycles = 3011  # cycles
@@ -63,12 +63,12 @@ class SPT50M(Engine):
 
             self.propellant = 'Xe'
 
-            self.discharge_voltage = 180  # V
+            self.discharge_voltage = 180.0  # V
             self.discharge_current = 1.25  # A
-            self.discharge_power = 225  # W
+            self.discharge_power = 225.0  # W
 
             self.force = 14.8e-03  # N
-            self.specific_impulse = 930  # s
+            self.specific_impulse = 930.0  # s
             self.power_to_thrust_ratio = 15.2e+03  # W/N
             self.min_lifetime_h = 5000/24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -79,12 +79,12 @@ class SPT50M(Engine):
 
             self.propellant = 'Xe'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 1.0  # A
-            self.discharge_power = 300  # W
+            self.discharge_power = 300.0  # W
 
             self.force = 18.0e-03  # N
-            self.specific_impulse = 1250  # s
+            self.specific_impulse = 1250.0  # s
             self.power_to_thrust_ratio = 16.7e+03  # W/N
             self.min_lifetime_h = 5000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -102,12 +102,12 @@ class SPT70(Engine):
 
         self.propellant = 'Xe'
 
-        self.discharge_voltage = 300  # V
+        self.discharge_voltage = 300.0  # V
         self.discharge_current = 2.23  # A
-        self.discharge_power = 670  # W
+        self.discharge_power = 670.0  # W
 
         self.force = 39.0e-03  # N
-        self.specific_impulse = 1470  # s
+        self.specific_impulse = 1470.0  # s
         self.power_to_thrust_ratio = 16.1e+03  # W/N
         self.min_lifetime_h = 3100 / 24  # days
         self.min_lifetime_cycles = 3000  # cycles
@@ -127,12 +127,12 @@ class SPT70M(Engine):
 
             self.propellant = 'Xe'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 2.00  # A
-            self.discharge_power = 600  # W
+            self.discharge_power = 600.0  # W
 
             self.force = 36.0e-03  # N
-            self.specific_impulse = 1430  # s
+            self.specific_impulse = 1430.0  # s
             self.power_to_thrust_ratio = 15.2e+03  # W/N
             self.min_lifetime_h = 7000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -143,12 +143,12 @@ class SPT70M(Engine):
 
             self.propellant = 'Xe'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 2.67  # A
-            self.discharge_power = 800  # W
+            self.discharge_power = 800.0  # W
 
             self.force = 48.0e-03  # N
-            self.specific_impulse = 1530  # s
+            self.specific_impulse = 1530.0  # s
             self.power_to_thrust_ratio = 16.7e+03  # W/N
             self.min_lifetime_h = 7000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -159,12 +159,12 @@ class SPT70M(Engine):
 
             self.propellant = 'Xe'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 3.33  # A
-            self.discharge_power = 1000  # W
+            self.discharge_power = 1000.0  # W
 
             self.force = 59.0e-03  # N
-            self.specific_impulse = 1600  # s
+            self.specific_impulse = 1600.0  # s
             self.power_to_thrust_ratio = 16.9e+03  # W/N
             self.min_lifetime_h = 7000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -175,12 +175,12 @@ class SPT70M(Engine):
 
             self.propellant = 'Kr'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 2.00  # A
-            self.discharge_power = 600  # W
+            self.discharge_power = 600.0  # W
 
             self.force = 28.0e-03  # N
-            self.specific_impulse = 1380  # s
+            self.specific_impulse = 1380.0  # s
             self.power_to_thrust_ratio = 21.4e+03  # W/N
             self.min_lifetime_h = 7000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -191,12 +191,12 @@ class SPT70M(Engine):
 
             self.propellant = 'Kr'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 2.67  # A
-            self.discharge_power = 800  # W
+            self.discharge_power = 800.0  # W
 
             self.force = 37.0e-03  # N
-            self.specific_impulse = 1490  # s
+            self.specific_impulse = 1490.0  # s
             self.power_to_thrust_ratio = 21.6e+03  # W/N
             self.min_lifetime_h = 7000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -207,12 +207,12 @@ class SPT70M(Engine):
 
             self.propellant = 'Kr'
 
-            self.discharge_voltage = 300  # V
+            self.discharge_voltage = 300.0  # V
             self.discharge_current = 3.33  # A
-            self.discharge_power = 1000  # W
+            self.discharge_power = 1000.0  # W
 
             self.force = 47.0e-03  # N
-            self.specific_impulse = 1560  # s
+            self.specific_impulse = 1560.0  # s
             self.power_to_thrust_ratio = 21.3e+03  # W/N
             self.min_lifetime_h = 7000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
@@ -234,12 +234,12 @@ class SPT100B(Engine):
 
         self.propellant = 'Xe'
 
-        self.discharge_voltage = 300  # V
+        self.discharge_voltage = 300.0  # V
         self.discharge_current = 4.5  # A
-        self.discharge_power = 1350  # W
+        self.discharge_power = 1350.0  # W
 
         self.force = 83.0e-03  # N
-        self.specific_impulse = 1540  # s
+        self.specific_impulse = 1540.0  # s
         self.efficiency = 0.45
         self.power_to_thrust_ratio = 16.3e+03  # W/N
         self.min_lifetime_h = 9000 / 24  # days
@@ -258,12 +258,12 @@ class SPT100BM(Engine):
 
         self.propellant = 'Xe'
 
-        self.discharge_voltage = 300  # V
+        self.discharge_voltage = 300.0  # V
         self.discharge_current = 4.5  # A
-        self.discharge_power = 1350  # W
+        self.discharge_power = 1350.0  # W
 
         self.force = 90.0e-03  # N
-        self.specific_impulse = 1600  # s
+        self.specific_impulse = 1600.0  # s
         self.efficiency = 0.52
         self.power_to_thrust_ratio = 15.0e+03  # W/N
         self.min_lifetime_h = 9000 / 24  # days
@@ -282,12 +282,12 @@ class SPT140D(Engine):
 
         self.propellant = 'Xe'
 
-        self.discharge_voltage = 300  # V
-        self.discharge_current = 15  # A
-        self.discharge_power = 4500  # W
+        self.discharge_voltage = 300.0  # V
+        self.discharge_current = 15.0  # A
+        self.discharge_power = 4500.0  # W
 
         self.force = 290.0e-03  # N
-        self.specific_impulse = 1750  # s
+        self.specific_impulse = 1750.0  # s
         self.efficiency = 0.53
         self.power_to_thrust_ratio = 15.5e+03  # W/N
         self.min_lifetime_h = 15000 / 24  # days

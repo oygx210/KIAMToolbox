@@ -3042,7 +3042,7 @@ def lvlh2mer(xlvlh: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
             return FKIAMToolbox.transformations.xmer_mat
 def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) -> numpy.ndarray:
     """
-    Translate phase vectors from one CRS c/s to other CRS c/s.
+    Translate phase vectors from one CRS c/s to another CRS c/s.
 
     Parameters:
     -----------
@@ -3050,9 +3050,13 @@ def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, 
 
     The name of the first body.
 
+    Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'.
+
     `body2` : str
 
     The name of the second (target) body.
+
+    Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'.
 
     `xb1crs` : numpy.ndarray, shape (6,), (6,n)
 
@@ -3620,6 +3624,26 @@ def nbp_rv_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data:
 
     'RMoon'    (The radius of the Moon in the units of distance)
 
+    'SunGM'    (The nondimensional gravitational parameter of the Sun)
+
+    'MercuryGM'    (The nondimensional gravitational parameter of Mercury)
+
+    'VenusGM'    (The nondimensional gravitational parameter of Venus)
+
+    'EarthGM'    (The nondimensional gravitational parameter of the Earth)
+
+    'MoonGM'    (The nondimensional gravitational parameter of the Moon)
+
+    'MarsGM'    (The nondimensional gravitational parameter of Mars)
+
+    'JupiterGM'    (The nondimensional gravitational parameter of Jupiter)
+
+    'SaturnGM'    (The nondimensional gravitational parameter of Saturn)
+
+    'UranusGM'    (The nondimensional gravitational parameter of Uranus)
+
+    'NeptuneGM'    (The nondimensional gravitational parameter of Neptune)
+
     The units dictionary can be created by the kiam.prepare_units_dict() function.
 
     The gravitational parameter in the specified units should be 1.0.
@@ -3770,6 +3794,26 @@ def nbp_rv_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
     'REarth'   (The radius of the Earth in the units of distance)
 
     'RMoon'    (The radius of the Moon in the units of distance)
+
+    'SunGM'    (The nondimensional gravitational parameter of the Sun)
+
+    'MercuryGM'    (The nondimensional gravitational parameter of Mercury)
+
+    'VenusGM'    (The nondimensional gravitational parameter of Venus)
+
+    'EarthGM'    (The nondimensional gravitational parameter of the Earth)
+
+    'MoonGM'    (The nondimensional gravitational parameter of the Moon)
+
+    'MarsGM'    (The nondimensional gravitational parameter of Mars)
+
+    'JupiterGM'    (The nondimensional gravitational parameter of Jupiter)
+
+    'SaturnGM'    (The nondimensional gravitational parameter of Saturn)
+
+    'UranusGM'    (The nondimensional gravitational parameter of Uranus)
+
+    'NeptuneGM'    (The nondimensional gravitational parameter of Neptune)
 
     The units dictionary can be created by the kiam.prepare_units_dict() function.
 
@@ -3949,6 +3993,26 @@ def nbp_ee_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data:
 
     'RMoon'    (The radius of the Moon in the units of distance)
 
+    'SunGM'    (The nondimensional gravitational parameter of the Sun)
+
+    'MercuryGM'    (The nondimensional gravitational parameter of Mercury)
+
+    'VenusGM'    (The nondimensional gravitational parameter of Venus)
+
+    'EarthGM'    (The nondimensional gravitational parameter of the Earth)
+
+    'MoonGM'    (The nondimensional gravitational parameter of the Moon)
+
+    'MarsGM'    (The nondimensional gravitational parameter of Mars)
+
+    'JupiterGM'    (The nondimensional gravitational parameter of Jupiter)
+
+    'SaturnGM'    (The nondimensional gravitational parameter of Saturn)
+
+    'UranusGM'    (The nondimensional gravitational parameter of Uranus)
+
+    'NeptuneGM'    (The nondimensional gravitational parameter of Neptune)
+
     The units dictionary can be created by the kiam.prepare_units_dict() function.
 
     The gravitational parameter in the specified units should be 1.0.
@@ -4126,6 +4190,26 @@ def nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
 
     'RMoon'    (The radius of the Moon in the units of distance)
 
+    'SunGM'    (The nondimensional gravitational parameter of the Sun)
+
+    'MercuryGM'    (The nondimensional gravitational parameter of Mercury)
+
+    'VenusGM'    (The nondimensional gravitational parameter of Venus)
+
+    'EarthGM'    (The nondimensional gravitational parameter of the Earth)
+
+    'MoonGM'    (The nondimensional gravitational parameter of the Moon)
+
+    'MarsGM'    (The nondimensional gravitational parameter of Mars)
+
+    'JupiterGM'    (The nondimensional gravitational parameter of Jupiter)
+
+    'SaturnGM'    (The nondimensional gravitational parameter of Saturn)
+
+    'UranusGM'    (The nondimensional gravitational parameter of Uranus)
+
+    'NeptuneGM'    (The nondimensional gravitational parameter of Neptune)
+
     The units dictionary can be created by the kiam.prepare_units_dict() function.
 
     The gravitational parameter in the specified units should be 1.0.
@@ -4177,7 +4261,7 @@ def nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
         return FKIAMToolbox.equationsmodule.knbp_ee_moon(t, s)
 def nbp_rv_body(body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) -> numpy.ndarray:
     """
-    Right-hand side of the n-body problem equations of motion wrt the specified body (except Earth and Moon) in terms of
+    Right-hand side of the n-body problem equations of motion wrt the specified body in terms of
     the position and velocity variables.
 
     Parameters:
@@ -4277,6 +4361,26 @@ def nbp_rv_body(body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: d
 
     'RMoon'    (The radius of the Moon in the units of distance)
 
+    'SunGM'    (The nondimensional gravitational parameter of the Sun)
+
+    'MercuryGM'    (The nondimensional gravitational parameter of Mercury)
+
+    'VenusGM'    (The nondimensional gravitational parameter of Venus)
+
+    'EarthGM'    (The nondimensional gravitational parameter of the Earth)
+
+    'MoonGM'    (The nondimensional gravitational parameter of the Moon)
+
+    'MarsGM'    (The nondimensional gravitational parameter of Mars)
+
+    'JupiterGM'    (The nondimensional gravitational parameter of Jupiter)
+
+    'SaturnGM'    (The nondimensional gravitational parameter of Saturn)
+
+    'UranusGM'    (The nondimensional gravitational parameter of Uranus)
+
+    'NeptuneGM'    (The nondimensional gravitational parameter of Neptune)
+
     The units dictionary can be created by the kiam.prepare_units_dict() function.
 
     The gravitational parameter in the specified units should be 1.0.
@@ -4324,6 +4428,7 @@ def nbp_rv_body(body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: d
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
     with _package_folder_contex():
+        FKIAMToolbox.equationsmodule.central_body = body.capitalize()
         return FKIAMToolbox.equationsmodule.knbp_rv_body(t, s)
 def prepare_sources_dict() -> dict:
     """
@@ -4504,7 +4609,6 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
     Parameters:
     -----------
     `central_body`: str
-
 
     Name of the central body
 
