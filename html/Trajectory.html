@@ -146,6 +146,8 @@ their characteristics.</p>
 <p>The name of the units in which initial_state is given.</p>
 <p>It can be 'earth', 'moon', 'dim', 'earth_moon', 'sun_earth'.</p>
 <h2 id="properties">Properties:</h2>
+<p><code>control_history</code> : numpy.ndarray(3,n)</p>
+<p>The control history, contains 3D thrust force vectors for a controlled trajectory.</p>
 <p><code>finalDate</code> : datetime.datetime</p>
 <p>The date and time of the last phase state in trajectory.</p>
 <p><code>initialDate</code> : datetime.datetime</p>
@@ -160,6 +162,8 @@ their characteristics.</p>
 <p><code>tr.states[:, tr.parts[1]:tr.parts[2]+1]</code> &ndash; second part</p>
 <p><code>tr.states[:, tr.parts[2]:tr.parts[3]+1]</code> &ndash; third part</p>
 <p>etc.</p>
+<p><code>specific_impulse_history</code> : numpy.ndarray(n)</p>
+<p>The history of specific impulse for a controlled trajectory.</p>
 <p><code>states</code> : numpy.array, shape(m,n)</p>
 <p>Phase vectors along the trajectory.</p>
 <p><code>system</code> : str</p>
@@ -336,13 +340,13 @@ It also initializes tr.model['data'] property.</p>
 <p>Options:</p>
 <ol>
 <li>
-<p>Any string if model_type = 'r2bp'</p>
+<p>'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune' if model_type = 'r2bp'</p>
 </li>
 <li>
-<p>'earth_moon', 'sun_earth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'</p>
+<p>'sun_[planet]' or 'earth_moon if model_type = 'cr3bp_fb' or 'cr3bp_sb'</p>
 </li>
 <li>
-<p>'earth', 'moon' if model_type = 'nbp'</p>
+<p>'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune' if model_type = 'nbp'</p>
 </li>
 </ol>
 <p><code>sources_lits</code> : list of str</p>
@@ -376,7 +380,33 @@ It also initializes tr.model['data'] property.</p>
 (Gravitational acceleration of the Moon)</p>
 <p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
 <p>If <code>model_type</code> is 'cr3bp', then <code>model_specifics</code> is a dictionary.</p>
-<p>The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.</p></div>
+<p>The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.</p>
+<h2 id="returns">Returns:</h2>
+<p>A 'model' dictionary is created in a Trajectory object.</p>
+<p>The dictionary contains the following keys.</p>
+<p><code>vars</code> : str</p>
+<p>Equals to lowerized <code>variables</code>. It is better not to change this variable by hand.</p>
+<p><code>type</code> : str</p>
+<p>Equals to lowerized <code>model_type</code>. It is better not to change this variable by hand.</p>
+<p><code>primary</code> : str</p>
+<p>Equals to lowerized <code>primary</code>. It is better not to change this variable by hand.</p>
+<p><code>sources_list</code> : list[str]</p>
+<p>Equals to list of lowerized elements of <code>sources_list</code>. It is better not to change this variable by hand.</p>
+<p><code>data</code> : dict</p>
+<p>A dictionary that containes the following keys:</p>
+<p><code>jd_zero</code> : float</p>
+<p>Julian date that correscponds to t = 0. Defaulf is 0.0. Should be set by hand by the user.</p>
+<p><code>area</code> : float</p>
+<p>The area of the spacecraft. Default is 0.0. Should be set by hand by the user. Used for calculation of the are-to-mass value.</p>
+<p><code>mass</code> : float</p>
+<p>The mass of the spacecraft. Default is 0.0. Should be set by hand by the user. Used for calculation of the are-to-mass value.</p>
+<p><code>order</code> : int</p>
+<p>The order and degree of the lunar complex gravity field. Should be set by hand by the user.</p>
+<p>Other two keys in <code>model</code> dictionary:</p>
+<p><code>units</code> : str</p>
+<p>Contains the units of the model. Calculated automatically. It is better not to change this variable by hand.</p>
+<p><code>control</code> : Callable</p>
+<p>Function handle to the control function. The function handle should take two positional variables: time and phase state. By default is None. Can be set by the user.</p></div>
 </dd>
 <dt id="trajectory.Trajectory.show"><code class="name flex">
 <span>def <span class="ident">show</span></span>(<span>self, variables: str, draw=True)</span>
@@ -393,6 +423,7 @@ It also initializes tr.model['data'] property.</p>
 <p>'xy' plots the trajectory in x-y axes.</p>
 <p>'3d' plots the trajectory in 3d.</p>
 <p>'r' plots the distance to the origin of the coordinate system.</p>
+<p>'m' plots the mass of the spacecraft (if self.vars == 'rvm').</p>
 </li>
 <li>
 <p>'a', 'e', 'inc', 'Om', 'w', 'th' if self.vars in ['oe', 'oem', 'oe_stm']</p>
@@ -402,6 +433,7 @@ It also initializes tr.model['data'] property.</p>
 <p>'Om' plots the right ascension of the ascending node wrt time</p>
 <p>'w' plots the argument of pericenter wrt time</p>
 <p>'th' plots the true anomaly wrt time</p>
+<p>'m' plots the mass of the spacecraft (if self.vars == 'oem').</p>
 </li>
 <li>
 <p>'h', 'ex', 'ey', 'ix', 'iy', 'L' if self.vars in ['ee', 'eem', 'ee_stm']</p>
@@ -411,6 +443,7 @@ It also initializes tr.model['data'] property.</p>
 <p>'ix' plots ix = tan(i/2)*cos(Omega) wrt time</p>
 <p>'iy' plots iy = tan(i/2)*sin(Omega) wrt time</p>
 <p>'L' plots L = theta + omega + Omega wrt time</p>
+<p>'m' plots the mass of the spacecraft (if self.vars == 'eem').</p>
 </li>
 </ol>
 <p><code>draw</code> : bool</p>

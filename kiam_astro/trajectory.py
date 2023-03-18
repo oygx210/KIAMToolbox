@@ -195,6 +195,10 @@ class Trajectory:
 
         Properties:
         -----------
+        `control_history` : numpy.ndarray(3,n)
+
+        The control history, contains 3D thrust force vectors for a controlled trajectory.
+
         `finalDate` : datetime.datetime
 
         The date and time of the last phase state in trajectory.
@@ -222,6 +226,10 @@ class Trajectory:
         `tr.states[:, tr.parts[2]:tr.parts[3]+1]` -- third part
 
         etc.
+
+        `specific_impulse_history` : numpy.ndarray(n)
+
+        The history of specific impulse for a controlled trajectory.
 
         `states` : numpy.array, shape(m,n)
 
@@ -344,11 +352,11 @@ class Trajectory:
 
         Options:
 
-        1. Any string if model_type = 'r2bp'
+        1. 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune' if model_type = 'r2bp'
 
-        2. 'earth_moon', 'sun_earth' if model_type = 'cr3bp_fb' or 'cr3bp_sb'
+        2. 'sun_[planet]' or 'earth_moon if model_type = 'cr3bp_fb' or 'cr3bp_sb'
 
-        3. 'earth', 'moon' if model_type = 'nbp'
+        3. 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune' if model_type = 'nbp'
 
         `sources_lits` : list of str
 
@@ -387,6 +395,59 @@ class Trajectory:
         If `model_type` is 'cr3bp', then `model_specifics` is a dictionary.
 
         The dictionary contains t0 - the time at which the rotating and non-rotating coordinate systems coincide.
+
+        Returns:
+        --------
+
+        A 'model' dictionary is created in a Trajectory object.
+
+        The dictionary contains the following keys.
+
+        `vars` : str
+
+        Equals to lowerized `variables`. It is better not to change this variable by hand.
+
+        `type` : str
+
+        Equals to lowerized `model_type`. It is better not to change this variable by hand.
+
+        `primary` : str
+
+        Equals to lowerized `primary`. It is better not to change this variable by hand.
+
+        `sources_list` : list[str]
+
+        Equals to list of lowerized elements of `sources_list`. It is better not to change this variable by hand.
+
+        `data` : dict
+
+        A dictionary that containes the following keys:
+
+        `jd_zero` : float
+
+        Julian date that correscponds to t = 0. Defaulf is 0.0. Should be set by hand by the user.
+
+        `area` : float
+
+        The area of the spacecraft. Default is 0.0. Should be set by hand by the user. Used for calculation of the are-to-mass value.
+
+        `mass` : float
+
+        The mass of the spacecraft. Default is 0.0. Should be set by hand by the user. Used for calculation of the are-to-mass value.
+
+        `order` : int
+
+        The order and degree of the lunar complex gravity field. Should be set by hand by the user.
+
+        Other two keys in `model` dictionary:
+
+        `units` : str
+
+        Contains the units of the model. Calculated automatically. It is better not to change this variable by hand.
+
+        `control` : Callable
+
+        Function handle to the control function. The function handle should take two positional variables: time and phase state. By default is None. Can be set by the user.
 
         """
 
@@ -534,6 +595,9 @@ class Trajectory:
                 'neptune': 'ncrs'
             }
 
+            if model_type == 'nbp' and primary not in primary2system:
+                raise Exception(f'For nbp primary should be one of {tuple(primary2system.keys())}')
+
             self._set_model_sources()
             if variables in ['rv', 'rvm', 'rv_stm']:
                 self._set_model_units(primary)
@@ -566,6 +630,9 @@ class Trajectory:
 
         The number of nodes in the propagation time interval.
         """
+
+        if self.model == {}:
+            raise Exception('Please set the model.')
 
         self.change_units(self.model['units']['name'])
         self.change_vars(self.model['vars'])
@@ -850,11 +917,12 @@ class Trajectory:
         If successfull, the deep copy of the Trajectory object is returned.
 
         """
-        if self.model['control'] is not None and forced:
-            warnings.warn('Control function handle in model is removed.')
-            self.model['control'] = None
-        elif self.model['control'] is not None and not forced:
-            raise Exception('Control function handle in model prevents copying. Use forced=True flag to ignore the warning and erase the control function handle.')
+        if self.model != {}:
+            if self.model['control'] is not None and forced:
+                warnings.warn('Control function handle in model is removed.')
+                self.model['control'] = None
+            elif self.model['control'] is not None and not forced:
+                raise Exception('Control function handle in model prevents copying. Use forced=True flag to ignore the warning and erase the control function handle.')
         return copy.deepcopy(self)
 
     def clear(self) -> None:
@@ -1052,7 +1120,7 @@ class Trajectory:
                 raise Exception('Wrong units: rv2ee assumes mu = 1.0.')
             elif self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm.')
-            self.states = kiam.rv2ee(self.states, 1.0)
+            self.states[0:6, :] = kiam.rv2ee(self.states[0:6, :], 1.0)
             # for i in range(self.states.shape[1]):
             #    self.states[0:6, i] = kiam.rv2ee(self.states[0:6, i], 1.0)
             self.vars = 'ee'
@@ -1061,7 +1129,7 @@ class Trajectory:
                 raise Exception('Wrong units: ee2rv assumes mu = 1.0.')
             elif self.vars != 'ee' and self.vars != 'eem':
                 raise Exception('Vars should be ee or eem.')
-            self.states = kiam.ee2rv(self.states, 1.0)
+            self.states[0:6, :] = kiam.ee2rv(self.states[0:6, :], 1.0)
             # for i in range(self.states.shape[1]):
             #    self.states[0:6, i] = kiam.ee2rv(self.states[0:6, i], 1.0)
             self.vars = 'rv'
@@ -1070,16 +1138,16 @@ class Trajectory:
                 raise Exception('Wrong units: rv2oe assumes mu = 1.0.')
             elif self.vars != 'rv' and self.vars != 'rvm':
                 raise Exception('Vars should be rv or rvm.')
-            self.states = kiam.rv2oe(self.states, 1.0)
+            self.states[0:6, :] = kiam.rv2oe(self.states[0:6, :], 1.0)
             # for i in range(self.states.shape[1]):
             #    self.states[0:6, i] = kiam.rv2oe(self.states[0:6, i], 1.0)
             self.vars = 'oe'
         elif vars1 == 'oe' and vars2 == 'rv':  # mu = 1.0
             if self.units_name not in ['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']:
-                raise Exception('Wrong units: oe2rv assumes earth or moon, mu = 1.0.')
+                raise Exception('Wrong units: oe2rv assumes mu = 1.0.')
             elif self.vars != 'oe' and self.vars != 'oem':
                 raise Exception('Vars should be oe or oem.')
-            self.states = kiam.oe2rv(self.states, 1.0)
+            self.states[0:6, :] = kiam.oe2rv(self.states[0:6, :], 1.0)
             # for i in range(self.states.shape[1]):
             #    self.states[0:6, i] = kiam.oe2rv(self.states[0:6, i], 1.0)
             self.vars = 'rv'
@@ -1096,22 +1164,22 @@ class Trajectory:
             self._vars_transform('oe', 'rv')
             self.vars = 'rvm'
         elif vars1 == 'rv_stm' and vars2 == 'rv':
-            numpy.delete(self.states, [i for i in range(6, 42)], 0)
+            self.states = numpy.delete(self.states, [i for i in range(6, 42)], 0)
             self.vars = 'rv'
         elif vars1 == 'oe_stm' and vars2 == 'oe':
-            numpy.delete(self.states, [i for i in range(6, 42)], 0)
+            self.states = numpy.delete(self.states, [i for i in range(6, 42)], 0)
             self.vars = 'oe'
         elif vars1 == 'ee_stm' and vars2 == 'ee':
-            numpy.delete(self.states, [i for i in range(6, 42)], 0)
+            self.states = numpy.delete(self.states, [i for i in range(6, 42)], 0)
             self.vars = 'ee'
         elif vars1 == 'rvm' and vars2 == 'rv':
-            numpy.delete(self.states, 6, 0)
+            self.states = numpy.delete(self.states, 6, 0)
             self.vars = 'rv'
         elif vars1 == 'oem' and vars2 == 'oe':
-            numpy.delete(self.states, 6, 0)
+            self.states = numpy.delete(self.states, 6, 0)
             self.vars = 'oe'
         elif vars1 == 'eem' and vars2 == 'ee':
-            numpy.delete(self.states, 6, 0)
+            self.states = numpy.delete(self.states, 6, 0)
             self.vars = 'ee'
         elif vars1 == 'rv_stm' and vars2 == 'oe_stm':
             if self.units_name not in ['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']:
@@ -1235,6 +1303,9 @@ class Trajectory:
 
         Coordinate system after transformation.
         """
+
+        if self.model == {}:
+            raise Exception('Please set the model.')
 
         system2secondbody = {
             'hsrf_smer': 'Mercury',

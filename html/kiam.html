@@ -76,27 +76,29 @@ gravitational parameter of the Pluto (GM) in km^3/s^2,
 the mean raidus (MeanRadius) in km, the equator radius (EquatorRadius) in km,
 the semi-major axis of the orbit around the Sun (SemimajorAxis) in km.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>uni_const, star, planet, moon, small_body = astro_const()  # If you need all the dicts
+<pre><code>uni_const, star, planet, moon, small_body = kiam.astro_const()  # If you need all the dicts
 
-_, star, planet, _, _ = astro_const()  # If you need only star and planet dicts
+_, star, planet, _, _ = kiam.astro_const()  # If you need only star and planet dicts
 
-star['Sun']['MeanRadius']  # Mean radius of the Sun
+print(star['Sun']['MeanRadius'])  # Mean radius of the Sun
 
-planet['Earth']['GM']  # Gravitational parameter of the Earth
+print(planet['Earth']['GM'])  # Gravitational parameter of the Earth
 
-planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
+print(planet['Mars']['SemimajorAxis'])  # Semi-major axis of the Mars's orbit.
 </code></pre></div>
 </dd>
 <dt id="kiam.b1crs2b2crs"><code class="name flex">
 <span>def <span class="ident">b1crs2b2crs</span></span>(<span>body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: float, vel_unit: float) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Translate phase vectors from one CRS c/s to other CRS c/s.</p>
+<div class="desc"><p>Translate phase vectors from one CRS c/s to another CRS c/s.</p>
 <h2 id="parameters">Parameters:</h2>
 <p><code>body1</code> : str</p>
 <p>The name of the first body.</p>
+<p>Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'.</p>
 <p><code>body2</code> : str</p>
 <p>The name of the second (target) body.</p>
+<p>Options: 'sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune'.</p>
 <p><code>xb1crs</code> : numpy.ndarray, shape (6,), (6,n)</p>
 <p>6D vector or array of 6D column phase vectors in the CRS coordinate system of body1.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz]</p>
@@ -111,7 +113,7 @@ planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
 <p>6D vector or array of 6D column phase vectors in the CRS coordinate system of body2.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (6D -&gt; 6D):
+<pre><code># Example 1 (6D -&gt; 6D):
 
 ku = kiam.units('sun', 'mars')
 
@@ -121,7 +123,9 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
 
-Example 2 (6x1 -&gt; 6x1)
+print(xb2crs)
+
+# Example 2 (6x1 -&gt; 6x1)
 
 ku = kiam.units('sun', 'mars')
 
@@ -130,6 +134,8 @@ xb1crs = numpy.array([[1, 0, 0, 0, 1, 0]]).T  # wrt the Sun
 jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
+
+print(xb2crs)
 </code></pre></div>
 </dd>
 <dt id="kiam.body_surface"><code class="name flex">
@@ -151,11 +157,11 @@ xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit
 <p><code>fig</code> : plotly.graph_objects.Figure</p>
 <p>The Plotly figure object..</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>fig = body_surface('earth')
+<pre><code>fig = kiam.body_surface('earth')
 
 fig.show()
 
-fig = body_surface('moon')
+fig = kiam.body_surface('moon')
 
 fig.show()
 </code></pre></div>
@@ -197,11 +203,13 @@ fig.show()
 <p>lat in [-pi/2, pi/2],</p>
 <p>lon in [-pi, pi].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; cart = numpy.array([1, 0, 0])
+<pre><code>cart = numpy.array([1, 0, 0])
 
-&gt;&gt; latlon = kiam.cart2latlon(cart)
+latlon = kiam.cart2latlon(cart)
 
-[0. 0.]
+print(latlon)
+
+# [0. 0.]
 </code></pre></div>
 </dd>
 <dt id="kiam.cart2sphere"><code class="name flex">
@@ -230,11 +238,13 @@ z = r*sin(theta).
 
 </code></pre>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; cart = numpy.array([1, 0, 0])
+<pre><code>cart = numpy.array([1, 0, 0])
 
-&gt;&gt; sphere = kiam.cart2sphere(cart)
+sphere = kiam.cart2sphere(cart)
 
-[1.         0.         1.57079633]
+print(sphere)
+
+# [1.         0.         1.57079633]
 </code></pre></div>
 </dd>
 <dt id="kiam.cosd"><code class="name flex">
@@ -249,9 +259,9 @@ z = r*sin(theta).
 <p><code>s</code> : float, numpy.ndarray</p>
 <p>A cosine or array of cosines of angles in degrees.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.cosd(60)
+<pre><code>print(kiam.cosd(60))
 
-0.5000000000000001
+# 0.5000000000000001
 </code></pre></div>
 </dd>
 <dt id="kiam.cotand"><code class="name flex">
@@ -266,9 +276,9 @@ z = r*sin(theta).
 <p><code>s</code> : float, numpy.ndarray</p>
 <p>A cotangent or array of cotangents of angles in degrees.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.cotand(45)
+<pre><code>print(kiam.cotand(45))
 
-1.0000000000000002
+# 1.0000000000000002
 </code></pre></div>
 </dd>
 <dt id="kiam.cr3bp_fb"><code class="name flex">
@@ -307,7 +317,9 @@ mu = 1.2e-02
 
 dsdt = kiam.cr3bp_fb(t0, s0, mu, False)
 
-[ 0.     1.     0.    -1.416 -0.    -0.   ]
+print(dsdt)
+
+# [ 0.     1.     0.    -1.416 -0.    -0.   ]
 </code></pre></div>
 </dd>
 <dt id="kiam.cr3bp_sb"><code class="name flex">
@@ -346,7 +358,9 @@ mu = 1.2e-02
 
 dsdt = kiam.cr3bp_sb(t0, s0, mu, False)
 
-[ 0.          1.          0.          3.00088889 -0.         -0.        ]
+print(dsdt)
+
+# [ 0.          1.          0.          3.00088889 -0.         -0.        ]
 </code></pre></div>
 </dd>
 <dt id="kiam.deg2rad"><code class="name flex">
@@ -361,9 +375,9 @@ dsdt = kiam.cr3bp_sb(t0, s0, mu, False)
 <p><code>rad</code> : float, numpy.ndarray</p>
 <p>Angle or array of angles in radians.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; deg2rad(180)
+<pre><code>print(kiam.deg2rad(180))
 
-3.141592653589793
+# 3.141592653589793
 </code></pre></div>
 </dd>
 <dt id="kiam.dotainvb"><code class="name flex">
@@ -386,8 +400,10 @@ b = numpy.array([[1, 2], [3, 4]])
 
 c = kiam.dotainvb(a, b)
 
-[[1. 0.]
-[0. 1.]]
+print(c)
+
+# [[1. 0.]
+# [0. 1.]]
 </code></pre></div>
 </dd>
 <dt id="kiam.ee2rv"><code class="name flex">
@@ -428,6 +444,8 @@ c = kiam.dotainvb(a, b)
 rv = kiam.ee2rv(ee, 1.0, False)
 
 rv, drv = kiam.ee2rv(ee, 1.0, True)
+
+print(rv)
 </code></pre></div>
 </dd>
 <dt id="kiam.eye2vec"><code class="name flex">
@@ -442,9 +460,11 @@ rv, drv = kiam.ee2rv(ee, 1.0, True)
 <p><code>a</code> : numpy.ndarray, shape (n**2,)</p>
 <p>Vector form of the identity matrix.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; a = kiam.eye2vec(3)
+<pre><code>a = kiam.eye2vec(3)
 
-[1. 0. 0. 0. 1. 0. 0. 0. 1.]
+print(a)
+
+# [1. 0. 0. 0. 1. 0. 0. 0. 1.]
 </code></pre></div>
 </dd>
 <dt id="kiam.gcrs2hcrs"><code class="name flex">
@@ -467,7 +487,7 @@ rv, drv = kiam.ee2rv(ee, 1.0, True)
 <p>6D vector or array of 6D column phase vectors in the HCRS coordinate system.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (6D -&gt; 6D):
+<pre><code># Example 1 (6D -&gt; 6D):
 
 ku = kiam.units('sun', 'earth')
 
@@ -477,7 +497,9 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-Example 2 (6x1 -&gt; 6x1):
+print(xhcrs)
+
+# Example 2 (6x1 -&gt; 6x1):
 
 ku = kiam.units('sun', 'earth')
 
@@ -486,6 +508,8 @@ xgcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
 jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+print(xhcrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.gcrs2itrs"><code class="name flex">
@@ -514,6 +538,8 @@ xgcrs = numpy.array([1, 0, 0])
 xitrs = kiam.gcrs2itrs(xgcrs, jd, False)
 
 xitrs, dxitrs = kiam.gcrs2itrs(xgcrs, jd, True)
+
+print(xitrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.gcrs2scrs"><code class="name flex">
@@ -536,7 +562,7 @@ xitrs, dxitrs = kiam.gcrs2itrs(xgcrs, jd, True)
 <p>6D vector or array of 6D column phase vectors in the SCRS coordinate system.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (6D -&gt; 6D):
+<pre><code># Example 1 (6D -&gt; 6D):
 
 ku = kiam.units('earth', 'moon')
 
@@ -546,7 +572,9 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-Example 2 (6x1 -&gt; 6x1)
+print(xscrs)
+
+# Example 2 (6x1 -&gt; 6x1)
 
 ku = kiam.units('earth', 'moon')
 
@@ -555,6 +583,8 @@ xgcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
 jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+print(xscrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.get_altitude_km"><code class="name flex">
@@ -566,15 +596,17 @@ around a specified celestial body.</p>
 <h2 id="parameters">Parameters:</h2>
 <p><code>period</code> : float</p>
 <p>The circular orbit period in hours.</p>
-<p><code>body</code>: str</p>
+<p><code>body</code> : str</p>
 <p>The name of the celesial body.</p>
 <h2 id="returns">Returns:</h2>
 <p><code>altitude_km</code> : float</p>
 <p>The altitude above the surface of the body in km.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; altitude_km = kiam.get_altitude_km(1.5, 'earth')
+<pre><code>altitude_km = kiam.get_altitude_km(1.5, 'earth')
 
-281.5472668353086
+print(altitude_km)
+
+# 281.5472668353086
 </code></pre></div>
 </dd>
 <dt id="kiam.get_circular_velocity_km_s"><code class="name flex">
@@ -592,9 +624,11 @@ around a specified celestial body.</p>
 <p><code>velocity</code> : float</p>
 <p>The circular velocity at the given altitude.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; velocity_km_s = kiam.get_circular_velocity_km_s(200.0, 'earth')
+<pre><code>velocity_km_s = kiam.get_circular_velocity_km_s(200.0, 'earth')
 
-7.7884829462208724
+print(velocity_km_s)
+
+# 7.7884829462208724
 </code></pre></div>
 </dd>
 <dt id="kiam.get_dv_hohmann"><code class="name flex">
@@ -612,9 +646,11 @@ around a specified celestial body.</p>
 <p>Nondimensional delta-v in the Hohmann transfer connecting r1_nondim and r2_nondim.
 It is assumed that the gravitational parameter equals 1.0.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; dv = kiam.get_dv_hohmann(1.0, 2.0)
+<pre><code>dv = kiam.get_dv_hohmann(1.0, 2.0)
 
-0.024944026382329704
+print(dv)
+
+# 0.024944026382329704
 </code></pre></div>
 </dd>
 <dt id="kiam.get_order"><code class="name flex">
@@ -632,9 +668,11 @@ at a given altitude according to the Trofimov&ndash;Shirobokov model.</p>
 <p><code>order</code> : int</p>
 <p>The order and degree of the complex lunar gravitational field.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; order = kiam.get_order(2.0, approx_level='soft')
+<pre><code>order = kiam.get_order(2.0, approx_level='soft')
 
-8.0
+print(order)
+
+# 8.0
 </code></pre></div>
 </dd>
 <dt id="kiam.get_period_hours"><code class="name flex">
@@ -652,9 +690,11 @@ around a specified celestial body.</p>
 <p><code>period</code> : float</p>
 <p>The circular orbit period in hours.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; period_hours = kiam.get_period_hours(200.0, 'earth')
+<pre><code>period_hours = kiam.get_period_hours(200.0, 'earth')
 
-1.4725041134211172
+print(period_hours)
+
+# 1.4725041134211172
 </code></pre></div>
 </dd>
 <dt id="kiam.get_tof_hohmann"><code class="name flex">
@@ -673,9 +713,11 @@ around a specified celestial body.</p>
 r1_nondim and r2_nondim. It is assumed that the gravitational parameter
 equals 1.0.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; tof = kiam.get_tof_hohmann(1.0, 2.0)
+<pre><code>tof = kiam.get_tof_hohmann(1.0, 2.0)
 
-5.771474235728388
+print(tof)
+
+# 5.771474235728388
 </code></pre></div>
 </dd>
 <dt id="kiam.grid_off"><code class="name flex">
@@ -754,7 +796,7 @@ fig.show()
 <p>6D vector or array of 6D column phase vectors in the GCRS coordinate system.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (6D -&gt; 6D)
+<pre><code># Example 1 (6D -&gt; 6D)
 
 ku = kiam.units('sun', 'earth')
 
@@ -764,7 +806,9 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-Example 2 (6x1 -&gt; 6x1)
+print(xgcrs)
+
+# Example 2 (6x1 -&gt; 6x1)
 
 ku = kiam.units('sun', 'earth')
 
@@ -773,6 +817,8 @@ xhcrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
 jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+print(xgcrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.ine2rot"><code class="name flex">
@@ -800,6 +846,8 @@ t = 1.0
 t0 = 0.0
 
 xrot = kiam.ine2rot(xine, t, t0)
+
+print(xrot)
 </code></pre></div>
 </dd>
 <dt id="kiam.ine2rot_eph"><code class="name flex">
@@ -837,6 +885,8 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 ku = kiam.units('earth', 'moon')
 
 xrot = kiam.ine2rot_eph(xine, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+
+print(xrot)
 </code></pre></div>
 </dd>
 <dt id="kiam.invadotb"><code class="name flex">
@@ -859,8 +909,10 @@ b = numpy.array([[1, 2], [3, 4]])
 
 c = kiam.invadotb(a, b)
 
-[[1.00000000e+00 0.00000000e+00]
-[8.32667268e-17 1.00000000e+00]]
+print(c)
+
+# [[1.00000000e+00 0.00000000e+00]
+# [8.32667268e-17 1.00000000e+00]]
 </code></pre></div>
 </dd>
 <dt id="kiam.is_visible"><code class="name flex">
@@ -904,6 +956,8 @@ body_radius = 1.0
 threshold_deg = 5.0
 
 status, elev_deg, azim_deg = kiam.is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
+
+print(status, elev_deg, azim_deg)
 </code></pre></div>
 </dd>
 <dt id="kiam.itrs2gcrs"><code class="name flex">
@@ -932,6 +986,8 @@ xitrs = numpy.array([1, 0, 0])
 xgcrs = kiam.itrs2gcrs(xitrs, jd, False)
 
 xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
+
+print(xgcrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.jd2time"><code class="name flex">
@@ -946,9 +1002,9 @@ xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
 <p><code>time</code> : datetime.datetime</p>
 <p>Date and time object of type datetime.datetime</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; jd2time(2459905.5)
+<pre><code>print(kiam.jd2time(2459905.5))
 
-2022-11-22 00:00:00
+# 2022-11-22 00:00:00
 </code></pre></div>
 </dd>
 <dt id="kiam.juliandate"><code class="name flex">
@@ -973,9 +1029,11 @@ xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
 <p><code>jd</code> : float</p>
 <p>Julian date</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; juliandate(2022, 11, 22, 0, 0, 0)
+<pre><code>jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
 
-2459905.5
+print(jd)
+
+# 2459905.5
 </code></pre></div>
 </dd>
 <dt id="kiam.latlon2cart"><code class="name flex">
@@ -994,11 +1052,27 @@ xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
 <p>3D vector or array of column 3D vectors of Cartesian coordinates.</p>
 <p>Vector structure: [x, y, z].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; latlon = numpy.array([0, 0])
+<pre><code>latlon = numpy.array([0, 0])
 
-&gt;&gt; cart = kiam.latlon2cart(latlon)
+cart = kiam.latlon2cart(latlon)
 
-[1. 0. 0.]
+print(cart)
+
+# [1. 0. 0.]
+</code></pre></div>
+</dd>
+<dt id="kiam.leap_second_count"><code class="name flex">
+<span>def <span class="ident">leap_second_count</span></span>(<span>) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns current leap seconds count.</p>
+<h2 id="returns">Returns:</h2>
+<p><code><a title="kiam.leap_second_count" href="#kiam.leap_second_count">leap_second_count()</a></code> : int</p>
+<p>The current leap seconds count.</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>lsc = kiam.leap_second_count()  # 37
+
+print(lsc)
 </code></pre></div>
 </dd>
 <dt id="kiam.legend_off"><code class="name flex">
@@ -1067,7 +1141,10 @@ fig.show()
 <p><code>var</code> : Any</p>
 <p>A variable contained in the file.</p>
 <h2 id="examples">Examples:</h2>
-<p>a = kiam.load('variable_a')</p></div>
+<pre><code>a = kiam.load('variable_a')
+
+print(a)
+</code></pre></div>
 </dd>
 <dt id="kiam.lvlh2mer"><code class="name flex">
 <span>def <span class="ident">lvlh2mer</span></span>(<span>xlvlh: numpy.ndarray, lat: float, lon: float) ‑> numpy.ndarray</span>
@@ -1092,6 +1169,8 @@ lat = 0.0
 lon = 1.0
 
 xmer = kiam.lvlh2mer(xlvlh, lat, lon)
+
+print(xmer)
 </code></pre></div>
 </dd>
 <dt id="kiam.mat2vec"><code class="name flex">
@@ -1107,11 +1186,13 @@ xmer = kiam.lvlh2mer(xlvlh, lat, lon)
 <p>Vector form of the matrix.</p>
 <p>Vector structure (Fortran/MATLAB order): <code>[a11, a21, a31, &hellip; ]</code></p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; a = numpy.array([[1, 2], [3, 4]])
+<pre><code>a = numpy.array([[1, 2], [3, 4]])
 
-&gt;&gt; v = kiam.mat2vec(a)
+v = kiam.mat2vec(a)
 
-[1 3 2 4]
+print(v)
+
+# [1 3 2 4]
 </code></pre></div>
 </dd>
 <dt id="kiam.mer2lvlh"><code class="name flex">
@@ -1137,6 +1218,8 @@ lat = 0.0
 lon = 1.0
 
 xlvlh = kiam.mer2lvlh(xmer, lat, lon)
+
+print(xlvlh)
 </code></pre></div>
 </dd>
 <dt id="kiam.mer2scrs"><code class="name flex">
@@ -1165,6 +1248,8 @@ jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
 xscrs = kiam.mer2scrs(xmer, jd, False)
 
 dxscrs = kiam.mer2scrs(xmer, jd, True)
+
+print(xscrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.nbp_ee_earth"><code class="name flex">
@@ -1258,6 +1343,26 @@ are not accounted.</p>
 (The radius of the Earth in the units of distance)</p>
 <p>'RMoon'
 (The radius of the Moon in the units of distance)</p>
+<p>'SunGM'
+(The nondimensional gravitational parameter of the Sun)</p>
+<p>'MercuryGM'
+(The nondimensional gravitational parameter of Mercury)</p>
+<p>'VenusGM'
+(The nondimensional gravitational parameter of Venus)</p>
+<p>'EarthGM'
+(The nondimensional gravitational parameter of the Earth)</p>
+<p>'MoonGM'
+(The nondimensional gravitational parameter of the Moon)</p>
+<p>'MarsGM'
+(The nondimensional gravitational parameter of Mars)</p>
+<p>'JupiterGM'
+(The nondimensional gravitational parameter of Jupiter)</p>
+<p>'SaturnGM'
+(The nondimensional gravitational parameter of Saturn)</p>
+<p>'UranusGM'
+(The nondimensional gravitational parameter of Uranus)</p>
+<p>'NeptuneGM'
+(The nondimensional gravitational parameter of Neptune)</p>
 <p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
 <p>The gravitational parameter in the specified units should be 1.0.</p>
 <h2 id="returns">Returns:</h2>
@@ -1289,7 +1394,9 @@ units_data = kiam.prepare_units_dict('earth')
 
 dsdt = kiam.nbp_ee_earth(t, s, stm_req, sources, data, units_data)
 
-[0. 0. 0. 0. 0. 1.]
+print(dsdt)
+
+# [0. 0. 0. 0. 0. 1.]
 </code></pre></div>
 </dd>
 <dt id="kiam.nbp_ee_moon"><code class="name flex">
@@ -1383,6 +1490,26 @@ are not accounted.</p>
 (The radius of the Earth in the units of distance)</p>
 <p>'RMoon'
 (The radius of the Moon in the units of distance)</p>
+<p>'SunGM'
+(The nondimensional gravitational parameter of the Sun)</p>
+<p>'MercuryGM'
+(The nondimensional gravitational parameter of Mercury)</p>
+<p>'VenusGM'
+(The nondimensional gravitational parameter of Venus)</p>
+<p>'EarthGM'
+(The nondimensional gravitational parameter of the Earth)</p>
+<p>'MoonGM'
+(The nondimensional gravitational parameter of the Moon)</p>
+<p>'MarsGM'
+(The nondimensional gravitational parameter of Mars)</p>
+<p>'JupiterGM'
+(The nondimensional gravitational parameter of Jupiter)</p>
+<p>'SaturnGM'
+(The nondimensional gravitational parameter of Saturn)</p>
+<p>'UranusGM'
+(The nondimensional gravitational parameter of Uranus)</p>
+<p>'NeptuneGM'
+(The nondimensional gravitational parameter of Neptune)</p>
 <p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
 <p>The gravitational parameter in the specified units should be 1.0.</p>
 <h2 id="returns">Returns:</h2>
@@ -1414,14 +1541,16 @@ units_data = kiam.prepare_units_dict('moon')
 
 dsdt = kiam.nbp_ee_moon(t, s, stm_req, sources, data, units_data)
 
-[0. 0. 0. 0. 0. 1.]
+print(dsdt)
+
+# [0. 0. 0. 0. 0. 1.]
 </code></pre></div>
 </dd>
 <dt id="kiam.nbp_rv_body"><code class="name flex">
 <span>def <span class="ident">nbp_rv_body</span></span>(<span>body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: dict, units_data: dict) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the specified body (except Earth and Moon) in terms of
+<div class="desc"><p>Right-hand side of the n-body problem equations of motion wrt the specified body in terms of
 the position and velocity variables.</p>
 <h2 id="parameters">Parameters:</h2>
 <p><code>body</code> : str</p>
@@ -1491,6 +1620,26 @@ are not accounted.</p>
 (The radius of the Earth in the units of distance)</p>
 <p>'RMoon'
 (The radius of the Moon in the units of distance)</p>
+<p>'SunGM'
+(The nondimensional gravitational parameter of the Sun)</p>
+<p>'MercuryGM'
+(The nondimensional gravitational parameter of Mercury)</p>
+<p>'VenusGM'
+(The nondimensional gravitational parameter of Venus)</p>
+<p>'EarthGM'
+(The nondimensional gravitational parameter of the Earth)</p>
+<p>'MoonGM'
+(The nondimensional gravitational parameter of the Moon)</p>
+<p>'MarsGM'
+(The nondimensional gravitational parameter of Mars)</p>
+<p>'JupiterGM'
+(The nondimensional gravitational parameter of Jupiter)</p>
+<p>'SaturnGM'
+(The nondimensional gravitational parameter of Saturn)</p>
+<p>'UranusGM'
+(The nondimensional gravitational parameter of Uranus)</p>
+<p>'NeptuneGM'
+(The nondimensional gravitational parameter of Neptune)</p>
 <p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
 <p>The gravitational parameter in the specified units should be 1.0.</p>
 <h2 id="returns">Returns:</h2>
@@ -1510,6 +1659,8 @@ stm_req = False
 
 sources = kiam.prepare_sources_dict()
 
+sources['jupiter'] = True
+
 data = kiam.prepare_data_dict()
 
 data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
@@ -1518,11 +1669,11 @@ data['area'] = 1.0
 
 data['mass'] = 100.0
 
-units_data = kiam.prepare_units_dict('moon')
+units_data = kiam.prepare_units_dict('sun')
 
-dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
+dsdt = kiam.nbp_rv_body('sun', t, s, stm_req, sources, data, units_data)
 
-[ 0.  1.  0. -1. -0. -0.]
+print(dsdt)
 </code></pre></div>
 </dd>
 <dt id="kiam.nbp_rv_earth"><code class="name flex">
@@ -1603,6 +1754,26 @@ are not accounted.</p>
 (The radius of the Earth in the units of distance)</p>
 <p>'RMoon'
 (The radius of the Moon in the units of distance)</p>
+<p>'SunGM'
+(The nondimensional gravitational parameter of the Sun)</p>
+<p>'MercuryGM'
+(The nondimensional gravitational parameter of Mercury)</p>
+<p>'VenusGM'
+(The nondimensional gravitational parameter of Venus)</p>
+<p>'EarthGM'
+(The nondimensional gravitational parameter of the Earth)</p>
+<p>'MoonGM'
+(The nondimensional gravitational parameter of the Moon)</p>
+<p>'MarsGM'
+(The nondimensional gravitational parameter of Mars)</p>
+<p>'JupiterGM'
+(The nondimensional gravitational parameter of Jupiter)</p>
+<p>'SaturnGM'
+(The nondimensional gravitational parameter of Saturn)</p>
+<p>'UranusGM'
+(The nondimensional gravitational parameter of Uranus)</p>
+<p>'NeptuneGM'
+(The nondimensional gravitational parameter of Neptune)</p>
 <p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
 <p>The gravitational parameter in the specified units should be 1.0.</p>
 <h2 id="returns">Returns:</h2>
@@ -1634,7 +1805,9 @@ units_data = kiam.prepare_units_dict('earth')
 
 dsdt = kiam.nbp_rv_earth(t, s, stm_req, sources, data, units_data)
 
-[ 0.  1.  0. -1. -0. -0.]
+print(dsdt)
+
+# [ 0.  1.  0. -1. -0. -0.]
 </code></pre></div>
 </dd>
 <dt id="kiam.nbp_rv_moon"><code class="name flex">
@@ -1715,6 +1888,26 @@ are not accounted.</p>
 (The radius of the Earth in the units of distance)</p>
 <p>'RMoon'
 (The radius of the Moon in the units of distance)</p>
+<p>'SunGM'
+(The nondimensional gravitational parameter of the Sun)</p>
+<p>'MercuryGM'
+(The nondimensional gravitational parameter of Mercury)</p>
+<p>'VenusGM'
+(The nondimensional gravitational parameter of Venus)</p>
+<p>'EarthGM'
+(The nondimensional gravitational parameter of the Earth)</p>
+<p>'MoonGM'
+(The nondimensional gravitational parameter of the Moon)</p>
+<p>'MarsGM'
+(The nondimensional gravitational parameter of Mars)</p>
+<p>'JupiterGM'
+(The nondimensional gravitational parameter of Jupiter)</p>
+<p>'SaturnGM'
+(The nondimensional gravitational parameter of Saturn)</p>
+<p>'UranusGM'
+(The nondimensional gravitational parameter of Uranus)</p>
+<p>'NeptuneGM'
+(The nondimensional gravitational parameter of Neptune)</p>
 <p>The units dictionary can be created by the kiam.prepare_units_dict() function.</p>
 <p>The gravitational parameter in the specified units should be 1.0.</p>
 <h2 id="returns">Returns:</h2>
@@ -1746,7 +1939,9 @@ units_data = kiam.prepare_units_dict('moon')
 
 dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
 
-[ 0.  1.  0. -1. -0. -0.]
+print(dsdt)
+
+# [ 0.  1.  0. -1. -0. -0.]
 </code></pre></div>
 </dd>
 <dt id="kiam.oe2rv"><code class="name flex">
@@ -1780,6 +1975,8 @@ dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
 rv = kiam.oe2rv(oe, 1.0, False)
 
 rv, drv = kiam.oe2rv(oe, 1.0, True)
+
+print(rv)
 </code></pre></div>
 </dd>
 <dt id="kiam.planet_state"><code class="name flex">
@@ -1800,11 +1997,12 @@ wrt to the specified center (planet).</p>
 <p>State of the target planet wrt the center planet.</p>
 <p>Position in km, velocity in km/s.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>
-&gt;&gt; planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
+<pre><code>s = kiam.planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
 
-[ 3.76623766e+05  7.07472988e+04  1.01213236e+04
-    -1.36269070e-01 8.97864551e-01  4.72492325e-01]
+print(s)
+
+# [ 3.76623766e+05  7.07472988e+04  1.01213236e+04
+#  -1.36269070e-01 8.97864551e-01  4.72492325e-01 ]
 </code></pre></div>
 </dd>
 <dt id="kiam.plot"><code class="name flex">
@@ -1838,7 +2036,7 @@ will be added to the existing figure in <code>fig</code>.</p>
 <p><code>fig</code> : plotly.graph_objects.Figure</p>
 <p>The (updated) Plotly figure object.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (minimal):
+<pre><code># Example 1 (minimal):
 
 x = numpy.array([1, 2, 3, 4, 5])
 
@@ -1848,7 +2046,7 @@ fig = kiam.plot(x, y)
 
 fig.show()
 
-Example 2:
+# Example 2:
 
 x = numpy.array([1, 2, 3, 4, 5])
 
@@ -1898,7 +2096,7 @@ will be added to the existing figure in <code>fig</code>.</p>
 <p><code>fig</code> : plotly.graph_objects.Figure</p>
 <p>The (updated) Plotly figure object.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (minimal):
+<pre><code># Example 1 (minimal):
 
 x = numpy.array([1, 2, 3, 4, 5])
 
@@ -1910,7 +2108,7 @@ fig = kiam.plot3(x, y, z)
 
 fig.show()
 
-Example 2:
+# Example 2:
 
 x = numpy.array([1, 2, 3, 4, 5])
 
@@ -1971,9 +2169,9 @@ fig.show()
 (Mass of the spacecraft to account in atmospheric drag and SRP, kg)</p>
 <p>All the values are assigned to zero.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.prepare_data_dict()
+<pre><code>print(kiam.prepare_data_dict())
 
-{'jd_zero': 0.0, 'order': 0, 'area': 0.0, 'mass': 0.0}
+# {'jd_zero': 0.0, 'order': 0, 'area': 0.0, 'mass': 0.0}
 </code></pre></div>
 </dd>
 <dt id="kiam.prepare_sources_dict"><code class="name flex">
@@ -2012,9 +2210,9 @@ fig.show()
 (Gravitational acceleration of the Moon)</p>
 <p>'cmplxmoon' (Complex gravitational acceleration of the Moon)</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.prepare_sources_dict()
+<pre><code>print(kiam.prepare_sources_dict())
 
-{'sun': False, 'mercury': False, 'venus': False, 'earth': False, 'moon': False, 'mars': False, 'jupiter': False, 'saturn': False, 'uranus': False, 'neptune': False, 'srp': False, 'cmplxmoon': False, 'atm': False, 'j2': False}
+# {'sun': False, 'mercury': False, 'venus': False, 'earth': False, 'moon': False, 'mars': False, 'jupiter': False, 'saturn': False, 'uranus': False, 'neptune': False, 'srp': False, 'cmplxmoon': False, 'atm': False, 'j2': False}
 </code></pre></div>
 </dd>
 <dt id="kiam.prepare_units_dict"><code class="name flex">
@@ -2040,10 +2238,9 @@ fig.show()
 <p>'REarth': the mean radius of the Earth in DistUnit units</p>
 <p>'RMoon': the mean radius of the Moon in DistUnit units</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.prepare_units_dict('earth')
+<pre><code>print(kiam.prepare_units_dict('earth'))
 
-{'DistUnit': 6371.0084, 'VelUnit': 7.909787126714006, 'TimeUnit': 0.009322440916154166, 'AccUnit': 9.820224438870717, 'RSun': 109.19778413728038, 'REarth': 1.0, 'RMoon': 0.27270408244949107}
-
+# {'DistUnit': 6371.0084, 'VelUnit': 7.909787126714006, 'TimeUnit': 0.009322440916154166, 'AccUnit': 9.820224438870717, 'RSun': 109.19778413728038, 'REarth': 1.0, 'RMoon': 0.27270408244949107}
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_br4bp"><code class="name flex">
@@ -2055,7 +2252,7 @@ fig.show()
 <p><code>central_body</code> : str</p>
 <p>First or secondary primary body or baricenter as the origin of the coordinate system</p>
 <p>Options: 'first', 'secondary', 'center'</p>
-<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p><code>tspan</code> : numpy.ndarray, shape (n,)</p>
 <p>Time nodes at which the solution is required</p>
 <p><code>x0</code> : numpy.ndarray, shape (6,), (42,)</p>
 <p>Initial state containing:</p>
@@ -2088,9 +2285,9 @@ connecting the primaties.</p>
 <h2 id="examples">Examples:</h2>
 <pre><code>central_body = 'first'
 
-tspan = np.linspace(0, 10, 1000)
+tspan = numpy.linspace(0, 10, 1000)
 
-x0 = np.array([0.5, 0, 0, 0, 0.5, 0])
+x0 = numpy.array([0.5, 0, 0, 0, 0.5, 0])
 
 mu = 1.215e-02
 
@@ -2103,6 +2300,8 @@ a4b = 389.170375544352
 theta0 = 0.0
 
 t, y = kiam.propagate_br4bp(central_body, tspan, x0, mu, gm4b, a4b, theta0, stm)
+
+print(t[-1], y[:, -1])
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_cr3bp"><code class="name flex">
@@ -2114,7 +2313,7 @@ t, y = kiam.propagate_br4bp(central_body, tspan, x0, mu, gm4b, a4b, theta0, stm)
 <p><code>central_body</code> : str</p>
 <p>First or secondary primary body or barycenter as the origin of the coordinate system</p>
 <p>Options: 'first', 'secondary', 'center'</p>
-<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p><code>tspan</code> : numpy.ndarray, shape (n,)</p>
 <p>Time nodes at which the solution is required</p>
 <p><code>x0</code> : numpy.ndarray, shape (6,), (42,)</p>
 <p>Initial state containing:</p>
@@ -2147,6 +2346,8 @@ mu = 1e-02
 stm = False
 
 t, y = kiam.propagate_cr3bp(central_body, tspan, x0, mu, stm)
+
+print(t[-1], y[:, -1])
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_hill"><code class="name flex">
@@ -2155,9 +2356,9 @@ t, y = kiam.propagate_cr3bp(central_body, tspan, x0, mu, stm)
 <dd>
 <div class="desc"><p>Propagate trajectory in Hill's model of motion.</p>
 <h2 id="parameters">Parameters:</h2>
-<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p><code>tspan</code> : numpy.ndarray, shape (n,)</p>
 <p>Time nodes at which the solution is required</p>
-<p><code>x0</code>: numpy.ndarray, shape (6,)</p>
+<p><code>x0</code> : numpy.ndarray, shape (6,)</p>
 <p>Initial state containing position and velocity.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz]</p>
 <h2 id="returns">Returns:</h2>
@@ -2172,6 +2373,8 @@ t, y = kiam.propagate_cr3bp(central_body, tspan, x0, mu, stm)
 x0 = numpy.array([-0.5, 0, 0, 0, 2.0, 0])
 
 t, y = kiam.propagate_hill(tspan, x0)
+
+print(t[-1], y[:, -1])
 </code></pre></div>
 </dd>
 <dt id="kiam.propagate_nbp"><code class="name flex">
@@ -2180,11 +2383,11 @@ t, y = kiam.propagate_hill(tspan, x0)
 <dd>
 <div class="desc"><p>Propagate trajectory in the n-body model of motion.</p>
 <h2 id="parameters">Parameters:</h2>
-<p><code>central_body</code>: str</p>
+<p><code>central_body</code> : str</p>
 <p>Name of the central body</p>
-<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p><code>tspan</code> : numpy.ndarray, shape (n,)</p>
 <p>Time nodes at which the solution is required</p>
-<p><code>x0</code>: numpy.ndarray, shape (6,), (42,)</p>
+<p><code>x0</code> : numpy.ndarray, shape (6,), (42,)</p>
 <p>Initial state containing:</p>
 <p>position and velocity (if variables = 'rv', stm = False),</p>
 <p>position and velocoty extended by vectorized state-transition matrix (if variables = 'rv_stm', stm = True),</p>
@@ -2208,7 +2411,7 @@ t, y = kiam.propagate_hill(tspan, x0)
 <p>Omega - right ascension of the ascending node,</p>
 <p>omega - argument of pericenter,</p>
 <p>i - inclination</p>
-<p><code>sources_dict</code>: dict</p>
+<p><code>sources_dict</code> : dict</p>
 <p>Dictionary that contains the perturbations that should be accounted.</p>
 <p>The dictionary keys:</p>
 <p>'atm'
@@ -2257,9 +2460,9 @@ are not accounted.</p>
 <p>'units_dict' : dict</p>
 <p>A dictionary that contains the units of distance, velocity, time, acceleration, and the gravitational parameters of the bodies.</p>
 <p>This variable can be generated by kiam.prepare_units_dict function.</p>
-<p><code>stm</code>: bool</p>
+<p><code>stm</code> : bool</p>
 <p>Flag to calculate the derivative of the state-transition matrix</p>
-<p><code>variables</code>: str</p>
+<p><code>variables</code> : str</p>
 <p>Type of variables used to propagate the trajectory.</p>
 <p>If stm = False, then variables should be 'rv' or 'ee'.</p>
 <p>If stm = True, then variables should be 'rv_stm' or 'ee_stm'.</p>
@@ -2310,7 +2513,10 @@ stm = False
 variables = 'rv'
 
 t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, units_dict, stm, variables)
-</code></pre></div>
+
+print(t[-1], y[:, -1])
+</code></pre>
+<p>Examples with using the control function can be found on GitHub: <a href="https://github.com/shmaxg/KIAMToolbox/tree/master/examples">https://github.com/shmaxg/KIAMToolbox/tree/master/examples</a></p></div>
 </dd>
 <dt id="kiam.propagate_r2bp"><code class="name flex">
 <span>def <span class="ident">propagate_r2bp</span></span>(<span>tspan: numpy.ndarray, x0: numpy.ndarray) ‑> tuple</span>
@@ -2318,9 +2524,9 @@ t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, units
 <dd>
 <div class="desc"><p>Propagate trajectory in the two-body model of motion.</p>
 <h2 id="parameters">Parameters:</h2>
-<p><code>tspan</code>: numpy.ndarray, shape (n,)</p>
+<p><code>tspan</code> : numpy.ndarray, shape (n,)</p>
 <p>Time nodes at which the solution is required</p>
-<p><code>x0</code>: numpy.ndarray, shape (6,)</p>
+<p><code>x0</code> : numpy.ndarray, shape (6,)</p>
 <p>Initial state containing position and velocity.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz]</p>
 <h2 id="returns">Returns:</h2>
@@ -2335,6 +2541,8 @@ t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, units
 x0 = numpy.array([1, 0, 0, 0, 1, 0])
 
 t, y = kiam.propagate_r2bp(tspan, x0)
+
+print(t[-1], y[:, -1])
 </code></pre></div>
 </dd>
 <dt id="kiam.r2bp"><code class="name flex">
@@ -2357,9 +2565,9 @@ t, y = kiam.propagate_r2bp(tspan, x0)
 
 s0 = numpy.array([1, 0, 0, 0, 1, 0])
 
-kiam.r2bp(t0, s0)
+print(kiam.r2bp(t0, s0))
 
-[ 0.  1.  0. -1. -0. -0.]
+# [ 0.  1.  0. -1. -0. -0.]
 </code></pre></div>
 </dd>
 <dt id="kiam.rad2deg"><code class="name flex">
@@ -2374,9 +2582,9 @@ kiam.r2bp(t0, s0)
 <p><code>deg</code> : float, numpy.ndarray</p>
 <p>Angle or array of angles in degrees.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; rad2deg(3.141592)
+<pre><code>print(kiam.rad2deg(3.141592))
 
-179.99996255206332
+# 179.99996255206332
 </code></pre></div>
 </dd>
 <dt id="kiam.rot2ine"><code class="name flex">
@@ -2404,6 +2612,8 @@ t = 1.0
 t0 = 0.0
 
 xine = kiam.rot2ine(xrot, t, t0)
+
+print(xine)
 </code></pre></div>
 </dd>
 <dt id="kiam.rot2ine_eph"><code class="name flex">
@@ -2441,6 +2651,8 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 ku = kiam.units('earth', 'moon')
 
 xine = kiam.ine2rot_eph(xrot, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+
+print(xine)
 </code></pre></div>
 </dd>
 <dt id="kiam.rv2ee"><code class="name flex">
@@ -2481,6 +2693,8 @@ xine = kiam.ine2rot_eph(xrot, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit']
 ee = kiam.rv2ee(rv, 1.0, False)
 
 ee, dee = kiam.rv2ee(rv, 1.0, True)
+
+print(ee)
 </code></pre></div>
 </dd>
 <dt id="kiam.rv2oe"><code class="name flex">
@@ -2514,6 +2728,8 @@ ee, dee = kiam.rv2ee(rv, 1.0, True)
 oe = kiam.rv2oe(rv, 1.0, False)
 
 oe, doe = kiam.rv2oe(rv, 1.0, True)
+
+print(oe)
 </code></pre></div>
 </dd>
 <dt id="kiam.save"><code class="name flex">
@@ -2596,7 +2812,7 @@ kiam.save_image(fig, 'myfig.png')
 <p>6D vector or array of 6D column phase vectors in the GCRS coordinate system.</p>
 <p>Vector structure: [x, y, z, vx, vy, vz].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>Example 1 (6D -&gt; 6D):
+<pre><code># Example 1 (6D -&gt; 6D):
 
 ku = kiam.units('earth', 'moon')
 
@@ -2606,7 +2822,9 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-Example 2 (6x1 -&gt; 6x1):
+print(xgcrs)
+
+# Example 2 (6x1 -&gt; 6x1):
 
 ku = kiam.units('earth', 'moon')
 
@@ -2615,6 +2833,8 @@ xscrs = numpy.array([[1, 0, 0, 0, 1, 0]]).T
 jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
 xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+print(xgcrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.scrs2mer"><code class="name flex">
@@ -2643,6 +2863,8 @@ jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
 xmer = kiam.scrs2mer(xscrs, jd, False)
 
 dxmer = kiam.scrs2mer(xscrs, jd, True)
+
+print(xmer)
 </code></pre></div>
 </dd>
 <dt id="kiam.scrs2pa"><code class="name flex">
@@ -2671,6 +2893,8 @@ xscrs = numpy.array([1, 0, 0])
 xpa = kiam.scrs2pa(xscrs, jd, False)
 
 xpa, dxpa = kiam.scrs2pa(xscrs, jd, True)
+
+print(xpa)
 </code></pre></div>
 </dd>
 <dt id="kiam.scrs2sors"><code class="name flex">
@@ -2699,6 +2923,8 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 xsors = kiam.scrs2sors(xscrs, jd, False)
 
 xsors, dxsors = kiam.scrs2sors(xscrs, jd, True)
+
+print(xsors)
 </code></pre></div>
 </dd>
 <dt id="kiam.set_axis_equal"><code class="name flex">
@@ -2720,7 +2946,7 @@ y = numpy.array([2, 3, 0, 1, 2])
 
 fig = kiam.plot(x, y)
 
-fig = kiam.axis_equal(fig)
+fig = kiam.set_axis_equal(fig)
 
 fig.show()
 </code></pre></div>
@@ -2846,9 +3072,9 @@ fig.show()
 <p><code>s</code> : float, numpy.ndarray</p>
 <p>A sine or array of sines of angles in degrees.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.sind(30)
+<pre><code>print(kiam.sind(30))
 
-0.49999999999999994
+# 0.49999999999999994
 </code></pre></div>
 </dd>
 <dt id="kiam.sors2scrs"><code class="name flex">
@@ -2877,6 +3103,8 @@ jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 xscrs = kiam.sors2scrs(xsors, jd, False)
 
 xscrs, dxscrs = kiam.sors2scrs(xsors, jd, True)
+
+print(xscrs)
 </code></pre></div>
 </dd>
 <dt id="kiam.sphere2cart"><code class="name flex">
@@ -2905,11 +3133,13 @@ z = r*sin(theta)
 <p>3D vector or 3xn array of column 3D vectors of Cartesian coordinates.</p>
 <p>Vector structure: [x, y, z].</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; sphere = numpy.array([1, 0, 0])
+<pre><code>sphere = numpy.array([1, 0, 0])
 
-&gt;&gt; cart = kiam.sphere2cart(sphere)
+cart = kiam.sphere2cart(sphere)
 
-[0. 0. 1.]
+print(cart)
+
+# [0. 0. 1.]
 </code></pre></div>
 </dd>
 <dt id="kiam.sphere_coordinates"><code class="name flex">
@@ -2932,7 +3162,26 @@ z = r*sin(theta)
 <p><code>z</code> : numpy.ndarray, shape(nlat, nlon)</p>
 <p>The z-coordinates.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>x, y, z = sphere_coordinates(1.0, 100, 100)
+<pre><code>x, y, z = kiam.sphere_coordinates(1.0, 100, 100)
+</code></pre></div>
+</dd>
+<dt id="kiam.tai2utc"><code class="name flex">
+<span>def <span class="ident">tai2utc</span></span>(<span>tai: datetime.datetime) ‑> datetime.datetime</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TAI to UTC conversion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tai</code> : datetime.datetime</p>
+<p>The International Atomic Time (TAI).</p>
+<h2 id="returns">Returns:</h2>
+<p><code>utc</code> : datetime.datetime</p>
+<p>The Coordinated Universal Time (UTC).</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>tai = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+utc = kiam.tai2utc(tai)  # 2023-03-08 11:59:27.816000
+
+print(utc)
 </code></pre></div>
 </dd>
 <dt id="kiam.tand"><code class="name flex">
@@ -2947,7 +3196,7 @@ z = r*sin(theta)
 <p><code>s</code> : float, numpy.ndarray</p>
 <p>A tangent or array of tangents of angles in degrees.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.tand(45)
+<pre><code>print(kiam.tand(45))
 
 0.9999999999999999
 </code></pre></div>
@@ -2964,9 +3213,11 @@ z = r*sin(theta)
 <p><code>jd</code> : float</p>
 <p>Julian date</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; time2jd(datetime.datetime(2022, 11, 22, 0, 0, 0, 0))
+<pre><code>jd = kiam.time2jd(datetime.datetime(2022, 11, 22, 0, 0, 0, 0))
 
-2459905.5
+print(jd)
+
+# 2459905.5
 </code></pre></div>
 </dd>
 <dt id="kiam.to_float"><code class="name flex">
@@ -2981,9 +3232,30 @@ z = r*sin(theta)
 <p><code>float_args</code> : tuple</p>
 <p>Tuple of numpy arrays with components converted to <code>float64</code> arguments.</p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; kiam.to_float([1, 2], 3, [4, 5, 6])
+<pre><code>f = kiam.to_float([1, 2], 3, [4, 5, 6])
 
-(array([1., 2.]), array(3.), array([4., 5., 6.]))
+print(f)
+
+# (array([1., 2.]), array(3.), array([4., 5., 6.]))
+</code></pre></div>
+</dd>
+<dt id="kiam.tt2utc"><code class="name flex">
+<span>def <span class="ident">tt2utc</span></span>(<span>tt: datetime.datetime) ‑> datetime.datetime</span>
+</code></dt>
+<dd>
+<div class="desc"><p>TT to UTC conversion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>tt</code> : datetime.datetime</p>
+<p>The Terrestrial Time (TT).</p>
+<h2 id="returns">Returns:</h2>
+<p><code>utc</code> : datetime.datetime</p>
+<p>The Coordinated Universal Time (UTC).</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>tt = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+utc = kiam.tt2utc(tt)  # 2023-03-08 11:58:50.816000
+
+print(utc)
 </code></pre></div>
 </dd>
 <dt id="kiam.units"><code class="name flex">
@@ -3020,9 +3292,51 @@ z = r*sin(theta)
 
 DU = un['DistUnit']  # Unit of distance for the earth system of units
 
+print(DU)
+
 un = kiam.units('earth', 'moon')
 
 VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
+
+print(VU)
+</code></pre></div>
+</dd>
+<dt id="kiam.utc2tai"><code class="name flex">
+<span>def <span class="ident">utc2tai</span></span>(<span>utc: datetime.datetime) ‑> datetime.datetime</span>
+</code></dt>
+<dd>
+<div class="desc"><p>UTC to TAI conversion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>utc</code> : datetime.datetime</p>
+<p>The Coordinated Universal Time (UTC).</p>
+<h2 id="returns">Returns:</h2>
+<p><code>tai</code> : datetime.datetime</p>
+<p>The International Atomic Time (TAI).</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>utc = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+tai = kiam.utc2tai(utc)  # 2023-03-08 12:00:32.184000
+
+print(tai)
+</code></pre></div>
+</dd>
+<dt id="kiam.utc2tt"><code class="name flex">
+<span>def <span class="ident">utc2tt</span></span>(<span>utc: datetime.datetime) ‑> datetime.datetime</span>
+</code></dt>
+<dd>
+<div class="desc"><p>UTC to TT conversion.</p>
+<h2 id="parameters">Parameters:</h2>
+<p><code>utc</code> : datetime.datetime</p>
+<p>The Coordinated Universal Time (UTC).</p>
+<h2 id="returns">Returns:</h2>
+<p><code>tt</code> : datetime.datetime</p>
+<p>The Terrestrial Time (TT).</p>
+<h2 id="examples">Examples:</h2>
+<pre><code>utc = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+tt = kiam.utc2tt(utc)  # 2023-03-08 12:01:09.184000
+
+print(tt)
 </code></pre></div>
 </dd>
 <dt id="kiam.vec2mat"><code class="name flex">
@@ -3038,13 +3352,14 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <p>A square matrix.</p>
 <p>Matrix structure (Fortran/MATLAB order): <code>[[v1, v2, ..., vn], [v_(n+1), ...]].T</code></p>
 <h2 id="examples">Examples:</h2>
-<pre><code>&gt;&gt; v = numpy.array([1, 2, 3, 4])
+<pre><code>v = numpy.array([1, 2, 3, 4])
 
-&gt;&gt; m = kiam.vec2mat(v)
+m = kiam.vec2mat(v)
 
-[[1 3]
+print(m)
 
-[2 4]]
+# [[1 3]
+# [2 4]]
 </code></pre></div>
 </dd>
 </dl>
@@ -3094,6 +3409,7 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><code><a title="kiam.jd2time" href="#kiam.jd2time">jd2time</a></code></li>
 <li><code><a title="kiam.juliandate" href="#kiam.juliandate">juliandate</a></code></li>
 <li><code><a title="kiam.latlon2cart" href="#kiam.latlon2cart">latlon2cart</a></code></li>
+<li><code><a title="kiam.leap_second_count" href="#kiam.leap_second_count">leap_second_count</a></code></li>
 <li><code><a title="kiam.legend_off" href="#kiam.legend_off">legend_off</a></code></li>
 <li><code><a title="kiam.legend_on" href="#kiam.legend_on">legend_on</a></code></li>
 <li><code><a title="kiam.load" href="#kiam.load">load</a></code></li>
@@ -3141,10 +3457,14 @@ VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
 <li><code><a title="kiam.sors2scrs" href="#kiam.sors2scrs">sors2scrs</a></code></li>
 <li><code><a title="kiam.sphere2cart" href="#kiam.sphere2cart">sphere2cart</a></code></li>
 <li><code><a title="kiam.sphere_coordinates" href="#kiam.sphere_coordinates">sphere_coordinates</a></code></li>
+<li><code><a title="kiam.tai2utc" href="#kiam.tai2utc">tai2utc</a></code></li>
 <li><code><a title="kiam.tand" href="#kiam.tand">tand</a></code></li>
 <li><code><a title="kiam.time2jd" href="#kiam.time2jd">time2jd</a></code></li>
 <li><code><a title="kiam.to_float" href="#kiam.to_float">to_float</a></code></li>
+<li><code><a title="kiam.tt2utc" href="#kiam.tt2utc">tt2utc</a></code></li>
 <li><code><a title="kiam.units" href="#kiam.units">units</a></code></li>
+<li><code><a title="kiam.utc2tai" href="#kiam.utc2tai">utc2tai</a></code></li>
+<li><code><a title="kiam.utc2tt" href="#kiam.utc2tt">utc2tt</a></code></li>
 <li><code><a title="kiam.vec2mat" href="#kiam.vec2mat">vec2mat</a></code></li>
 </ul>
 </li>

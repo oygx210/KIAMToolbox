@@ -15,7 +15,10 @@ The GitHub page of the project:
 https://github.com/shmaxg/KIAMToolbox.
 """
 
-import os, sys, pathlib
+import os
+import pathlib
+import sys
+
 pcf = str(pathlib.Path(__file__).parent.resolve())
 pwd = os.getcwd()
 sys.path.extend([pcf])
@@ -23,6 +26,7 @@ sys.path.extend([pcf])
 import FKIAMToolbox
 import jdcal
 import datetime
+from datetime import timedelta
 import math
 import numpy
 import plotly
@@ -62,8 +66,10 @@ def invadotb(a: numpy.ndarray, b: numpy.ndarray) -> numpy.ndarray:
 
     c = kiam.invadotb(a, b)
 
-    [[1.00000000e+00 0.00000000e+00]
-    [8.32667268e-17 1.00000000e+00]]
+    print(c)
+
+    # [[1.00000000e+00 0.00000000e+00]
+    # [8.32667268e-17 1.00000000e+00]]
     ```
     """
     return numpy.linalg.solve(a, b)
@@ -96,8 +102,10 @@ def dotainvb(a: numpy.ndarray, b: numpy.ndarray) -> numpy.ndarray:
 
     c = kiam.dotainvb(a, b)
 
-    [[1. 0.]
-    [0. 1.]]
+    print(c)
+
+    # [[1. 0.]
+    # [0. 1.]]
     ```
     """
     c = numpy.linalg.solve(b.T, a.T)
@@ -121,9 +129,11 @@ def eye2vec(n: int) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> a = kiam.eye2vec(3)
+    a = kiam.eye2vec(3)
 
-    [1. 0. 0. 0. 1. 0. 0. 0. 1.]
+    print(a)
+
+    # [1. 0. 0. 0. 1. 0. 0. 0. 1.]
     ```
     """
     return numpy.reshape(numpy.eye(n), (n**2,))
@@ -148,11 +158,13 @@ def mat2vec(a: numpy.ndarray) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> a = numpy.array([[1, 2], [3, 4]])
+    a = numpy.array([[1, 2], [3, 4]])
 
-    >> v = kiam.mat2vec(a)
+    v = kiam.mat2vec(a)
 
-    [1 3 2 4]
+    print(v)
+
+    # [1 3 2 4]
     ```
     """
     v = numpy.reshape(a, (a.size,), order='F')
@@ -179,13 +191,14 @@ def vec2mat(v: numpy.ndarray) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> v = numpy.array([1, 2, 3, 4])
+    v = numpy.array([1, 2, 3, 4])
 
-    >> m = kiam.vec2mat(v)
+    m = kiam.vec2mat(v)
 
-    [[1 3]
+    print(m)
 
-    [2 4]]
+    # [[1 3]
+    # [2 4]]
     ```
     """
     a = numpy.reshape(v, (int(round(numpy.sqrt(v.size))), -1), order='F')
@@ -209,9 +222,11 @@ def to_float(*args: Any) -> tuple:
     Examples:
     ---------
     ```
-    >> kiam.to_float([1, 2], 3, [4, 5, 6])
+    f = kiam.to_float([1, 2], 3, [4, 5, 6])
 
-    (array([1., 2.]), array(3.), array([4., 5., 6.]))
+    print(f)
+
+    # (array([1., 2.]), array(3.), array([4., 5., 6.]))
     ```
     """
     args_float = tuple(numpy.array(arg, dtype='float64') for arg in args)
@@ -235,9 +250,9 @@ def sind(x: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     Examples:
     ---------
     ```
-    >> kiam.sind(30)
+    print(kiam.sind(30))
 
-    0.49999999999999994
+    # 0.49999999999999994
     ```
     """
     return numpy.sin(x/180*numpy.pi)
@@ -260,9 +275,9 @@ def cosd(x: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     Examples:
     ---------
     ```
-    >> kiam.cosd(60)
+    print(kiam.cosd(60))
 
-    0.5000000000000001
+    # 0.5000000000000001
     ```
     """
     return numpy.cos(x/180*numpy.pi)
@@ -285,7 +300,7 @@ def tand(x: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     Examples:
     ---------
     ```
-    >> kiam.tand(45)
+    print(kiam.tand(45))
 
     0.9999999999999999
     ```
@@ -310,9 +325,9 @@ def cotand(x: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     Examples:
     ---------
     ```
-    >> kiam.cotand(45)
+    print(kiam.cotand(45))
 
-    1.0000000000000002
+    # 1.0000000000000002
     ```
     """
     return 1/numpy.tan(x/180*numpy.pi)
@@ -376,7 +391,7 @@ def plot(x: numpy.ndarray, y: numpy.ndarray, fig: plotly.graph_objects.Figure = 
     Examples:
     --------
     ```
-    Example 1 (minimal):
+    # Example 1 (minimal):
 
     x = numpy.array([1, 2, 3, 4, 5])
 
@@ -386,7 +401,7 @@ def plot(x: numpy.ndarray, y: numpy.ndarray, fig: plotly.graph_objects.Figure = 
 
     fig.show()
 
-    Example 2:
+    # Example 2:
 
     x = numpy.array([1, 2, 3, 4, 5])
 
@@ -479,7 +494,7 @@ def plot3(x: numpy.ndarray, y: numpy.ndarray, z: numpy.ndarray, fig: plotly.grap
     Examples:
     --------
     ```
-    Example 1 (minimal):
+    # Example 1 (minimal):
 
     x = numpy.array([1, 2, 3, 4, 5])
 
@@ -491,7 +506,7 @@ def plot3(x: numpy.ndarray, y: numpy.ndarray, z: numpy.ndarray, fig: plotly.grap
 
     fig.show()
 
-    Example 2:
+    # Example 2:
 
     x = numpy.array([1, 2, 3, 4, 5])
 
@@ -656,7 +671,7 @@ def set_xlabel(fig: plotly.graph_objects.Figure, xlabel: str):
         )
         return fig
 
-    raise 'set_xlabel is implemented only for scatter and scatter3d figures.'
+    raise Exception('set_xlabel is implemented only for scatter and scatter3d figures.')
 def set_ylabel(fig: plotly.graph_objects.Figure, ylabel: str):
     """
     Set a custom y-axis label.
@@ -706,7 +721,7 @@ def set_ylabel(fig: plotly.graph_objects.Figure, ylabel: str):
         )
         return fig
 
-    raise 'set_ylabel is implemented only for scatter and scatter3d figures.'
+    raise Exception('set_ylabel is implemented only for scatter and scatter3d figures.')
 def set_zlabel(fig: plotly.graph_objects.Figure, zlabel: str):
     """
     Set a custom y-axis label.
@@ -754,7 +769,7 @@ def set_zlabel(fig: plotly.graph_objects.Figure, zlabel: str):
         )
         return fig
 
-    raise 'set_zlabel is implemented only for scatter3d figures.'
+    raise Exception('set_zlabel is implemented only for scatter3d figures.')
 def legend_on(fig: plotly.graph_objects.Figure):
     """
     Shows the legend.
@@ -923,7 +938,7 @@ def grid_off(fig: plotly.graph_objects.Figure):
         )
         return fig
 
-    raise 'grid_off is implemented only for scatter and scatter3d figures.'
+    raise Exception('grid_off is implemented only for scatter and scatter3d figures.')
 def set_default_grid(fig: plotly.graph_objects.Figure):
     """
     Sets the default grid.
@@ -979,7 +994,7 @@ def set_default_grid(fig: plotly.graph_objects.Figure):
         )
         return fig
 
-    raise 'set_default_grid is implemented only for scatter and scatter3d figures.'
+    raise Exception('set_default_grid is implemented only for scatter and scatter3d figures.')
 def set_axis_equal(fig: plotly.graph_objects.Figure):
     """
     Sets axis to be equal.
@@ -1009,7 +1024,7 @@ def set_axis_equal(fig: plotly.graph_objects.Figure):
 
     fig = kiam.plot(x, y)
 
-    fig = kiam.axis_equal(fig)
+    fig = kiam.set_axis_equal(fig)
 
     fig.show()
     ```
@@ -1030,7 +1045,7 @@ def set_axis_equal(fig: plotly.graph_objects.Figure):
         )
         return fig
 
-    raise 'axis_equal is implemented only for scatter and scatter3d figures.'
+    raise Exception('axis_equal is implemented only for scatter and scatter3d figures.')
 def save_image(fig: plotly.graph_objects.Figure, filename: str, scale: int = 2):
     """
     Saves the figure as a static image (PNG, PDF, etc).
@@ -1126,17 +1141,17 @@ def body_surface(body: str, radius: float = 1.0, quality: str = 'medium'):
     Examples:
     ---------
     ```
-    fig = body_surface('earth')
+    fig = kiam.body_surface('earth')
 
     fig.show()
 
-    fig = body_surface('moon')
+    fig = kiam.body_surface('moon')
 
     fig.show()
     ```
     """
     if quality.lower() not in ['low', 'medium', 'high']:
-        raise 'Quality should be "low", "medium", or "high".'
+        raise Exception('Quality should be "low", "medium", or "high".')
     if body.lower() == 'earth':
         with _package_folder_contex():
             image = Image.open('./images/Earth2.jpg').convert('L')
@@ -1155,7 +1170,7 @@ def body_surface(body: str, radius: float = 1.0, quality: str = 'medium'):
             image = Image.open('./images/Moon1.jpg').convert('L')
         colorscale = 'gray'
     else:
-        raise 'Unknown body. Only earth and moon are currently supported.'
+        raise Exception('Unknown body. Only earth and moon are currently supported.')
     body_texture = numpy.asarray(image)
     if quality.lower() in ['medium', 'low']:
         body_texture = numpy.delete(body_texture, list(range(0, body_texture.shape[0], 2)), axis=0)
@@ -1204,7 +1219,7 @@ def sphere_coordinates(radius: float, nlat: int, nlon:  int):
     Examples:
     ---------
     ```
-    x, y, z = sphere_coordinates(1.0, 100, 100)
+    x, y, z = kiam.sphere_coordinates(1.0, 100, 100)
     ```
     """
     lon = numpy.linspace(-numpy.pi, numpy.pi, nlon)
@@ -1234,9 +1249,9 @@ def jd2time(jd: float) -> datetime.datetime:
     Examples:
     ---------
     ```
-    >> jd2time(2459905.5)
+    print(kiam.jd2time(2459905.5))
 
-    2022-11-22 00:00:00
+    # 2022-11-22 00:00:00
     ```
     """
     gcal = jdcal.jd2gcal(2400000.5, jd - 2400000.5)
@@ -1269,9 +1284,11 @@ def time2jd(time: datetime.datetime) -> float:
     Examples:
     ---------
     ```
-    >> time2jd(datetime.datetime(2022, 11, 22, 0, 0, 0, 0))
+    jd = kiam.time2jd(datetime.datetime(2022, 11, 22, 0, 0, 0, 0))
 
-    2459905.5
+    print(jd)
+
+    # 2459905.5
     ```
     """
     return sum(jdcal.gcal2jd(time.year, time.month, time.day)) + time.hour / 24 + \
@@ -1315,9 +1332,11 @@ def juliandate(year: int, month: int, day: int, hour: int, minute: int, second: 
     Examples:
     ---------
     ```
-    >> juliandate(2022, 11, 22, 0, 0, 0)
+    jd = kiam.juliandate(2022, 11, 22, 0, 0, 0)
 
-    2459905.5
+    print(jd)
+
+    # 2459905.5
     ```
     """
     # return fkt.ephemeris.juliandate(year, month, day, hour, minute, second)
@@ -1352,16 +1371,163 @@ def planet_state(jd: float, center: str, target: str) -> numpy.ndarray:
     Examples:
     ---------
     ```
+    s = kiam.planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
 
-    >> planet_state(kiam.juliandate(2022, 12, 3, 0, 0, 0), 'Earth', 'Moon')
+    print(s)
 
-    [ 3.76623766e+05  7.07472988e+04  1.01213236e+04
-        -1.36269070e-01 8.97864551e-01  4.72492325e-01]
+    # [ 3.76623766e+05  7.07472988e+04  1.01213236e+04
+    #  -1.36269070e-01 8.97864551e-01  4.72492325e-01 ]
     ```
     """
     with _package_folder_contex():
         state = FKIAMToolbox.ephemeris.planetstate(jd, target, center)
     return state
+def utc2tt(utc: datetime.datetime) -> datetime.datetime:
+    """
+    UTC to TT conversion.
+
+    Parameters:
+    -----------
+
+    `utc` : datetime.datetime
+
+    The Coordinated Universal Time (UTC).
+
+    Returns:
+    --------
+
+    `tt` : datetime.datetime
+
+    The Terrestrial Time (TT).
+
+    Examples:
+    ---------
+    ```
+    utc = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+    tt = kiam.utc2tt(utc)  # 2023-03-08 12:01:09.184000
+
+    print(tt)
+    ```
+    """
+    lsc = leap_second_count()
+    dt = timedelta(0, 32.184 + lsc)
+    tt = utc + dt
+    return tt
+def tt2utc(tt: datetime.datetime) -> datetime.datetime:
+    """
+    TT to UTC conversion.
+
+    Parameters:
+    -----------
+
+    `tt` : datetime.datetime
+
+    The Terrestrial Time (TT).
+
+    Returns:
+    --------
+
+    `utc` : datetime.datetime
+
+    The Coordinated Universal Time (UTC).
+
+    Examples:
+    ---------
+    ```
+    tt = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+    utc = kiam.tt2utc(tt)  # 2023-03-08 11:58:50.816000
+
+    print(utc)
+    ```
+    """
+    lsc = leap_second_count()
+    dt = timedelta(0, 32.184 + lsc)
+    utc = tt - dt
+    return utc
+def utc2tai(utc: datetime.datetime) -> datetime.datetime:
+    """
+    UTC to TAI conversion.
+
+    Parameters:
+    -----------
+
+    `utc` : datetime.datetime
+
+    The Coordinated Universal Time (UTC).
+
+    Returns:
+    --------
+
+    `tai` : datetime.datetime
+
+    The International Atomic Time (TAI).
+
+    Examples:
+    ---------
+    ```
+    utc = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+    tai = kiam.utc2tai(utc)  # 2023-03-08 12:00:32.184000
+
+    print(tai)
+    ```
+    """
+    dt = timedelta(0, 32.184)
+    tai = utc + dt
+    return tai
+def tai2utc(tai: datetime.datetime) -> datetime.datetime:
+    """
+    TAI to UTC conversion.
+
+    Parameters:
+    -----------
+
+    `tai` : datetime.datetime
+
+    The International Atomic Time (TAI).
+
+    Returns:
+    --------
+
+    `utc` : datetime.datetime
+
+    The Coordinated Universal Time (UTC).
+
+    Examples:
+    ---------
+    ```
+    tai = datetime.datetime(2023, 3, 8, 12, 0, 0)  # 2023-03-18 12:00:00
+
+    utc = kiam.tai2utc(tai)  # 2023-03-08 11:59:27.816000
+
+    print(utc)
+    ```
+    """
+    dt = timedelta(0, 32.184)
+    utc = tai - dt
+    return utc
+def leap_second_count() -> int:
+    """
+    Returns current leap seconds count.
+
+    Returns:
+    --------
+
+    `leap_second_count` : int
+
+    The current leap seconds count.
+
+    Examples:
+    ---------
+    ```
+    lsc = kiam.leap_second_count()  # 37
+
+    print(lsc)
+    ```
+    """
+    return 37
 
 # Translations (documented with examples)
 def deg2rad(deg: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
@@ -1383,9 +1549,9 @@ def deg2rad(deg: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     Examples:
     ---------
     ```
-    >> deg2rad(180)
+    print(kiam.deg2rad(180))
 
-    3.141592653589793
+    # 3.141592653589793
     ```
     """
     return deg/180*numpy.pi
@@ -1408,9 +1574,9 @@ def rad2deg(rad: Union[float, numpy.ndarray]) -> Union[float, numpy.ndarray]:
     Examples:
     ---------
     ```
-    >> rad2deg(3.141592)
+    print(kiam.rad2deg(3.141592))
 
-    179.99996255206332
+    # 179.99996255206332
     ```
     """
     return rad/numpy.pi*180
@@ -1466,6 +1632,8 @@ def rv2oe(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
     oe = kiam.rv2oe(rv, 1.0, False)
 
     oe, doe = kiam.rv2oe(rv, 1.0, True)
+
+    print(oe)
     ```
     """
     if rv.shape == (6,):
@@ -1475,7 +1643,7 @@ def rv2oe(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
         FKIAMToolbox.transformations.krv2oe_mat(mu, grad_req)
         out = (FKIAMToolbox.transformations.oe_mat, FKIAMToolbox.transformations.doe_mat)
     else:
-        raise 'rv should be a 6D vector or a 6xn array of 6D column vectors.'
+        raise Exception('rv should be a 6D vector or a 6xn array of 6D column vectors.')
     return _return_if_grad_req(out, grad_req)
 def oe2rv(oe: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -1529,6 +1697,8 @@ def oe2rv(oe: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
     rv = kiam.oe2rv(oe, 1.0, False)
 
     rv, drv = kiam.oe2rv(oe, 1.0, True)
+
+    print(rv)
     ```
     """
     if oe.shape == (6,):
@@ -1538,7 +1708,7 @@ def oe2rv(oe: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
         FKIAMToolbox.transformations.koe2rv_mat(mu, grad_req)
         out = (FKIAMToolbox.transformations.rv_mat, FKIAMToolbox.transformations.drv_mat)
     else:
-        raise 'oe should be a 6D vector or a 6xn array of 6D column vectors.'
+        raise Exception('oe should be a 6D vector or a 6xn array of 6D column vectors.')
     return _return_if_grad_req(out, grad_req)
 def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -1606,6 +1776,8 @@ def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
     ee = kiam.rv2ee(rv, 1.0, False)
 
     ee, dee = kiam.rv2ee(rv, 1.0, True)
+
+    print(ee)
     ```
     """
     if rv.shape == (6,):
@@ -1615,7 +1787,7 @@ def rv2ee(rv: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
         FKIAMToolbox.transformations.krv2ee_mat(mu, grad_req)
         out = (FKIAMToolbox.transformations.ee_mat, FKIAMToolbox.transformations.dee_mat)
     else:
-        raise 'rv should be a 6D vector or a 6xn array of 6D column vectors.'
+        raise Exception('rv should be a 6D vector or a 6xn array of 6D column vectors.')
     return _return_if_grad_req(out, grad_req)
 def ee2rv(ee: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -1683,6 +1855,8 @@ def ee2rv(ee: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
     rv = kiam.ee2rv(ee, 1.0, False)
 
     rv, drv = kiam.ee2rv(ee, 1.0, True)
+
+    print(rv)
     ```
     """
     if ee.shape == (6,):
@@ -1692,7 +1866,7 @@ def ee2rv(ee: numpy.ndarray, mu: float, grad_req: bool = False) -> Union[numpy.n
         FKIAMToolbox.transformations.kee2rv_mat(mu, grad_req)
         out = (FKIAMToolbox.transformations.rv_mat, FKIAMToolbox.transformations.drv_mat)
     else:
-        raise 'ee should be a 6D vector or a 6xn array of 6D column vectors.'
+        raise Exception('ee should be a 6D vector or a 6xn array of 6D column vectors.')
     return _return_if_grad_req(out, grad_req)
 def cart2sphere(cart: numpy.ndarray) -> numpy.ndarray:
     """
@@ -1731,11 +1905,13 @@ def cart2sphere(cart: numpy.ndarray) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> cart = numpy.array([1, 0, 0])
+    cart = numpy.array([1, 0, 0])
 
-    >> sphere = kiam.cart2sphere(cart)
+    sphere = kiam.cart2sphere(cart)
 
-    [1.         0.         1.57079633]
+    print(sphere)
+
+    # [1.         0.         1.57079633]
     ```
     """
     if cart.shape == (3,):
@@ -1744,7 +1920,7 @@ def cart2sphere(cart: numpy.ndarray) -> numpy.ndarray:
     elif len(cart.shape) == 2 and cart.shape[0] == 3:
         return FKIAMToolbox.transformations.kcart2sphere(cart)
     else:
-        raise 'cart should be a 3D vector or a 3xn array of vectors.'
+        raise Exception('cart should be a 3D vector or a 3xn array of vectors.')
 def sphere2cart(sphere: numpy.ndarray) -> numpy.ndarray:
     """
     Spherical coordinates to Cartesian coordinates.
@@ -1782,11 +1958,13 @@ def sphere2cart(sphere: numpy.ndarray) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> sphere = numpy.array([1, 0, 0])
+    sphere = numpy.array([1, 0, 0])
 
-    >> cart = kiam.sphere2cart(sphere)
+    cart = kiam.sphere2cart(sphere)
 
-    [0. 0. 1.]
+    print(cart)
+
+    # [0. 0. 1.]
     ```
     """
     if sphere.shape == (3,):
@@ -1795,7 +1973,7 @@ def sphere2cart(sphere: numpy.ndarray) -> numpy.ndarray:
     elif len(sphere.shape) == 2 and sphere.shape[0] == 3:
         return FKIAMToolbox.transformations.ksphere2cart(sphere)
     else:
-        raise 'sphere should be a 3D vector or a 3xn array of vectors.'
+        raise Exception('sphere should be a 3D vector or a 3xn array of vectors.')
 def cart2latlon(cart: numpy.ndarray) -> numpy.ndarray:
     """
     Cartesian coordinates to latitude and longitude.
@@ -1823,15 +2001,17 @@ def cart2latlon(cart: numpy.ndarray) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> cart = numpy.array([1, 0, 0])
+    cart = numpy.array([1, 0, 0])
 
-    >> latlon = kiam.cart2latlon(cart)
+    latlon = kiam.cart2latlon(cart)
 
-    [0. 0.]
+    print(latlon)
+
+    # [0. 0.]
     ```
     """
     if cart.shape[0] != 3 or len(cart.shape) not in [1, 2]:
-        raise 'cart should be a 3D vector or array of 3D column vectors.'
+        raise Exception('cart should be a 3D vector or array of 3D column vectors.')
     if len(cart.shape) == 2:
         return FKIAMToolbox.transformations.kcart2latlon(cart)
     elif len(cart.shape) == 1:
@@ -1863,15 +2043,17 @@ def latlon2cart(latlon: numpy.ndarray) -> numpy.ndarray:
     Examples:
     ---------
     ```
-    >> latlon = numpy.array([0, 0])
+    latlon = numpy.array([0, 0])
 
-    >> cart = kiam.latlon2cart(latlon)
+    cart = kiam.latlon2cart(latlon)
 
-    [1. 0. 0.]
+    print(cart)
+
+    # [1. 0. 0.]
     ```
     """
     if latlon.shape[0] != 2 or len(latlon.shape) not in [1, 2]:
-        raise 'latlon should be a 2D vector or array of 2D column vectors.'
+        raise Exception('latlon should be a 2D vector or array of 2D column vectors.')
     if len(latlon.shape) == 2:
         return FKIAMToolbox.transformations.klatlon2cart(latlon)
     elif len(latlon.shape) == 1:
@@ -1916,15 +2098,17 @@ def itrs2gcrs(xitrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
     xgcrs = kiam.itrs2gcrs(xitrs, jd, False)
 
     xgcrs, dxgcrs = kiam.itrs2gcrs(xitrs, jd, True)
+
+    print(xgcrs)
     ```
     """
     if type(jd) == float or jd.shape == ():
         jd = numpy.reshape(jd, (1,))
 
     if len(xitrs.shape) == 1 and jd.shape[0] != 1:
-        raise 'If xitrs is a vector, then jd should be a single number.'
+        raise Exception('If xitrs is a vector, then jd should be a single number.')
     elif len(xitrs.shape) == 2 and xitrs.shape[1] != jd.shape[0]:
-        raise 'Number of columns in xitrs should equal number of elements in jd.'
+        raise Exception('Number of columns in xitrs should equal number of elements in jd.')
 
     if xitrs.shape == (3,):
         with _package_folder_contex():
@@ -1947,7 +2131,7 @@ def itrs2gcrs(xitrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
             FKIAMToolbox.transformations.kitrs2gcrs_mat()
             out = (FKIAMToolbox.transformations.xgcrs_mat, FKIAMToolbox.transformations.dxgcrs_mat)
     else:
-        raise 'xitrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.'
+        raise Exception('xitrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.')
     return _return_if_grad_req(out, grad_req)
 def gcrs2itrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -1989,15 +2173,17 @@ def gcrs2itrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
     xitrs = kiam.gcrs2itrs(xgcrs, jd, False)
 
     xitrs, dxitrs = kiam.gcrs2itrs(xgcrs, jd, True)
+
+    print(xitrs)
     ```
     """
     if type(jd) == float or jd.shape == ():
         jd = numpy.reshape(jd, (1,))
 
     if len(xgcrs.shape) == 1 and jd.shape[0] != 1:
-        raise 'If xgcrs is a vector, then jd should be a single number.'
+        raise Exception('If xgcrs is a vector, then jd should be a single number.')
     elif len(xgcrs.shape) == 2 and xgcrs.shape[1] != jd.shape[0]:
-        raise 'Number of columns in xgcrs should equal number of elements in jd.'
+        raise Exception('Number of columns in xgcrs should equal number of elements in jd.')
 
     if xgcrs.shape == (3,):
         with _package_folder_contex():
@@ -2020,7 +2206,7 @@ def gcrs2itrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
             FKIAMToolbox.transformations.kgcrs2itrs_mat()
             out = (FKIAMToolbox.transformations.xitrs_mat, FKIAMToolbox.transformations.dxitrs_mat)
     else:
-        raise 'xgcrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.'
+        raise Exception('xgcrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.')
     return _return_if_grad_req(out, grad_req)
 def scrs2pa(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -2062,15 +2248,17 @@ def scrs2pa(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
     xpa = kiam.scrs2pa(xscrs, jd, False)
 
     xpa, dxpa = kiam.scrs2pa(xscrs, jd, True)
+
+    print(xpa)
     ```
     """
     if type(jd) == float or jd.shape == ():
         jd = numpy.reshape(jd, (1,))
 
     if len(xscrs.shape) == 1 and jd.shape[0] != 1:
-        raise 'If xscrs is a vector, then jd should be a single number.'
+        raise Exception('If xscrs is a vector, then jd should be a single number.')
     elif len(xscrs.shape) == 2 and xscrs.shape[1] != jd.shape[0]:
-        raise 'Number of columns in xscrs should equal number of elements in jd.'
+        raise Exception('Number of columns in xscrs should equal number of elements in jd.')
 
     if xscrs.shape == (3,):
         with _package_folder_contex():
@@ -2093,7 +2281,7 @@ def scrs2pa(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
             FKIAMToolbox.transformations.kscrs2pa_mat()
             out = (FKIAMToolbox.transformations.xpa_mat, FKIAMToolbox.transformations.dxpa_mat)
     else:
-        raise 'xscrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.'
+        raise Exception('xscrs should be a 3D or 6D vector or an array of column 3D or 6D vectors.')
     return _return_if_grad_req(out, grad_req)
 def scrs2mer(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bool = False) -> Union[numpy.ndarray, tuple[numpy.ndarray, numpy.ndarray]]:
     """
@@ -2135,6 +2323,8 @@ def scrs2mer(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bo
     xmer = kiam.scrs2mer(xscrs, jd, False)
 
     dxmer = kiam.scrs2mer(xscrs, jd, True)
+
+    print(xmer)
     ```
     """
     initial_xscrs_shape = xscrs.shape
@@ -2146,9 +2336,9 @@ def scrs2mer(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: bo
     dim = xscrs.shape[0]
     ncols = xscrs.shape[1]
     if dim != 3 and dim != 6:
-        raise 'xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+        raise Exception('xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.')
     if xscrs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xscrs should equal number of elements in jd.'
+        raise Exception('number of columns in xscrs should equal number of elements in jd.')
     xmer = numpy.empty((dim, ncols))
     with _package_folder_contex():
         if grad_req:
@@ -2208,6 +2398,8 @@ def mer2scrs(xmer: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
     xscrs = kiam.mer2scrs(xmer, jd, False)
 
     dxscrs = kiam.mer2scrs(xmer, jd, True)
+
+    print(xscrs)
     ```
     """
     initial_xmer_shape = xmer.shape
@@ -2219,9 +2411,9 @@ def mer2scrs(xmer: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: boo
     dim = xmer.shape[0]
     ncols = xmer.shape[1]
     if dim != 3 and dim != 6:
-        raise 'xmer should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+        raise Exception('xmer should be a 3D or 6D vector or 3xn or 6xn array of vectors.')
     if xmer.shape[1] != jd.shape[0]:
-        raise 'number of columns in xmer should equal number of elements in jd.'
+        raise Exception('number of columns in xmer should equal number of elements in jd.')
     xscrs = numpy.empty((dim, ncols))
     with _package_folder_contex():
         if grad_req:
@@ -2276,7 +2468,7 @@ def scrs2gcrs(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     Examples:
     ---------
     ```
-    Example 1 (6D -> 6D):
+    # Example 1 (6D -> 6D):
 
     ku = kiam.units('earth', 'moon')
 
@@ -2286,7 +2478,9 @@ def scrs2gcrs(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
 
     xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-    Example 2 (6x1 -> 6x1):
+    print(xgcrs)
+
+    # Example 2 (6x1 -> 6x1):
 
     ku = kiam.units('earth', 'moon')
 
@@ -2295,6 +2489,8 @@ def scrs2gcrs(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
     xgcrs = kiam.scrs2gcrs(xscrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    print(xgcrs)
     ```
     """
     initial_xscrs_shape = xscrs.shape
@@ -2304,9 +2500,9 @@ def scrs2gcrs(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         jd = numpy.reshape(jd, (1,))
     dim = xscrs.shape[0]
     if dim != 6:
-        raise 'xscrs should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xscrs should be a 6D vector or 6xn array of vectors.')
     if xscrs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xscrs should equal number of elements in jd.'
+        raise Exception('number of columns in xscrs should equal number of elements in jd.')
     with _package_folder_contex():
         xgcrs = FKIAMToolbox.transformations.kscrs2gcrs(xscrs, jd, dist_unit, vel_unit)
     if len(initial_xscrs_shape) == 1:
@@ -2348,7 +2544,7 @@ def gcrs2scrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     Examples:
     ---------
     ```
-    Example 1 (6D -> 6D):
+    # Example 1 (6D -> 6D):
 
     ku = kiam.units('earth', 'moon')
 
@@ -2358,7 +2554,9 @@ def gcrs2scrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
 
     xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-    Example 2 (6x1 -> 6x1)
+    print(xscrs)
+
+    # Example 2 (6x1 -> 6x1)
 
     ku = kiam.units('earth', 'moon')
 
@@ -2367,6 +2565,8 @@ def gcrs2scrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
     xscrs = kiam.gcrs2scrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    print(xscrs)
     ```
     """
     initial_xgcrs_shape = xgcrs.shape
@@ -2376,9 +2576,9 @@ def gcrs2scrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         jd = numpy.reshape(jd, (1,))
     dim = xgcrs.shape[0]
     if dim != 6:
-        raise 'xgcrs should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xgcrs should be a 6D vector or 6xn array of vectors.')
     if xgcrs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xgcrs should equal number of elements in jd.'
+        raise Exception('number of columns in xgcrs should equal number of elements in jd.')
     with _package_folder_contex():
         xscrs = FKIAMToolbox.transformations.kgcrs2scrs(xgcrs, jd, dist_unit, vel_unit)
     if len(initial_xgcrs_shape) == 1:
@@ -2420,7 +2620,7 @@ def hcrs2gcrs(xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     Examples:
     ---------
     ```
-    Example 1 (6D -> 6D)
+    # Example 1 (6D -> 6D)
 
     ku = kiam.units('sun', 'earth')
 
@@ -2430,7 +2630,9 @@ def hcrs2gcrs(xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
 
     xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-    Example 2 (6x1 -> 6x1)
+    print(xgcrs)
+
+    # Example 2 (6x1 -> 6x1)
 
     ku = kiam.units('sun', 'earth')
 
@@ -2439,6 +2641,8 @@ def hcrs2gcrs(xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
     xgcrs = kiam.hcrs2gcrs(xhcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    print(xgcrs)
     ```
     """
     initial_xhcrs_shape = xhcrs.shape
@@ -2448,9 +2652,9 @@ def hcrs2gcrs(xhcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         jd = numpy.reshape(jd, (1,))
     dim = xhcrs.shape[0]
     if dim != 6:
-        raise 'xhcrs should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xhcrs should be a 6D vector or 6xn array of vectors.')
     if xhcrs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xhcrs should equal number of elements in jd.'
+        raise Exception('number of columns in xhcrs should equal number of elements in jd.')
     with _package_folder_contex():
         xgcrs = FKIAMToolbox.transformations.khcrs2gcrs(xhcrs, jd, dist_unit, vel_unit)
     if len(initial_xhcrs_shape) == 1:
@@ -2492,7 +2696,7 @@ def gcrs2hcrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     Examples:
     ---------
     ```
-    Example 1 (6D -> 6D):
+    # Example 1 (6D -> 6D):
 
     ku = kiam.units('sun', 'earth')
 
@@ -2502,7 +2706,9 @@ def gcrs2hcrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
 
     xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
 
-    Example 2 (6x1 -> 6x1):
+    print(xhcrs)
+
+    # Example 2 (6x1 -> 6x1):
 
     ku = kiam.units('sun', 'earth')
 
@@ -2511,6 +2717,8 @@ def gcrs2hcrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
     jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
     xhcrs = kiam.gcrs2hcrs(xgcrs, jd, ku['DistUnit'], ku['VelUnit'])
+
+    print(xhcrs)
     ```
     """
     initial_xgcrs_shape = xgcrs.shape
@@ -2520,9 +2728,9 @@ def gcrs2hcrs(xgcrs: numpy.ndarray, jd: Union[float, numpy.ndarray], dist_unit: 
         jd = numpy.reshape(jd, (1,))
     dim = xgcrs.shape[0]
     if dim != 6:
-        raise 'xgcrs should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xgcrs should be a 6D vector or 6xn array of vectors.')
     if xgcrs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xgcrs should equal number of elements in jd.'
+        raise Exception('number of columns in xgcrs should equal number of elements in jd.')
     with _package_folder_contex():
         xhcrs = FKIAMToolbox.transformations.kgcrs2hcrs(xgcrs, jd, dist_unit, vel_unit)
     if len(initial_xgcrs_shape) == 1:
@@ -2569,6 +2777,8 @@ def scrs2sors(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
     xsors = kiam.scrs2sors(xscrs, jd, False)
 
     xsors, dxsors = kiam.scrs2sors(xscrs, jd, True)
+
+    print(xsors)
     ```
     """
     initial_xscrs_shape = xscrs.shape
@@ -2578,9 +2788,9 @@ def scrs2sors(xscrs: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         jd = numpy.reshape(jd, (1,))
     dim = xscrs.shape[0]
     if dim != 3 and dim != 6:
-        raise 'xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+        raise Exception('xscrs should be a 3D or 6D vector or 3xn or 6xn array of vectors.')
     if xscrs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xscrs should equal number of elements in jd.'
+        raise Exception('number of columns in xscrs should equal number of elements in jd.')
     with _package_folder_contex():
         xsors, dxsors = FKIAMToolbox.transformations.kscrs2sors(xscrs, jd)
     if grad_req:
@@ -2633,6 +2843,8 @@ def sors2scrs(xsors: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
     xscrs = kiam.sors2scrs(xsors, jd, False)
 
     xscrs, dxscrs = kiam.sors2scrs(xsors, jd, True)
+
+    print(xscrs)
     ```
     """
     initial_xsors_shape = xsors.shape
@@ -2642,9 +2854,9 @@ def sors2scrs(xsors: numpy.ndarray, jd: Union[float, numpy.ndarray], grad_req: b
         jd = numpy.reshape(jd, (1,))
     dim = xsors.shape[0]
     if dim != 3 and dim != 6:
-        raise 'xsors should be a 3D or 6D vector or 3xn or 6xn array of vectors.'
+        raise Exception('xsors should be a 3D or 6D vector or 3xn or 6xn array of vectors.')
     if xsors.shape[1] != jd.shape[0]:
-        raise 'number of columns in xsors should equal number of elements in jd.'
+        raise Exception('number of columns in xsors should equal number of elements in jd.')
     with _package_folder_contex():
         xscrs, dxscrs = FKIAMToolbox.transformations.ksors2scrs(xsors, jd)
     if grad_req:
@@ -2695,6 +2907,8 @@ def ine2rot(xine: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float
     t0 = 0.0
 
     xrot = kiam.ine2rot(xine, t, t0)
+
+    print(xrot)
     ```
     """
     initial_xine_shape = xine.shape
@@ -2706,11 +2920,11 @@ def ine2rot(xine: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float
         t0 = numpy.reshape(t0, (1,))
     dim = xine.shape[0]
     if dim != 6:
-        raise 'xine should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xine should be a 6D vector or 6xn array of vectors.')
     if xine.shape[1] != t.shape[0]:
-        raise 'number of columns in xine should equal number of elements in t.'
+        raise Exception('number of columns in xine should equal number of elements in t.')
     if xine.shape[1] != t0.shape[0] and 1 != t0.shape[0]:
-        raise 'number of elements in t0 should equal 1 or number of elements in xine.'
+        raise Exception('number of elements in t0 should equal 1 or number of elements in xine.')
     xrot = FKIAMToolbox.transformations.kine2rot(xine, t, t0)
     if len(initial_xine_shape) == 1:
         return xrot[:, 0]
@@ -2754,6 +2968,8 @@ def rot2ine(xrot: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float
     t0 = 0.0
 
     xine = kiam.rot2ine(xrot, t, t0)
+
+    print(xine)
     ```
     """
     initial_xrot_shape = xrot.shape
@@ -2765,11 +2981,11 @@ def rot2ine(xrot: numpy.ndarray, t: Union[float, numpy.ndarray], t0: Union[float
         t0 = numpy.reshape(t0, (1,))
     dim = xrot.shape[0]
     if dim != 6:
-        raise 'xrot should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xrot should be a 6D vector or 6xn array of vectors.')
     if xrot.shape[1] != t.shape[0]:
-        raise 'number of columns in xrot should equal number of elements in t.'
+        raise Exception('number of columns in xrot should equal number of elements in t.')
     if xrot.shape[1] != t0.shape[0] and 1 != t0.shape[0]:
-        raise 'number of elements in t0 should equal 1 or number of elements in xrot.'
+        raise Exception('number of elements in t0 should equal 1 or number of elements in xrot.')
     xine = FKIAMToolbox.transformations.krot2ine(xrot, t, t0)
     if len(initial_xrot_shape) == 1:
         return xine[:, 0]
@@ -2831,12 +3047,14 @@ def ine2rot_eph(xine: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
     ku = kiam.units('earth', 'moon')
 
     xrot = kiam.ine2rot_eph(xine, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+
+    print(xrot)
     ```
     """
     first_body = first_body.capitalize()
     secondary_body = secondary_body.capitalize()
     if first_body == secondary_body:
-        raise 'Bodies should be different.'
+        raise Exception('Bodies should be different.')
     initial_xine_shape = xine.shape
     if len(initial_xine_shape) == 1:
         xine = numpy.reshape(xine, (xine.shape[0], 1))
@@ -2844,9 +3062,9 @@ def ine2rot_eph(xine: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
         jd = numpy.reshape(jd, (1,))
     dim = xine.shape[0]
     if dim != 6:
-        raise 'xine should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xine should be a 6D vector or 6xn array of vectors.')
     if xine.shape[1] != jd.shape[0]:
-        raise 'number of columns in xine should equal number of elements in jd.'
+        raise Exception('number of columns in xine should equal number of elements in jd.')
     with _package_folder_contex():
         xrot = FKIAMToolbox.transformations.kine2roteph(xine, jd, first_body, secondary_body, dist_unit, vel_unit)
     if len(initial_xine_shape) == 1:
@@ -2909,12 +3127,14 @@ def rot2ine_eph(xrot: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
     ku = kiam.units('earth', 'moon')
 
     xine = kiam.ine2rot_eph(xrot, jd, 'earth', 'moon', ku['DistUnit'], ku['VelUnit'])
+
+    print(xine)
     ```
     """
     first_body = first_body.capitalize()
     secondary_body = secondary_body.capitalize()
     if first_body == secondary_body:
-        raise 'Bodies should be different.'
+        raise Exception('Bodies should be different.')
     initial_xrot_shape = xrot.shape
     if len(initial_xrot_shape) == 1:
         xrot = numpy.reshape(xrot, (xrot.shape[0], 1))
@@ -2922,9 +3142,9 @@ def rot2ine_eph(xrot: numpy.ndarray, jd: Union[float, numpy.ndarray], first_body
         jd = numpy.reshape(jd, (1,))
     dim = xrot.shape[0]
     if dim != 6:
-        raise 'xrot should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xrot should be a 6D vector or 6xn array of vectors.')
     if xrot.shape[1] != jd.shape[0]:
-        raise 'number of columns in xrot should equal number of elements in jd.'
+        raise Exception('number of columns in xrot should equal number of elements in jd.')
     with _package_folder_contex():
         xine = FKIAMToolbox.transformations.krot2ineeph(xrot, jd, first_body, secondary_body, dist_unit, vel_unit)
     if len(initial_xrot_shape) == 1:
@@ -2965,11 +3185,13 @@ def mer2lvlh(xmer: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
     lon = 1.0
 
     xlvlh = kiam.mer2lvlh(xmer, lat, lon)
+
+    print(xlvlh)
     ```
     """
 
     if xmer.shape[0] not in [3, 6]:
-        raise 'xmer should be a 3D or 6D vector or array of column 3D or 6D vectors'
+        raise Exception('xmer should be a 3D or 6D vector or array of column 3D or 6D vectors')
 
     with _package_folder_contex():
 
@@ -3020,10 +3242,12 @@ def lvlh2mer(xlvlh: numpy.ndarray, lat: float, lon: float) -> numpy.ndarray:
     lon = 1.0
 
     xmer = kiam.lvlh2mer(xlvlh, lat, lon)
+
+    print(xmer)
     ```
     """
     if xlvlh.shape[0] not in [3, 6]:
-        raise 'xlvlh should be a 3D or 6D vector or array of column 3D or 6D vectors'
+        raise Exception('xlvlh should be a 3D or 6D vector or array of column 3D or 6D vectors')
 
     with _package_folder_contex():
 
@@ -3087,7 +3311,7 @@ def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, 
     Examples:
     ---------
     ```
-    Example 1 (6D -> 6D):
+    # Example 1 (6D -> 6D):
 
     ku = kiam.units('sun', 'mars')
 
@@ -3097,7 +3321,9 @@ def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, 
 
     xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
 
-    Example 2 (6x1 -> 6x1)
+    print(xb2crs)
+
+    # Example 2 (6x1 -> 6x1)
 
     ku = kiam.units('sun', 'mars')
 
@@ -3106,6 +3332,8 @@ def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, 
     jd = kiam.juliandate(2022, 12, 6, 0, 0, 0)
 
     xb2crs = kiam.b1crs2b2crs('sun', 'mars', xb1crs, jd, ku['DistUnit'], ku['VelUnit'])  # wrt Mars
+
+    print(xb2crs)
     ```
     """
     initial_xb1crs_shape = xb1crs.shape
@@ -3115,9 +3343,9 @@ def b1crs2b2crs(body1: str, body2: str, xb1crs: numpy.ndarray, jd: Union[float, 
         jd = numpy.reshape(jd, (1,))
     dim = xb1crs.shape[0]
     if dim != 6:
-        raise 'xb1crs should be a 6D vector or 6xn array of vectors.'
+        raise Exception('xb1crs should be a 6D vector or 6xn array of vectors.')
     if xb1crs.shape[1] != jd.shape[0]:
-        raise 'number of columns in xb1crs should equal number of elements in jd.'
+        raise Exception('number of columns in xb1crs should equal number of elements in jd.')
     with _package_folder_contex():
         xb2crs = FKIAMToolbox.transformations.kb1crs2b2crs(body1.capitalize(), body2.capitalize(), xb1crs, jd, dist_unit, vel_unit)
     if len(initial_xb1crs_shape) == 1:
@@ -3184,9 +3412,13 @@ def units(*args: str) -> dict:
 
     DU = un['DistUnit']  # Unit of distance for the earth system of units
 
+    print(DU)
+
     un = kiam.units('earth', 'moon')
 
     VU = un['VelUnit']  # Unit of velocity for the Earth-Moon system of units
+
+    print(VU)
     ```
     """
     units_info = {}
@@ -3267,15 +3499,15 @@ def astro_const() -> tuple[dict, dict, dict, dict, dict]:
     Examples:
     ---------
     ```
-    uni_const, star, planet, moon, small_body = astro_const()  # If you need all the dicts
+    uni_const, star, planet, moon, small_body = kiam.astro_const()  # If you need all the dicts
 
-    _, star, planet, _, _ = astro_const()  # If you need only star and planet dicts
+    _, star, planet, _, _ = kiam.astro_const()  # If you need only star and planet dicts
 
-    star['Sun']['MeanRadius']  # Mean radius of the Sun
+    print(star['Sun']['MeanRadius'])  # Mean radius of the Sun
 
-    planet['Earth']['GM']  # Gravitational parameter of the Earth
+    print(planet['Earth']['GM'])  # Gravitational parameter of the Earth
 
-    planet['Mars']['SemimajorAxis']  # Semi-major axis of the Mars's orbit.
+    print(planet['Mars']['SemimajorAxis'])  # Semi-major axis of the Mars's orbit.
     ```
     """
 
@@ -3390,11 +3622,10 @@ def r2bp(t: float, s: numpy.ndarray) -> numpy.ndarray:
 
     s0 = numpy.array([1, 0, 0, 0, 1, 0])
 
-    kiam.r2bp(t0, s0)
+    print(kiam.r2bp(t0, s0))
 
-    [ 0.  1.  0. -1. -0. -0.]
+    # [ 0.  1.  0. -1. -0. -0.]
     ```
-
     """
     return FKIAMToolbox.equationsmodule.kr2bp(t, s)
 def cr3bp_fb(t: float, s: numpy.ndarray, mu: float, stm_req: bool) -> numpy.ndarray:
@@ -3452,7 +3683,9 @@ def cr3bp_fb(t: float, s: numpy.ndarray, mu: float, stm_req: bool) -> numpy.ndar
 
     dsdt = kiam.cr3bp_fb(t0, s0, mu, False)
 
-    [ 0.     1.     0.    -1.416 -0.    -0.   ]
+    print(dsdt)
+
+    # [ 0.     1.     0.    -1.416 -0.    -0.   ]
     ```
     """
     FKIAMToolbox.equationsmodule.massparameter = mu
@@ -3513,7 +3746,9 @@ def cr3bp_sb(t: float, s: numpy.ndarray, mu: float, stm_req: bool) -> numpy.ndar
 
     dsdt = kiam.cr3bp_sb(t0, s0, mu, False)
 
-    [ 0.          1.          0.          3.00088889 -0.         -0.        ]
+    print(dsdt)
+
+    # [ 0.          1.          0.          3.00088889 -0.         -0.        ]
     ```
 
     """
@@ -3685,7 +3920,9 @@ def nbp_rv_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data:
 
     dsdt = kiam.nbp_rv_earth(t, s, stm_req, sources, data, units_data)
 
-    [ 0.  1.  0. -1. -0. -0.]
+    print(dsdt)
+
+    # [ 0.  1.  0. -1. -0. -0.]
     ```
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
@@ -3856,9 +4093,10 @@ def nbp_rv_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
 
     dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
 
-    [ 0.  1.  0. -1. -0. -0.]
-    ```
+    print(dsdt)
 
+    # [ 0.  1.  0. -1. -0. -0.]
+    ```
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
     with _package_folder_contex():
@@ -4054,9 +4292,10 @@ def nbp_ee_earth(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data:
 
     dsdt = kiam.nbp_ee_earth(t, s, stm_req, sources, data, units_data)
 
-    [0. 0. 0. 0. 0. 1.]
-    ```
+    print(dsdt)
 
+    # [0. 0. 0. 0. 0. 1.]
+    ```
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
     with _package_folder_contex():
@@ -4251,10 +4490,10 @@ def nbp_ee_moon(t: float, s: numpy.ndarray, stm_req: bool, sources: dict, data: 
 
     dsdt = kiam.nbp_ee_moon(t, s, stm_req, sources, data, units_data)
 
-    [0. 0. 0. 0. 0. 1.]
+    print(dsdt)
+
+    # [0. 0. 0. 0. 0. 1.]
     ```
-
-
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
     with _package_folder_contex():
@@ -4410,6 +4649,8 @@ def nbp_rv_body(body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: d
 
     sources = kiam.prepare_sources_dict()
 
+    sources['jupiter'] = True
+
     data = kiam.prepare_data_dict()
 
     data['jd_zero'] = kiam.juliandate(2022, 11, 1, 0, 0, 0)
@@ -4418,17 +4659,16 @@ def nbp_rv_body(body: str, t: float, s: numpy.ndarray, stm_req: bool, sources: d
 
     data['mass'] = 100.0
 
-    units_data = kiam.prepare_units_dict('moon')
+    units_data = kiam.prepare_units_dict('sun')
 
-    dsdt = kiam.nbp_rv_moon(t, s, stm_req, sources, data, units_data)
+    dsdt = kiam.nbp_rv_body('sun', t, s, stm_req, sources, data, units_data)
 
-    [ 0.  1.  0. -1. -0. -0.]
+    print(dsdt)
     ```
-
     """
     _set_nbp_parameters(stm_req, sources, data, units_data)
     with _package_folder_contex():
-        FKIAMToolbox.equationsmodule.central_body = body.capitalize()
+        FKIAMToolbox.equationsmodule.set_central_body(body.capitalize())
         return FKIAMToolbox.equationsmodule.knbp_rv_body(t, s)
 def prepare_sources_dict() -> dict:
     """
@@ -4471,9 +4711,9 @@ def prepare_sources_dict() -> dict:
     Examples:
     ---------
     ```
-    >> kiam.prepare_sources_dict()
+    print(kiam.prepare_sources_dict())
 
-    {'sun': False, 'mercury': False, 'venus': False, 'earth': False, 'moon': False, 'mars': False, 'jupiter': False, 'saturn': False, 'uranus': False, 'neptune': False, 'srp': False, 'cmplxmoon': False, 'atm': False, 'j2': False}
+    # {'sun': False, 'mercury': False, 'venus': False, 'earth': False, 'moon': False, 'mars': False, 'jupiter': False, 'saturn': False, 'uranus': False, 'neptune': False, 'srp': False, 'cmplxmoon': False, 'atm': False, 'j2': False}
     ```
     """
     sources = {'sun': False, 'mercury': False, 'venus': False, 'earth': False,
@@ -4507,9 +4747,9 @@ def prepare_data_dict() -> dict:
     Examples:
     ---------
     ```
-    >> kiam.prepare_data_dict()
+    print(kiam.prepare_data_dict())
 
-    {'jd_zero': 0.0, 'order': 0, 'area': 0.0, 'mass': 0.0}
+    # {'jd_zero': 0.0, 'order': 0, 'area': 0.0, 'mass': 0.0}
     ```
     """
     return {'jd_zero': 0.0, 'order': 0, 'area': 0.0, 'mass': 0.0}
@@ -4554,12 +4794,10 @@ def prepare_units_dict(units_name: str) -> dict:
     Examples:
     ---------
     ```
-    >> kiam.prepare_units_dict('earth')
+    print(kiam.prepare_units_dict('earth'))
 
-    {'DistUnit': 6371.0084, 'VelUnit': 7.909787126714006, 'TimeUnit': 0.009322440916154166, 'AccUnit': 9.820224438870717, 'RSun': 109.19778413728038, 'REarth': 1.0, 'RMoon': 0.27270408244949107}
-
+    # {'DistUnit': 6371.0084, 'VelUnit': 7.909787126714006, 'TimeUnit': 0.009322440916154166, 'AccUnit': 9.820224438870717, 'RSun': 109.19778413728038, 'REarth': 1.0, 'RMoon': 0.27270408244949107}
     ```
-
     """
 
     _, star, planet, moon, _ = astro_const()
@@ -4599,7 +4837,7 @@ def prepare_units_dict(units_name: str) -> dict:
         units_data['NeptuneGM'] = ku['NeptuneGM']
         return units_data
 
-    raise 'Unknown units_name.'
+    raise Exception('Unknown units_name.')
 
 # Propagation routines (documented with examples)
 def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, sources_dict: dict, dat_dict: dict, units_dict: dict, stm: bool, variables: str, control_function: Callable = None) -> tuple[numpy.ndarray, numpy.ndarray]:
@@ -4608,15 +4846,15 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
 
     Parameters:
     -----------
-    `central_body`: str
+    `central_body` : str
 
     Name of the central body
 
-    `tspan`: numpy.ndarray, shape (n,)
+    `tspan` : numpy.ndarray, shape (n,)
 
     Time nodes at which the solution is required
 
-    `x0`: numpy.ndarray, shape (6,), (42,)
+    `x0` : numpy.ndarray, shape (6,), (42,)
 
     Initial state containing:
 
@@ -4664,7 +4902,7 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
 
     i - inclination
 
-    `sources_dict`: dict
+    `sources_dict` : dict
 
     Dictionary that contains the perturbations that should be accounted.
 
@@ -4728,11 +4966,11 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
 
     This variable can be generated by kiam.prepare_units_dict function.
 
-    `stm`: bool
+    `stm` : bool
 
     Flag to calculate the derivative of the state-transition matrix
 
-    `variables`: str
+    `variables` : str
 
     Type of variables used to propagate the trajectory.
 
@@ -4817,7 +5055,12 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
     variables = 'rv'
 
     t, y = kiam.propagate_nbp(central_body, tspan, x0, sources_dict, dat_dict, units_dict, stm, variables)
+
+    print(t[-1], y[:, -1])
     ```
+
+    Examples with using the control function can be found on GitHub: https://github.com/shmaxg/KIAMToolbox/tree/master/examples
+
     """
     tspan, x0 = to_float(tspan, x0)
     neq = x0.shape[0]
@@ -4848,6 +5091,7 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
                 force_vector, specific_impulse = control_function(t, x)  # control_function(t, x)
                 FKIAMToolbox.equationsmodule.force_vector = force_vector
                 FKIAMToolbox.equationsmodule.specific_impulse = specific_impulse
+                return 0
 
         else:
 
@@ -4859,6 +5103,7 @@ def propagate_nbp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, so
                 FKIAMToolbox.equationsmodule.force_vector_state_derivative = dFdx
                 FKIAMToolbox.equationsmodule.specific_impulse_time_derivative = dIdt
                 FKIAMToolbox.equationsmodule.specific_impulse_state_derivative = dIdx
+                return 0
 
         with _package_folder_contex():
             T, Y = FKIAMToolbox.propagationmodule.propagate_nbp_control(central_body.capitalize(), tspan, x0, variables, neq, control)
@@ -4870,11 +5115,11 @@ def propagate_r2bp(tspan: numpy.ndarray, x0: numpy.ndarray) -> tuple[numpy.ndarr
 
     Parameters:
     -----------
-    `tspan`: numpy.ndarray, shape (n,)
+    `tspan` : numpy.ndarray, shape (n,)
 
     Time nodes at which the solution is required
 
-    `x0`: numpy.ndarray, shape (6,)
+    `x0` : numpy.ndarray, shape (6,)
 
     Initial state containing position and velocity.
 
@@ -4900,8 +5145,9 @@ def propagate_r2bp(tspan: numpy.ndarray, x0: numpy.ndarray) -> tuple[numpy.ndarr
     x0 = numpy.array([1, 0, 0, 0, 1, 0])
 
     t, y = kiam.propagate_r2bp(tspan, x0)
-    ```
 
+    print(t[-1], y[:, -1])
+    ```
     """
     tspan, x0 = to_float(tspan, x0)
     t, y = FKIAMToolbox.propagationmodule.propagate_r2bp(tspan, x0)
@@ -4918,7 +5164,7 @@ def propagate_cr3bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
 
     Options: 'first', 'secondary', 'center'
 
-    `tspan`: numpy.ndarray, shape (n,)
+    `tspan` : numpy.ndarray, shape (n,)
 
     Time nodes at which the solution is required
 
@@ -4974,6 +5220,8 @@ def propagate_cr3bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
     stm = False
 
     t, y = kiam.propagate_cr3bp(central_body, tspan, x0, mu, stm)
+
+    print(t[-1], y[:, -1])
     ```
     """
     tspan, x0, mu = to_float(tspan, x0, mu)
@@ -4992,7 +5240,7 @@ def propagate_br4bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
 
     Options: 'first', 'secondary', 'center'
 
-    `tspan`: numpy.ndarray, shape (n,)
+    `tspan` : numpy.ndarray, shape (n,)
 
     Time nodes at which the solution is required
 
@@ -5054,9 +5302,9 @@ def propagate_br4bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
     ```
     central_body = 'first'
 
-    tspan = np.linspace(0, 10, 1000)
+    tspan = numpy.linspace(0, 10, 1000)
 
-    x0 = np.array([0.5, 0, 0, 0, 0.5, 0])
+    x0 = numpy.array([0.5, 0, 0, 0, 0.5, 0])
 
     mu = 1.215e-02
 
@@ -5069,8 +5317,9 @@ def propagate_br4bp(central_body: str, tspan: numpy.ndarray, x0: numpy.ndarray, 
     theta0 = 0.0
 
     t, y = kiam.propagate_br4bp(central_body, tspan, x0, mu, gm4b, a4b, theta0, stm)
-    ```
 
+    print(t[-1], y[:, -1])
+    ```
     """
     tspan, x0, mu, gm4b, a4b, theta0 = to_float(tspan, x0, mu, gm4b, a4b, theta0)
     neq = 42 if stm else 6
@@ -5082,11 +5331,11 @@ def propagate_hill(tspan: numpy.ndarray, x0: numpy.ndarray) -> tuple[numpy.ndarr
 
     Parameters:
     -----------
-    `tspan`: numpy.ndarray, shape (n,)
+    `tspan` : numpy.ndarray, shape (n,)
 
     Time nodes at which the solution is required
 
-    `x0`: numpy.ndarray, shape (6,)
+    `x0` : numpy.ndarray, shape (6,)
 
     Initial state containing position and velocity.
 
@@ -5112,8 +5361,9 @@ def propagate_hill(tspan: numpy.ndarray, x0: numpy.ndarray) -> tuple[numpy.ndarr
     x0 = numpy.array([-0.5, 0, 0, 0, 2.0, 0])
 
     t, y = kiam.propagate_hill(tspan, x0)
-    ```
 
+    print(t[-1], y[:, -1])
+    ```
     """
     tspan, x0 = to_float(tspan, x0)
     t, y = FKIAMToolbox.propagationmodule.propagate_hill(tspan, x0)
@@ -5189,15 +5439,17 @@ def is_visible(r_sat: numpy.ndarray, lat_deg: Union[int, float, numpy.ndarray],
     threshold_deg = 5.0
 
     status, elev_deg, azim_deg = kiam.is_visible(r_sat, lat_deg, long_deg, body_radius, threshold_deg)
+
+    print(status, elev_deg, azim_deg)
     ```
     """
 
     if len(r_sat.shape) == 1:
         if r_sat.shape[0] != 3:
-            raise 'r_sat as a vector should have 3 components.'
+            raise Exception('r_sat as a vector should have 3 components.')
         r_sat = numpy.reshape(r_sat, (3, 1), order='F')
     if r_sat.shape[0] != 3 or len(r_sat.shape) != 2:
-        raise 'r_sat as a matrix should have 3 rows and N columns.'
+        raise Exception('r_sat as a matrix should have 3 rows and N columns.')
     r_sat = r_sat.copy().T / body_radius  # transpose for Fortran module to get n x 3
 
     if isinstance(lat_deg, (float, int)):
@@ -5205,20 +5457,20 @@ def is_visible(r_sat: numpy.ndarray, lat_deg: Union[int, float, numpy.ndarray],
     if isinstance(long_deg, (float, int)):
         long_deg = numpy.array([long_deg])
     if len(lat_deg.shape) != 1:
-        raise 'lat_deg should be a scalar or a vector.'
+        raise Exception('lat_deg should be a scalar or a vector.')
     if len(long_deg.shape) != 1:
-        raise 'long_deg should be a scalar or a vector.'
+        raise Exception('long_deg should be a scalar or a vector.')
     if lat_deg.shape[0] != long_deg.shape[0]:
-        raise 'lat_deg and long_deg should have the same size.'
+        raise Exception('lat_deg and long_deg should have the same size.')
     lat_long = numpy.reshape(numpy.concatenate((lat_deg/180*numpy.pi, long_deg/180*numpy.pi), axis=0), (2, -1))
 
     threshold = threshold_deg / 180 * numpy.pi
     if isinstance(threshold, (float, int)):
         threshold = numpy.full((r_sat.shape[0],), threshold)
     if len(threshold.shape) != 1:
-        raise 'threshold_deg should be a scalar or a vector'
+        raise Exception('threshold_deg should be a scalar or a vector')
     if threshold.shape[0] != r_sat.shape[0]:
-        raise 'threshold_deg should have r_sat.shape[1] number of elements'
+        raise Exception('threshold_deg should have r_sat.shape[1] number of elements')
 
     FKIAMToolbox.visibilitymodule.r_sat = r_sat
     FKIAMToolbox.visibilitymodule.lat_long = lat_long
@@ -5282,8 +5534,11 @@ def load(filename: str) -> Any:
 
     Examples:
     ---------
-
+    ```
     a = kiam.load('variable_a')
+
+    print(a)
+    ```
     """
     with open(filename, 'rb') as f:
         return pickle.load(f)
@@ -5313,9 +5568,11 @@ def get_period_hours(altitude_km: float, body: str) -> float:
     Examples:
     ---------
     ```
-    >> period_hours = kiam.get_period_hours(200.0, 'earth')
+    period_hours = kiam.get_period_hours(200.0, 'earth')
 
-    1.4725041134211172
+    print(period_hours)
+
+    # 1.4725041134211172
     ```
     """
     ku = units(body)
@@ -5331,7 +5588,7 @@ def get_altitude_km(period_hours: float, body: str) -> float:
 
     The circular orbit period in hours.
 
-    `body`: str
+    `body` : str
 
     The name of the celesial body.
 
@@ -5344,9 +5601,11 @@ def get_altitude_km(period_hours: float, body: str) -> float:
     Examples:
     ---------
     ```
-    >> altitude_km = kiam.get_altitude_km(1.5, 'earth')
+    altitude_km = kiam.get_altitude_km(1.5, 'earth')
 
-    281.5472668353086
+    print(altitude_km)
+
+    # 281.5472668353086
     ```
     """
     ku = units(body)
@@ -5376,11 +5635,12 @@ def get_circular_velocity_km_s(altitude_km: float, body: str) -> float:
     Examples:
     ---------
     ```
-    >> velocity_km_s = kiam.get_circular_velocity_km_s(200.0, 'earth')
+    velocity_km_s = kiam.get_circular_velocity_km_s(200.0, 'earth')
 
-    7.7884829462208724
+    print(velocity_km_s)
+
+    # 7.7884829462208724
     ```
-
     """
     ku = units(body)
     return numpy.sqrt(ku['GM']/(ku['DistUnit'] + altitude_km))
@@ -5408,12 +5668,12 @@ def get_dv_hohmann(r1_nondim: float, r2_nondim: float) -> float:
     Examples:
     ---------
     ```
-    >> dv = kiam.get_dv_hohmann(1.0, 2.0)
+    dv = kiam.get_dv_hohmann(1.0, 2.0)
 
-    0.024944026382329704
+    print(dv)
+
+    # 0.024944026382329704
     ```
-
-
     """
     dv1 = numpy.sqrt(1.0 / r1_nondim) * (numpy.sqrt(2 * r2_nondim / (r1_nondim + r2_nondim)) - 1)
     dv2 = numpy.sqrt(1.0 / r2_nondim) * (numpy.sqrt(2 * r1_nondim / (r1_nondim + r2_nondim)) - 1)
@@ -5444,9 +5704,11 @@ def get_tof_hohmann(r1_nondim: float, r2_nondim: float) -> float:
     Examples:
     ---------
     ```
-    >> tof = kiam.get_tof_hohmann(1.0, 2.0)
+    tof = kiam.get_tof_hohmann(1.0, 2.0)
 
-    5.771474235728388
+    print(tof)
+
+    # 5.771474235728388
     ```
     """
     a = (r1_nondim + r2_nondim) / 2
@@ -5478,11 +5740,12 @@ def get_order(altitude_thousands_km: float, approx_level: str = 'soft') -> int:
     Examples:
     ---------
     ```
-    >> order = kiam.get_order(2.0, approx_level='soft')
+    order = kiam.get_order(2.0, approx_level='soft')
 
-    8.0
+    print(order)
+
+    # 8.0
     ```
-
     """
     if approx_level == 'soft':
         return numpy.floor((25.0 / altitude_thousands_km)**0.8)+1
@@ -5500,11 +5763,11 @@ def _set_nbp_parameters(stm_req: bool, sources: dict, data: dict, units_data: di
 
     Parameters:
     -----------
-    `stm_req`: bool
+    `stm_req` : bool
 
     Flag to calculate the derivative of the state-transition matrix
 
-    `sources`: dict
+    `sources` : dict
 
     Dictionary that contains the perturbations that should be accounted.
 
@@ -5545,7 +5808,7 @@ def _set_nbp_parameters(stm_req: bool, sources: dict, data: dict, units_data: di
     The sources dictionary with all False values can be created by
     the kiam.prepare_sources_dict() function.
 
-    `data`: dict
+    `data` : dict
 
     A dictionary that contains auxilary data.
 
