@@ -66,6 +66,8 @@ crssystem2centralbody = {
     'hcrs': 'sun',
     'mercrs': 'mercury',
     'vcrs': 'venus',
+    'gcrs': 'earth',
+    'scrs': 'moon',
     'mcrs': 'mars',
     'jcrs': 'jupiter',
     'satcrs': 'saturn',
@@ -77,6 +79,8 @@ centralbody2crssystem = {
     'sun': 'hcrs',
     'mercury': 'mercrs',
     'venus': 'vcrs',
+    'earth': 'gcrs',
+    'moon': 'scrs',
     'mars': 'mcrs',
     'jupiter': 'jcrs',
     'saturn': 'satcrs',
@@ -717,7 +721,7 @@ class Trajectory:
         self.clear()
         self.propagate(tof, npoints)
 
-    def show(self, variables: str, draw=True):
+    def show(self, variables: str, draw=True, language='eng'):
         """
         Plots the specified characteristics of the trajectory.
 
@@ -777,99 +781,155 @@ class Trajectory:
 
         If False, the fig plot object will be returned and the figure will not be showed.
 
+        `language` : str
+
+        Language used for the titles.
+
+        Options: 'eng' (default), 'rus'.
+
         Returns:
         --------
         `ax` : matplotlib axis object
 
         The matplotlib axis object for further work.
         """
+
+        planet_eng2rus = {
+            'sun': 'Солнца',
+            'mercury': 'Меркурия',
+            'venus': 'Венеры',
+            'earth': 'Земли',
+            'moon': 'Луны',
+            'mars': 'Марса',
+            'jupiter': 'Юпитера',
+            'saturn': 'Сатурна',
+            'uranus': 'Урана',
+            'neptune': 'Нептуна'
+        }
+
         if self.units_name == 'dim':
-            tlabel = 'Time of flight, days'
+            tlabel = {'eng': 'Time of flight, days',
+                      'rus': 'Время полета, дни'}[language]
         else:
-            tlabel = 'Time of flight, nondimensional'
+            tlabel = {'eng': 'Time of flight, nondimensional',
+                      'rus': 'Время полета, безразм. ед.'}[language]
         if self.vars in ['rv', 'rvm', 'rv_stm']:
             if variables == 'xy':
                 if self.units_name == 'dim':
-                    xlabel = 'x, km'
-                    ylabel = 'y, km'
+                    xlabel = {'eng': 'x, km',
+                              'rus': 'x, км'}[language]
+                    ylabel = {'eng': 'y, km',
+                              'rus': 'y, км'}[language]
                 elif self.units_name == 'sun':
-                    xlabel = 'x, a.u.'
-                    ylabel = 'y, a.u.'
+                    xlabel = {'eng': 'x, a.u.',
+                              'rus': 'x, а.е.'}[language]
+                    ylabel = {'eng': 'y, a.u.',
+                              'rus': 'y, а.е.'}[language]
                 elif '_' not in self.units_name:
-                    xlabel = f'x, {self.units_name.capitalize()}\'s radii'
-                    ylabel = f'y, {self.units_name.capitalize()}\'s radii'
+                    xlabel = {'eng': f'x, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'x, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
+                    ylabel = {'eng': f'y, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'y, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
                 else:
-                    xlabel = 'x, nondimensional'
-                    ylabel = 'y, nondimensional'
+                    xlabel = {'eng': 'x, nondimensional',
+                              'rus': 'x, безразм. ед.'}[language]
+                    ylabel = {'eng': 'y, nondimensional',
+                              'rus': 'y, безразм. ед.'}[language]
                 fig = kiam.plot(self.states[0, :], self.states[1, :], xlabel=xlabel, ylabel=ylabel)
             elif variables == '3d':
                 if self.units_name == 'dim':
-                    xlabel = 'x, km'
-                    ylabel = 'y, km'
-                    zlabel = 'z, km'
+                    xlabel = {'eng': 'x, km',
+                              'rus': 'x, км'}[language]
+                    ylabel = {'eng': 'y, km',
+                              'rus': 'y, км'}[language]
+                    zlabel = {'eng': 'z, km',
+                              'rus': 'z, км'}[language]
                 elif self.units_name == 'sun':
-                    xlabel = 'x, a.u.'
-                    ylabel = 'y, a.u.'
-                    zlabel = 'z, a.u.'
+                    xlabel = {'eng': 'x, a.u.',
+                              'rus': 'x, а.е.'}[language]
+                    ylabel = {'eng': 'y, a.u.',
+                              'rus': 'y, а.е.'}[language]
+                    zlabel = {'eng': 'z, a.u.',
+                              'rus': 'z, а.е.'}[language]
                 elif '_' not in self.units_name:
-                    xlabel = f'x, {self.units_name.capitalize()}\'s radii'
-                    ylabel = f'y, {self.units_name.capitalize()}\'s radii'
-                    zlabel = f'z, {self.units_name.capitalize()}\'s radii'
+                    xlabel = {'eng': f'x, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'x, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
+                    ylabel = {'eng': f'y, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'y, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
+                    zlabel = {'eng': f'z, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'z, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
                 else:
-                    xlabel = 'x, nondimensional'
-                    ylabel = 'y, nondimensional'
-                    zlabel = 'z, nondimensional'
+                    xlabel = {'eng': 'x, nondimensional',
+                              'rus': 'x, безразм. ед.'}[language]
+                    ylabel = {'eng': 'y, nondimensional',
+                              'rus': 'y, безразм. ед.'}[language]
+                    zlabel = {'eng': 'z, nondimensional',
+                              'rus': 'z, безразм. ед.'}[language]
                 fig = kiam.plot3(self.states[0, :], self.states[1, :], self.states[2, :], xlabel=xlabel, ylabel=ylabel, zlabel=zlabel)
             elif variables == 'r':
                 if self.units_name == 'dim':
-                    rlabel = 'r, km'
+                    rlabel = {'eng': 'r, km',
+                              'rus': 'r, км'}[language]
                 elif self.units_name == 'sun':
-                    rlabel = 'r, a.u.'
+                    rlabel = {'eng': 'r, a.u.',
+                              'rus': 'r, а.е.'}[language]
                 elif '_' not in self.units_name:
-                    rlabel = f'r, {self.units_name.capitalize()}\'s radii'
+                    rlabel = {'eng': f'r, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'r, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
                 else:
-                    rlabel = 'r, nondimensional'
+                    rlabel = {'eng': 'r, nondimensional',
+                              'rus': 'r, безразм. ед.'}[language]
                 fig = kiam.plot(self.times, norm(self.states[0:3, :], axis=0), xlabel=tlabel, ylabel=rlabel)
             elif self.vars == 'rvm' and variables == 'm':
-                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel='Mass, kg')
+                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel={'eng': 'Mass, kg', 'rus': 'Масса, кг'}[language])
             else:
                 raise 'Unknown variables to show.'
         elif self.vars in ['oe', 'oem', 'oe_stm']:
             if variables == 'a':
                 if self.units_name == 'dim':
-                    ylabel = 'Semi-major axis, km'
+                    ylabel = {'eng': 'Semi-major axis, km',
+                              'rus': 'Большая полуось, км'}[language]
                 elif self.units_name in ['mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']:
-                    ylabel = f'Semi-major axis, {self.units_name.capitalize()}\'s radii'
+                    ylabel = {'eng': f'Semi-major axis, {self.units_name.capitalize()}\'s radii',
+                              'rus': f'Большая полуось, радиусы {planet_eng2rus[self.units_name.lower()]}'}[language]
                 elif self.units_name == 'sun':
-                    ylabel = f'Semi-major axis, a.u.'
+                    ylabel = {'eng': 'Semi-major axis, a.u.',
+                              'rus': 'Большая полуось, а.е.'}[language]
                 else:
                     ylabel = ''
                 fig = kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'e':
-                ylabel = 'Eccentricity'
+                ylabel = {'eng': 'Eccentricity',
+                          'rus': 'Эксцентриситет'}[language]
                 fig = kiam.plot(self.times, self.states[1, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'inc':
-                ylabel = 'Inclination, degrees'
+                ylabel = {'eng': 'Inclination, degrees',
+                          'rus': 'Наклонение, градусы'}[language]
                 fig = kiam.plot(self.times, self.states[2, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif variables == 'Om':
-                ylabel = 'Right ascension of the ascending node, degrees'
+                ylabel = {'eng': 'Right ascension of the ascending node, degrees',
+                          'rus': 'Долгота восходящего узла, градусы'}[language]
                 fig = kiam.plot(self.times, self.states[3, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif variables == 'w':
-                ylabel = 'Argument of pericenter, degrees'
+                ylabel = {'eng': 'Argument of pericenter, degrees',
+                          'rus': 'Аргумент перицентра, градусы'}[language]
                 fig = kiam.plot(self.times, self.states[4, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif variables == 'th':
-                ylabel = 'True anomaly, degrees'
+                ylabel = {'eng': 'True anomaly, degrees',
+                          'rus': 'Истинная аномалия, градусы'}[language]
                 fig = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif self.vars == 'rvm' and variables == 'm':
-                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel='Mass, kg')
+                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel={'eng': 'Mass, kg', 'rus': 'Масса, кг'}[language])
             else:
                 raise 'Unknown classical orbital element. Elements: a, e, inc, Om, w, th.'
         elif self.vars in ['ee', 'eem', 'ee_stm']:
             if variables == 'h':
                 if self.units_name == 'dim':
-                    ylabel = r'$h\text{, (km/s)}^{-1}$'
+                    ylabel = {'eng': r'$h\text{, (km/s)}^{-1}$',
+                              'rus': r'$h\text{, (км/с)}^{-1}$'}[language]
                 elif self.units_name in ['sun', 'mercury', 'venus', 'earth', 'moon', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune']:
-                    ylabel = r'$h\text{, nondimensional}$'
+                    ylabel = {'eng': 'h, nondimensional',
+                              'rus': 'h, безразм. ед.'}[language]
                 else:
                     ylabel = ''
                 fig = kiam.plot(self.times, self.states[0, :], xlabel=tlabel, ylabel=ylabel)
@@ -886,10 +946,11 @@ class Trajectory:
                 ylabel = '$i_y$'
                 fig = kiam.plot(self.times, self.states[4, :], xlabel=tlabel, ylabel=ylabel)
             elif variables == 'L':
-                ylabel = 'True longitude, degrees'
+                ylabel = {'eng': 'True longitude, degrees',
+                          'rus': 'Истинная долгота, градусы'}[language]
                 fig = kiam.plot(self.times, self.states[5, :] / math.pi * 180, xlabel=tlabel, ylabel=ylabel)
             elif self.vars == 'rvm' and variables == 'm':
-                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel='Mass, kg')
+                fig = kiam.plot(self.times, self.states[6, :], xlabel=tlabel, ylabel={'eng': 'Mass, kg', 'rus': 'Масса, кг'}[language])
             else:
                 raise 'Unknown equinoctial orbital element. Elements: h, ex, ey, ix, iy, L.'
         else:

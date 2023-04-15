@@ -409,7 +409,7 @@ It also initializes tr.model['data'] property.</p>
 <p>Function handle to the control function. The function handle should take two positional variables: time and phase state. By default is None. Can be set by the user.</p></div>
 </dd>
 <dt id="trajectory.Trajectory.show"><code class="name flex">
-<span>def <span class="ident">show</span></span>(<span>self, variables: str, draw=True)</span>
+<span>def <span class="ident">show</span></span>(<span>self, variables: str, draw=True, language='eng')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Plots the specified characteristics of the trajectory.</p>
@@ -449,6 +449,9 @@ It also initializes tr.model['data'] property.</p>
 <p><code>draw</code> : bool</p>
 <p>If True (by default), the fig plotly object will be returned and figure will be showed.</p>
 <p>If False, the fig plot object will be returned and the figure will not be showed.</p>
+<p><code>language</code> : str</p>
+<p>Language used for the titles.</p>
+<p>Options: 'eng' (default), 'rus'.</p>
 <h2 id="returns">Returns:</h2>
 <p><code>ax</code> : matplotlib axis object</p>
 <p>The matplotlib axis object for further work.</p></div>
