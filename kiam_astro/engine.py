@@ -1,34 +1,144 @@
 """
+This Python module is a part of the KIAM Astrodynamics Toolbox developed in
+Keldysh Institute of Applied Mathematics (KIAM), Moscow, Russia.
+
+The module provides the Engine base class, which can be used to implement its own
+classes abstracting the concept of an engine in astrodynamics. Based on the Engine
+class, the module implements several classes for abstracting existing engines.
+Users can create their own classes by inheriting from the Engine base class or
+from the classes presented in this module.
+
+The toolbox is licensed under the MIT License.
+
+The GitHub page of the project:
+https://github.com/shmaxg/KIAMToolbox.
 
 Sources: https://fakel-russia.com/en/productions
 """
+from typing import Union
 
 class Engine:
 
     def __init__(self):
+        """
+        Initializes the instance of the Engine base class.
+        The object properties:
 
-        self.name = None
-        self.engine_class = None  # 'attitude', 'orbital'
-        self.engine_type = None  # 'chemical', 'electric'
+        `name` : str
 
-        self.force = None
-        self.specific_impulse = None
-        self.input_power = None
-        self.efficiency = None
+        The name of the engine.
 
-    def get_force_dependence(self):
+        `engine_class` : str
+
+        The class of the eingine. Options: 'attitude', 'orbital'.
+
+        `engine_type` : str
+
+        The type of the eingine. Options: 'chemical', 'electric'.
+
+        `force` : float, None
+
+        The force in N. Can be varied by implementing the get_force method.
+
+        `specific_impulse` : float, None
+
+        The specific impulse in s. Can be varied by implementing the get_specific_impulse method.
+
+        `input_power` : float, None
+
+        The input power in W. Can be varied by implementing the get_input_power method.
+
+        `efficiency` : float, None
+
+        The efficiency in [0, 1]. Can be varied by implementing the get_efficiency method.
+
+        """
+
+        self.name: str = ''
+        self.engine_class: str = ''  # 'attitude', 'orbital'
+        self.engine_type: str = ''  # 'chemical', 'electric'
+
+        self.force: Union[float, None] = None  # N
+        self.specific_impulse: Union[float, None] = None  # s
+        self.input_power: Union[float, None] = None  # W
+        self.efficiency: Union[float, None] = None  # in [0, 1]
+
+    def get_force(self):
+        """
+        Returns the force of the engine in N. Can be overrided.
+
+        Returns:
+        --------
+
+        `force` : float
+
+        The force of the engine in N.
+        """
         return self.force
 
-    def get_specific_impulse_dependence(self):
+    def get_specific_impulse(self):
+        """
+        Returns the specific impulse of the engine in s. Can be overrided.
+
+        Returns:
+        --------
+
+        `specific_impulse` : float
+
+        The specific impulse of the engine in s.
+        """
         return self.specific_impulse
 
-    def get_input_power_dependence(self):
+    def get_input_power(self):
+        """
+        Returns the input power of the engine in W. Can be overrided.
+
+        Returns:
+        --------
+
+        `input_power` : float
+
+        The input power of the engine in W.
+        """
         return self.input_power
 
-    def get_efficiency_dependence(self):
+    def get_efficiency(self):
+        """
+        Returns the efficiency of the engine in [0, 1]. Can be overrided.
+
+        Returns:
+        --------
+
+        `efficiency` : float
+
+        The efficiency of the engine in [0, 1].
+        """
         return self.efficiency
 
+    def describe(self):
+        dims = {
+            'force': 'N',
+            'specific_impulse': 's',
+            'discharge_voltage': 'V',
+            'discharge_current': 'A',
+            'discharge_power': 'W',
+            'power_to_thrust_ratio': 'W/N',
+            'min_lifetime_h': 'days',
+            'mass': 'kg',
+            'dimensions': 'mm'
+        }
+        for a in dir(self):
+            if not a.startswith('__') and not callable(getattr(self, a)):
+                dimension = dims.get(a)
+                dimension = '' if dimension is None else dimension
+                print(f'{a} = {eval(f"self.{a}")} {dimension}')
+
+
 class SPT50(Engine):
+    """
+    The class abstracting the SPT-50 engine: https://fakel-russia.com/produkciya
+    This is a regime of the SPT-50M engine.
+    """
 
     def __init__(self):
         super(SPT50, self).__init__()
@@ -45,14 +155,29 @@ class SPT50(Engine):
         self.force = 14.0e-03  # N
         self.specific_impulse = 860.0  # s
         self.power_to_thrust_ratio = 16.1e+03  # W/N
-        self.min_lifetime_h = 1217/24  # days
+        self.min_lifetime_h = 1217 / 24  # days
         self.min_lifetime_cycles = 3011  # cycles
         self.mass = 1.23  # kg
         self.dimensions = '160 x 120 x 91'  # mm
 
-class SPT50M(Engine):
 
-    def __init__(self, option=None):
+class SPT50M(Engine):
+    """
+    The class abstracting the SPT-50M engine: https://fakel-russia.com/en/productions
+    """
+
+    def __init__(self, option: str = ''):
+        """
+        Parameters:
+        -----------
+
+        `option` : str
+
+        The engine's regime.
+
+        Options: 'Xe_low' (low force, Xenon), 'Xe_high' (high force, Xenon)
+
+        """
         super(SPT50M, self).__init__()
 
         self.name = 'spt50m'
@@ -70,7 +195,7 @@ class SPT50M(Engine):
             self.force = 14.8e-03  # N
             self.specific_impulse = 930.0  # s
             self.power_to_thrust_ratio = 15.2e+03  # W/N
-            self.min_lifetime_h = 5000/24  # days
+            self.min_lifetime_h = 5000 / 24  # days
             self.min_lifetime_cycles = 11000  # cycles
             self.mass = 1.32  # kg
             self.dimensions = '169 x 120 x 88'  # mm
@@ -91,7 +216,11 @@ class SPT50M(Engine):
             self.mass = 1.32  # kg
             self.dimensions = '169 x 120 x 88'  # mm
 
+
 class SPT70(Engine):
+    """
+    The class abstracting the SPT-70 engine: https://fakel-russia.com/en/productions
+    """
 
     def __init__(self):
         super(SPT70, self).__init__()
@@ -114,9 +243,26 @@ class SPT70(Engine):
         self.mass = 1.5  # kg
         self.dimensions = '198 x 146 x 98'  # mm
 
-class SPT70M(Engine):
 
-    def __init__(self, option=None):
+class SPT70M(Engine):
+    """
+    The class abstracting the SPT-70M engine: https://fakel-russia.com/en/productions
+    """
+
+    def __init__(self, option: str = ''):
+        """
+        Parameters:
+        -----------
+
+        `option` : str
+
+        The engine's regime.
+
+        Options: 'Xe_low' (low force, Xenon), 'Xe_med' (medium force, Xenon),
+        'Xe_high' (high force, Xenon), 'Kr_low' (low force, Krypton),
+        'Kr_med' (medium force, Krypton), 'Kr_high' (high force, Krypton)
+
+        """
         super(SPT70M, self).__init__()
 
         self.name = 'spt70m'
@@ -223,7 +369,11 @@ class SPT70M(Engine):
 
             raise Exception('Unknown option.')
 
+
 class SPT100B(Engine):
+    """
+    The class abstracting the SPT-100B engine: https://fakel-russia.com/en/productions
+    """
 
     def __init__(self):
         super(SPT100B, self).__init__()
@@ -247,7 +397,11 @@ class SPT100B(Engine):
         self.mass = 3.5  # kg
         self.dimensions = '225 x 150 x 125'  # mm
 
+
 class SPT100BM(Engine):
+    """
+    The class abstracting the SPT-100BM engine: https://fakel-russia.com/en/productions
+    """
 
     def __init__(self):
         super(SPT100BM, self).__init__()
@@ -271,7 +425,11 @@ class SPT100BM(Engine):
         self.mass = 4.2  # kg
         self.dimensions = '200 x 142 x 110'  # mm
 
+
 class SPT140D(Engine):
+    """
+    The class abstracting the SPT-140D engine: https://fakel-russia.com/en/productions
+    """
 
     def __init__(self):
         super(SPT140D, self).__init__()
